@@ -28,7 +28,7 @@ to **chemfig**, **TikZ** or SVG.
 
 ```bash
 # 1. Clone
-git clone https://github.com/YOUR_USER/Article_MecHand.git
+git clone https://github.com/JordiVillaFreixa/Article_MecHand.git
 cd Article_MecHand
 
 # 2. Run the Ketcher dev server
@@ -58,9 +58,15 @@ A mechanism sketched in MecHand and exported to chemfig:
 
 ## Cite
 
-> Villa, J. et al. MecHand: Freehand Chemical Mechanism Drawing with
-> Sketch Recognition and LaTeX Export. *J. Cheminformatics* (in preparation).
+> J. Villà-Freixa. MecHand: Freehand Chemical Mechanism Drawing with
+> Sketch Recognition and Direct Export to LaTeX. *J. Cheminformatics* (in preparation).
+
+**Jordi Villà-Freixa**
+([ORCID 0000-0002-6359-3929](https://orcid.org/0000-0002-6359-3929)) —
+Department of Biosciences, University of Vic - Central University of Catalonia (UVic-UCC);
+IRIS-CC; Computational Biochemistry and Biophysics Lab, Research Group on Bioinformatics
+and Bioimaging (BI-SQUARE), UVic-UCC. Vic, Spain.
 
 ---
 
-[Demo &rarr;](./demo/) &nbsp;&middot;&nbsp; [GitHub](https://github.com/YOUR_USER/Article_MecHand)
+[Demo &rarr;](./demo/) &nbsp;&middot;&nbsp; [GitHub](https://github.com/JordiVillaFreixa/Article_MecHand)

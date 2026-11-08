@@ -39,3 +39,16 @@ docs/vendor/
 *.log
 *.tmp
 *.swp
+
+# ── LaTeX manuscript build (see manuscript/Makefile) ──────────────────────────
+manuscript/*.aux
+manuscript/*.bbl
+manuscript/*.blg
+manuscript/*.fdb_latexmk
+manuscript/*.fls
+manuscript/*.out
+manuscript/*.synctex.gz
+manuscript/*.toc
+# Springer Nature template, downloaded by `make template`
+manuscript/sn-jnl.cls
+manuscript/sn-*.bst

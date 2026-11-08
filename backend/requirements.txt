@@ -1,9 +1,24 @@
+# MecHand recognition backend. Requires Python 3.10–3.12: MolScribe needs numpy<2,
+# which has no wheels for Python 3.13+.
+
+# Web service
 fastapi>=0.111
 uvicorn[standard]>=0.29
 python-multipart>=0.0.9
 pillow>=10.3
-opencv-python-headless>=4.9
-numpy>=1.26
-# MolScribe pulls torch automatically; use CPU build if no GPU:
-# pip install torch --index-url https://download.pytorch.org/whl/cpu
-molscribe>=1.1
+huggingface_hub>=0.23              # downloads the MolScribe checkpoint
+
+# MolScribe. Its PyPI package declares no dependencies (its setup.py uses
+# distutils), so they are listed here, following MolScribe's own setup.py.
+MolScribe==1.1.1
+numpy>=1.26,<2
+torch>=2.1
+torchvision                        # required by timm
+opencv-python-headless>=4.9,<4.12  # 4.12+ requires numpy>=2
+pandas
+matplotlib
+rdkit>=2023.9
+SmilesPE==0.0.3
+albumentations==1.1.0
+timm==0.4.12
+OpenNMT-py==2.2.0

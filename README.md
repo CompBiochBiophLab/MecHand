@@ -2,7 +2,7 @@
 
 > Freehand chemical mechanism drawing — Ketcher extension with sketch recognition and LaTeX export.
 
-**Status:** early development (pre-publication)  
+**Status:** early development (pre-publication)
 **License:** MIT (MecHand additions) · Apache 2.0 (Ketcher upstream)
 
 ---
@@ -32,7 +32,7 @@ Article_MecHand/
 
 ```bash
 # Create the repo on GitHub (private), then:
-git clone https://github.com/YOUR_USER/Article_MecHand.git
+git clone https://github.com/JordiVillaFreixa/Article_MecHand.git
 cd Article_MecHand
 
 # Add Ketcher as upstream
@@ -95,12 +95,29 @@ The manuscript for submission to *Journal of Cheminformatics* is in `manuscript/
 
 ```bash
 cd manuscript
-pdflatex main.tex && bibtex main && pdflatex main.tex && pdflatex main.tex
+make            # → main.pdf (latexmk runs pdflatex + bibtex as many times as needed)
+make view       # build and open the PDF
+make watch      # rebuild on every save
+make clean      # remove auxiliary files (make distclean also removes the PDF)
 ```
+
+The manuscript uses the [Springer Nature LaTeX template](https://www.springernature.com/gp/authors/campaigns/latex-author-support)
+(`sn-jnl`), which also covers BMC journals such as *J. Cheminformatics*. The class and
+bibliography style (`sn-jnl.cls`, `sn-vancouver-num.bst`) are not part of TeX Live:
+`make` downloads them into `manuscript/` the first time (or run `make template`).
+Requires `latexmk`, `curl` and `unzip`.
 
 ---
 
 ## Citation (pre-print)
 
-> Villa, J. et al. MecHand: Freehand Chemical Mechanism Drawing with
+> J. Villà-Freixa. MecHand: Freehand Chemical Mechanism Drawing with
 > Sketch Recognition and Direct Export to LaTeX. *J. Cheminformatics* (in preparation).
+
+## Author
+
+**Jordi Villà-Freixa** · ORCID [0000-0002-6359-3929](https://orcid.org/0000-0002-6359-3929) · [jordi.villa@uvic.cat](mailto:jordi.villa@uvic.cat)
+
+1. Department of Biosciences, University of Vic - Central University of Catalonia (UVic-UCC), Vic, Spain
+2. IRIS-CC (Institut de Recerca i Innovació en Ciències de la Vida i de la Salut a la Catalunya Central), Vic, Spain
+3. Computational Biochemistry and Biophysics Lab, Research Group on Bioinformatics and Bioimaging (BI-SQUARE), Universitat de Vic - Universitat Central de Catalunya (UVic-UCC), Vic, Spain

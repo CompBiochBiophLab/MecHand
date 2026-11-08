@@ -3,33 +3,53 @@ MecHand backend — FastAPI service wrapping MolScribe + arrow detector.
 
 Endpoints
 ---------
-POST /recognize   receive PNG sketch, return structured molecule + arrows
+POST /recognize   receive a PNG sketch, return structured molecule + arrows
 GET  /health      liveness probe
 
-Run locally:
+Run locally (Python 3.10–3.12):
     pip install -r requirements.txt
-    uvicorn main:app --reload --port 8000
+    uvicorn main:app --port 8000
+
+The server loads MolScribe before it starts answering requests; the first run
+downloads the ~1.1 GB checkpoint, so /health only responds once the model is ready.
 
 Docker:
-    docker build -t mechhand-backend .
-    docker run -p 8000:8000 mechhand-backend
+    docker build -t mechand-backend .
+    docker run -p 8000:8000 mechand-backend
 """
 
+from __future__ import annotations
+
 import io
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 
-from molscribe_service import MolScribeService
 from arrow_detector import ArrowDetector
+from molscribe_service import MolScribeService
+
+molscribe = MolScribeService()
+arrow_detector = ArrowDetector()
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    print("[MecHand] Loading MolScribe (the first run downloads ~1.1 GB)...")
+    molscribe.load()
+    print("[MecHand] MolScribe ready.")
+    yield
+
 
 app = FastAPI(
     title="MecHand Recognition API",
     version="0.1.0",
     description="Sketch recognition backend for MecHand (Ketcher extension).",
+    lifespan=lifespan,
 )
 
-# Allow the Ketcher frontend (any origin in dev; restrict in production)
+# Allow the MecHand frontend (any origin in dev; restrict in production)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -37,28 +57,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Lazy-load heavy models once at startup ─────────────────────────────────────
-
-_molscribe: MolScribeService | None = None
-_arrow_detector: ArrowDetector | None = None
-
-
-@app.on_event("startup")
-async def load_models():
-    global _molscribe, _arrow_detector
-    _molscribe = MolScribeService()
-    _arrow_detector = ArrowDetector()
-
-
-# ── Routes ─────────────────────────────────────────────────────────────────────
 
 @app.get("/health")
-async def health():
-    return {"status": "ok", "models_loaded": _molscribe is not None}
+def health():
+    return {"status": "ok", "models_loaded": molscribe.loaded}
 
 
 @app.post("/recognize")
-async def recognize(image: UploadFile = File(...)):
+def recognize(image: UploadFile = File(...)):
     """
     Accept a PNG of freehand strokes; return a structured recognition result.
 
@@ -66,31 +72,25 @@ async def recognize(image: UploadFile = File(...)):
     ---------------
     {
       "smiles":     str,
+      "molfile":    str,           # MDL molfile from MolScribe
       "atoms":      [{"symbol", "x", "y", "charge", "isotope"}, ...],
       "bonds":      [{"beginAtom", "endAtom", "type"}, ...],
       "arrows":     [{"path", "fromAtom", "toAtom"}, ...],
       "confidence": float          # 0–1
     }
+
+    Declared with `def` (not `async def`) so FastAPI runs the CPU-heavy model in
+    a worker thread instead of blocking the event loop.
     """
-    if not image.content_type.startswith("image/"):
+    if not (image.content_type or "").startswith("image/"):
         raise HTTPException(400, "Only image uploads are accepted.")
 
-    raw = await image.read()
     try:
-        pil_img = Image.open(io.BytesIO(raw)).convert("RGB")
+        pil_img = Image.open(io.BytesIO(image.file.read())).convert("RGB")
     except Exception as e:
         raise HTTPException(400, f"Cannot decode image: {e}")
 
-    # ── MolScribe: structure recognition ──────────────────────────────────────
-    mol_result = _molscribe.predict(pil_img)
+    mol_result = molscribe.predict(pil_img)            # structure recognition
+    arrow_result = arrow_detector.detect(pil_img)      # curved mechanism arrows
 
-    # ── Arrow detector: curved mechanism arrows ────────────────────────────────
-    arrow_result = _arrow_detector.detect(pil_img)
-
-    return {
-        "smiles":     mol_result["smiles"],
-        "atoms":      mol_result["atoms"],
-        "bonds":      mol_result["bonds"],
-        "arrows":     arrow_result["arrows"],
-        "confidence": mol_result["confidence"],
-    }
+    return {**mol_result, "arrows": arrow_result["arrows"]}

@@ -13,7 +13,7 @@ title: MecHand — Demo
 ## Quick local run
 
 ```bash
-git clone https://github.com/YOUR_USER/Article_MecHand.git
+git clone https://github.com/JordiVillaFreixa/Article_MecHand.git
 cd Article_MecHand/ketcher-mechhand
 yarn install && yarn start
 # → open http://localhost:3000

@@ -1,8 +1,10 @@
-%% MecHand manuscript — Journal of Cheminformatics
-%% Template based on BioMed Central LaTeX template (SpringerOpen)
+%% MecHand manuscript — Journal of Cheminformatics (BMC / Springer Nature)
+%% Class: Springer Nature LaTeX template (sn-jnl), which also covers BMC journals.
+%% `make` downloads sn-jnl.cls and the .bst from
 %% https://www.springernature.com/gp/authors/campaigns/latex-author-support
+%% If you change the reference style option, update BST in the Makefile too.
 
-\documentclass[lineno]{bmcart}
+\documentclass[pdflatex,lineno,sn-vancouver-num]{sn-jnl}
 
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
@@ -14,6 +16,10 @@
 \usepackage{booktabs}         % for tables
 \usepackage{listings}         % for code snippets
 \usepackage{xcolor}
+% sn-jnl's own \orcid needs Orcidlogo.eps, which the template does not ship.
+% sn-jnl also defines \orcidlogo, so clear it before orcidlink defines its own.
+\let\orcidlogo\relax
+\usepackage{orcidlink}
 
 % ── Listings style for LaTeX/TypeScript code ──────────────────────────────────
 \lstset{
@@ -28,38 +34,36 @@
 %% ─────────────────────────────────────────────────────────────────────────────
 \begin{document}
 
-\begin{frontmatter}
+\title[MecHand]{MecHand: Freehand Chemical Mechanism Drawing with Sketch
+       Recognition and Direct Export to \LaTeX{}}
 
-\title{MecHand: Freehand Chemical Mechanism Drawing with Sketch Recognition
-       and Direct Export to \LaTeX{}}
-
-\author[1]{\inits{J.V.}\fnm{Jordi}\snm{Villa}}
+%% \author* marks the corresponding author.
+\author*[1,2,3]{\fnm{Jordi} \sur{Vill\`a-Freixa}\,\orcidlink{0000-0002-6359-3929}}\email{jordi.villa@uvic.cat}
 % Add co-authors here
 
-\address[1]{%
-  \orgname{Computational Biochemistry and Biophysics Laboratory (CBBL)},
-  \orgdiv{Faculty of Sciences},
-  \orgaddress{University of Vic -- Central University of Catalonia},
-  \city{Vic},
-  \country{Spain}
-}
+\affil*[1]{\orgdiv{Department of Biosciences},
+  \orgname{University of Vic -- Central University of Catalonia (UVic-UCC)},
+  \orgaddress{\city{Vic}, \country{Spain}}}
 
-\corrauth{\fnm{Jordi}\snm{Villa},
-  Computational Biochemistry and Biophysics Laboratory,
-  University of Vic -- Central University of Catalonia, Vic, Spain.}
-\email{jordi.villa@uvic.cat}
+\affil[2]{\orgname{IRIS-CC (Institut de Recerca i Innovaci\'o en Ci\`encies
+  de la Vida i de la Salut a la Catalunya Central)},
+  \orgaddress{\city{Vic}, \country{Spain}}}
+
+\affil[3]{\orgdiv{Computational Biochemistry and Biophysics Lab, Research Group
+  on Bioinformatics and Bioimaging (BI-SQUARE)},
+  \orgname{Universitat de Vic -- Universitat Central de Catalunya (UVic-UCC)},
+  \orgaddress{\city{Vic}, \country{Spain}}}
 
 %% ── Abstract ─────────────────────────────────────────────────────────────────
-\begin{abstract}
-
-\paragraph{Background}
+\abstract{%
+\textbf{Background:}
 Reaction mechanisms are central to chemical education and research,
 yet existing tools for drawing them impose a steep learning curve or
 require expensive licences. Freehand sketching on paper remains the
 preferred medium for most chemists, but paper sketches cannot be
 directly integrated into digital manuscripts.
 
-\paragraph{Results}
+\textbf{Results:}
 We present \textbf{MecHand}, an open-source web application built on the
 Ketcher chemical drawing platform that accepts freehand input from stylus,
 trackpad or mouse and converts sketched mechanisms into clean, editable
@@ -73,27 +77,18 @@ canvas. MecHand exports diagrams directly to \texttt{chemfig} and TikZ
 provides tool descriptions calibrated for both expert chemists and
 undergraduate students.
 
-\paragraph{Conclusions}
+\textbf{Conclusions:}
 MecHand fills a gap between the informality of hand sketching and the
 rigidity of graphical editors, lowering the barrier to producing
 publication-quality mechanism figures. The tool is freely available at
-\url{https://github.com/YOUR_USER/Article_MecHand} and runs entirely
+\url{https://github.com/JordiVillaFreixa/Article_MecHand} and runs entirely
 in the browser without installation, with an optional self-hosted
-backend for sketch recognition.
+backend for sketch recognition.}
 
-\end{abstract}
+\keywords{reaction mechanism, chemical drawing, sketch recognition, MolScribe,
+  chemfig, TikZ, open source}
 
-\begin{keyword}
-  reaction mechanism \sep
-  chemical drawing \sep
-  sketch recognition \sep
-  MolScribe \sep
-  chemfig \sep
-  TikZ \sep
-  open source
-\end{keyword}
-
-\end{frontmatter}
+\maketitle
 
 %% ─────────────────────────────────────────────────────────────────────────────
 \section{Background}
@@ -178,7 +173,7 @@ structures scanned from student notebooks and published manuscripts.
 \begin{itemize}
   \item \textbf{Project name:} MecHand
   \item \textbf{Project home page:}
-        \url{https://github.com/YOUR_USER/Article_MecHand}
+        \url{https://github.com/JordiVillaFreixa/Article_MecHand}
   \item \textbf{Operating system(s):} Platform independent (web application)
   \item \textbf{Programming language:} TypeScript (frontend), Python (backend)
   \item \textbf{Other requirements:}
@@ -206,7 +201,8 @@ The authors declare that they have no competing interests.
 %% TODO
 
 %% ── References ───────────────────────────────────────────────────────────────
-\bibliographystyle{bmc-mathphys}
+%% The style comes from the sn-jnl class option (sn-vancouver-num); do not add
+%% \bibliographystyle here.
 \bibliography{references}
 
 \end{document}
