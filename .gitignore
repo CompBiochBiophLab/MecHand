@@ -1,0 +1,41 @@
+# ── Node / Ketcher ────────────────────────────────────────────────────────────
+node_modules/
+dist/
+build/
+.yarn/cache
+.pnp.*
+*.tsbuildinfo
+
+# ── Python backend ────────────────────────────────────────────────────────────
+backend/.venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/*.egg-info/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.env
+
+# MolScribe model weights (large; download on first run)
+backend/models/
+
+# ── Jekyll docs ───────────────────────────────────────────────────────────────
+docs/_site/
+docs/.jekyll-cache/
+docs/.jekyll-metadata
+docs/vendor/
+
+# ── macOS ─────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ── VS Code ───────────────────────────────────────────────────────────────────
+.vscode/settings.json
+.vscode/.env
+
+# ── Misc ──────────────────────────────────────────────────────────────────────
+*.log
+*.tmp
+*.swp

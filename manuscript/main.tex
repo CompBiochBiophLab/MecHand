@@ -1,0 +1,212 @@
+%% MecHand manuscript — Journal of Cheminformatics
+%% Template based on BioMed Central LaTeX template (SpringerOpen)
+%% https://www.springernature.com/gp/authors/campaigns/latex-author-support
+
+\documentclass[lineno]{bmcart}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{chemfig}          % to show export examples inline
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, bending}
+\usepackage{booktabs}         % for tables
+\usepackage{listings}         % for code snippets
+\usepackage{xcolor}
+
+% ── Listings style for LaTeX/TypeScript code ──────────────────────────────────
+\lstset{
+  basicstyle=\small\ttfamily,
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{gray!8},
+  keywordstyle=\color{blue!70},
+  commentstyle=\color{green!50!black},
+}
+
+%% ─────────────────────────────────────────────────────────────────────────────
+\begin{document}
+
+\begin{frontmatter}
+
+\title{MecHand: Freehand Chemical Mechanism Drawing with Sketch Recognition
+       and Direct Export to \LaTeX{}}
+
+\author[1]{\inits{J.V.}\fnm{Jordi}\snm{Villa}}
+% Add co-authors here
+
+\address[1]{%
+  \orgname{Computational Biochemistry and Biophysics Laboratory (CBBL)},
+  \orgdiv{Faculty of Sciences},
+  \orgaddress{University of Vic -- Central University of Catalonia},
+  \city{Vic},
+  \country{Spain}
+}
+
+\corrauth{\fnm{Jordi}\snm{Villa},
+  Computational Biochemistry and Biophysics Laboratory,
+  University of Vic -- Central University of Catalonia, Vic, Spain.}
+\email{jordi.villa@uvic.cat}
+
+%% ── Abstract ─────────────────────────────────────────────────────────────────
+\begin{abstract}
+
+\paragraph{Background}
+Reaction mechanisms are central to chemical education and research,
+yet existing tools for drawing them impose a steep learning curve or
+require expensive licences. Freehand sketching on paper remains the
+preferred medium for most chemists, but paper sketches cannot be
+directly integrated into digital manuscripts.
+
+\paragraph{Results}
+We present \textbf{MecHand}, an open-source web application built on the
+Ketcher chemical drawing platform that accepts freehand input from stylus,
+trackpad or mouse and converts sketched mechanisms into clean, editable
+chemical diagrams. Stroke classification heuristics separate atom nodes,
+bonds and curved mechanism arrows before the sketch is rasterised and
+processed by MolScribe, a transformer-based molecular image recognition
+model. A ``consolidating'' interface presents the recognised structure to
+the user for confirmation or correction before it is committed to the
+canvas. MecHand exports diagrams directly to \texttt{chemfig} and TikZ
+(for LaTeX), as well as SVG and PNG. A context-sensitive help system
+provides tool descriptions calibrated for both expert chemists and
+undergraduate students.
+
+\paragraph{Conclusions}
+MecHand fills a gap between the informality of hand sketching and the
+rigidity of graphical editors, lowering the barrier to producing
+publication-quality mechanism figures. The tool is freely available at
+\url{https://github.com/YOUR_USER/Article_MecHand} and runs entirely
+in the browser without installation, with an optional self-hosted
+backend for sketch recognition.
+
+\end{abstract}
+
+\begin{keyword}
+  reaction mechanism \sep
+  chemical drawing \sep
+  sketch recognition \sep
+  MolScribe \sep
+  chemfig \sep
+  TikZ \sep
+  open source
+\end{keyword}
+
+\end{frontmatter}
+
+%% ─────────────────────────────────────────────────────────────────────────────
+\section{Background}
+\label{sec:background}
+
+Reaction mechanisms are routinely drawn by hand on paper or whiteboards
+during teaching and research discussions. Translating these sketches into
+digital manuscript-quality figures currently requires either expensive
+commercial software (e.g.\ ChemDraw, Marvin) or manual reconstruction in
+programmatic tools such as \texttt{chemfig}~\cite{Teletchea2011} or
+TikZ~\cite{Tantau2015}.
+
+%% TODO: expand — survey of existing tools, gap analysis
+
+\section{Implementation}
+\label{sec:implementation}
+
+\subsection{Architecture overview}
+
+MecHand is structured as a three-layer system
+(Figure~\ref{fig:architecture}):
+
+\begin{enumerate}
+  \item \textbf{Frontend} — a fork of Ketcher~\cite{Ketcher} augmented
+        with a freehand drawing overlay, the consolidating interface,
+        a context-sensitive help system, and chemfig/TikZ export modules.
+  \item \textbf{Stroke classifier} — a lightweight geometric module that
+        partitions pointer-event strokes into atom sites, bonds and
+        mechanism arrows before recognition.
+  \item \textbf{Recognition backend} — a FastAPI service wrapping
+        MolScribe~\cite{Qian2023} for molecular structure recognition and
+        a contour-based arrow detector (Section~\ref{sec:arrows}).
+\end{enumerate}
+
+\subsection{Freehand input and stroke classification}
+\label{sec:strokes}
+
+%% TODO
+
+\subsection{The consolidating paradigm}
+\label{sec:consolidate}
+
+%% TODO
+
+\subsection{Mechanism arrow detection}
+\label{sec:arrows}
+
+%% TODO: replace rule-based with SMiCRM-trained model (arXiv 2407.18338)
+
+\subsection{Export to chemfig and TikZ}
+\label{sec:export}
+
+%% TODO
+
+\subsection{Context-sensitive help system}
+\label{sec:help}
+
+%% TODO
+
+\section{Results and discussion}
+\label{sec:results}
+
+\subsection{Benchmark on hand-drawn structures}
+
+We evaluated the recognition accuracy of MecHand on the DECIMER
+hand-drawn molecule dataset~\cite{Rajan2023}, which contains X
+structures scanned from student notebooks and published manuscripts.
+
+%% TODO: table of Tanimoto / SMILES accuracy
+
+\subsection{User evaluation}
+
+%% TODO: short usability study
+
+\section{Conclusions}
+\label{sec:conclusions}
+
+%% TODO
+
+\section{Availability and requirements}
+
+\begin{itemize}
+  \item \textbf{Project name:} MecHand
+  \item \textbf{Project home page:}
+        \url{https://github.com/YOUR_USER/Article_MecHand}
+  \item \textbf{Operating system(s):} Platform independent (web application)
+  \item \textbf{Programming language:} TypeScript (frontend), Python (backend)
+  \item \textbf{Other requirements:}
+        Modern browser (Chrome~\(\geq\)110, Firefox~\(\geq\)115,
+        Safari~\(\geq\)16); optional Python~3.10+ for the recognition backend.
+  \item \textbf{License:} MIT (MecHand additions);
+        Apache~2.0 (Ketcher upstream)
+  \item \textbf{Any restrictions to use by non-academics:} None
+\end{itemize}
+
+%% ─────────────────────────────────────────────────────────────────────────────
+\section*{Abbreviations}
+SVG: Scalable Vector Graphics; SMILES: Simplified Molecular-Input Line-Entry
+System; UX: user experience; API: application programming interface.
+
+\section*{Declarations}
+
+\subsection*{Competing interests}
+The authors declare that they have no competing interests.
+
+\subsection*{Funding}
+%% TODO
+
+\subsection*{Authors' contributions}
+%% TODO
+
+%% ── References ───────────────────────────────────────────────────────────────
+\bibliographystyle{bmc-mathphys}
+\bibliography{references}
+
+\end{document}

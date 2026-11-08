@@ -1,0 +1,50 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Tasks: Setup MecHand",
+      "type": "shell",
+      "command": "cd ketcher-mechhand && yarn install",
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "shared" }
+    },
+    {
+      "label": "Start Ketcher dev server",
+      "type": "shell",
+      "command": "cd ketcher-mechhand && yarn start",
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": { "regexp": "." },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "starting",
+          "endsPattern": "localhost"
+        }
+      },
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "Start recognition backend",
+      "type": "shell",
+      "command": "cd backend && source .venv/bin/activate && uvicorn main:app --reload",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "Serve Jekyll docs",
+      "type": "shell",
+      "command": "cd docs && bundle exec jekyll serve",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "Sync upstream Ketcher",
+      "type": "shell",
+      "command": "git fetch upstream && git merge upstream/master --no-edit",
+      "problemMatcher": [],
+      "presentation": { "reveal": "always" }
+    }
+  ]
+}
