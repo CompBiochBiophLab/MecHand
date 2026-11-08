@@ -61,7 +61,7 @@ yarn start
 ### 3 — Run the recognition backend (optional for drawing/export)
 
 ```bash
-cd backend
+cd ../backend
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt   # downloads MolScribe weights on first run
 uvicorn main:app --reload

@@ -1,23 +1,22 @@
-# MecHand recognition backend. Requires Python 3.10–3.12: MolScribe needs numpy<2,
-# which has no wheels for Python 3.13+.
-
 # Web service
 fastapi>=0.111
 uvicorn[standard]>=0.29
 python-multipart>=0.0.9
 pillow>=10.3
-huggingface_hub>=0.23              # downloads the MolScribe checkpoint
+huggingface_hub>=0.23
 
-# MolScribe's runtime dependencies (MolScribe itself, OpenNMT-py and torchtext
-# are installed WITHOUT their pinned dependencies from requirements-nodeps.txt,
-# because OpenNMT-py 2.2.0 pins packages that no longer install on Python 3.11).
+# Core AI & Chemistry dependencies (Modern & Native)
 numpy>=1.26,<2
 torch>=2.1
-torchvision                        # required by timm
-opencv-python-headless>=4.9,<4.12  # 4.12+ requires numpy>=2
+torchvision
+opencv-python-headless>=4.9,<4.12
 pandas
 matplotlib
 rdkit>=2023.9
+
+# MolScribe directly from updated GitHub repository
+git+https://github.com/thomas0809/MolScribe
+# Specific auxiliary dependencies required by the model
 SmilesPE==0.0.3
 albumentations==1.1.0
 timm==0.4.12
