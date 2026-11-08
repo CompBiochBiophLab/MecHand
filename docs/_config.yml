@@ -2,7 +2,7 @@ title: MecHand
 description: >
   Freehand chemical mechanism drawing — a Ketcher extension with sketch recognition,
   contextual help, and direct export to chemfig/TikZ.
-baseurl: "/Article_MecHand"
+baseurl: "/MecHand"
 url: "https://jordivillafreixa.github.io"
 
 # Theme

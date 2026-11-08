@@ -2,23 +2,20 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# System deps for OpenCV headless
+# System libraries used by OpenCV
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libglib2.0-0 libgl1 libgomp1 \
+    libglib2.0-0 libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt requirements-nodeps.txt ./
+RUN pip install --no-cache-dir -r requirements.txt \
+ && pip install --no-cache-dir --no-deps -r requirements-nodeps.txt
 
-# Pre-download MolScribe weights at build time so the first request is instant.
-# Remove this RUN line if you prefer to download them on first use (~500 MB).
-RUN python - <<'EOF'
-from molscribe import MolScribe
-MolScribe("swin_base", device="cpu")  # downloads weights to ~/.cache/molscribe
-EOF
+# Download the MolScribe checkpoint (~1.1 GB) at build time so the first
+# request is fast. Remove this line to download it on first start instead.
+RUN python -c "from huggingface_hub import hf_hub_download; hf_hub_download('yujieq/MolScribe', 'swin_base_char_aux_1m.pth')"
 
 COPY . .
 
 EXPOSE 8000
-
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

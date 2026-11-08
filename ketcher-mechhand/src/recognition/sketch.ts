@@ -1,0 +1,721 @@
+/**
+ * Online recognition of hand-drawn mechanisms: strokes → Scene.
+ *
+ * Pipeline (all in the browser, no server):
+ *  1. Scale: estimate the drawn bond length L from straight segments.
+ *  2. Arrowheads: in-stroke hooks or small separate "V" / barb strokes at the
+ *     end of a long stroke. Curved shaft → electron-flow arrow (full head = 2 e⁻,
+ *     single barb = 1 e⁻, fishhook); straight long shaft → reaction arrow.
+ *  3. Text: small strokes are clustered, split into characters and classified
+ *     with the $P recognizer (atom labels, + and − charges).
+ *  4. Bonds: remaining strokes are split at corners (ShortStraw), so zig-zag
+ *     chains and rings can be drawn in one stroke. Near-parallel close segments
+ *     merge into double/triple bonds; endpoints cluster into atoms.
+ *  5. Labels and charges attach to the nearest atom; isolated labels become
+ *     atoms of their own ("Cl⁻"); isolated "+" between species become pluses.
+ *  6. Electron-flow arrows are anchored to the nearest atom or bond (Marvin-style
+ *     semantics), which the mechanism checker uses.
+ */
+
+import type { Scene, SceneArrow, SceneAtom, SceneBond } from '../scene/types';
+import type { PointCloudRecognizer } from './dollarP';
+import {
+  type BBox, type Pt, type Segment,
+  angleBetween, bbox, bboxCenter, bboxDiag, bboxGap, dist, pathLength,
+  pointSegment, resampleBySpacing, segLength, shortStraw, straightness, vec,
+} from './geometry';
+
+export interface InkStroke {
+  points: Pt[];
+}
+
+export type StrokeRole = 'bond' | 'arrow' | 'arrowhead' | 'text' | 'dot' | 'ignored';
+
+export interface RecognizedLabel {
+  text: string;
+  score: number;
+  center: Pt;
+  /** Index of the atom it was attached to (or created), -1 for pluses. */
+  atom: number;
+}
+
+/** Where an electron-flow arrow starts or ends, in Scene indices. */
+export type ArrowAnchor =
+  | { type: 'atom'; atom: number }
+  | { type: 'bond'; bond: number }
+  | { type: 'none' };
+
+export interface RecognizedArrow {
+  arrow: SceneArrow;
+  from: ArrowAnchor;
+  to: ArrowAnchor;
+}
+
+export interface SketchResult {
+  scene: Scene;
+  roles: StrokeRole[];
+  labels: RecognizedLabel[];
+  arrows: RecognizedArrow[];
+  /** Drawn bond length in pixels (1 Ketcher unit). */
+  bondLengthPx: number;
+  /** 0..1 rough overall confidence. */
+  confidence: number;
+}
+
+export interface SketchOptions {
+  /** Fallback bond length in px when no straight bond is drawn. */
+  defaultBondPx?: number;
+  /** Minimum $P score to accept a character. */
+  minSymbolScore?: number;
+}
+
+// Element symbols the label decoder accepts (case-sensitive).
+const ELEMENTS = new Set([
+  'H', 'B', 'C', 'N', 'O', 'F', 'P', 'S', 'K', 'I', 'Cl', 'Br', 'Si', 'Li', 'Na', 'Al', 'Pt', 'Pd', 'Ni',
+  'Fe', 'Co', 'Cu', 'Zn', 'Mg', 'Ca', 'Sn', 'Se', 'Rh', 'Ru', 'Ir', 'Ti', 'Mn', 'Cr', 'Ag', 'Au', 'Hg', 'R',
+]);
+
+// Shapes that look alike map to several letters; the decoder picks the valid one.
+const SHAPE_LETTERS: Record<string, string[]> = {
+  I: ['I', 'l'], O: ['O', 'o'], C: ['C', 'c'], S: ['S', 's'], P: ['P', 'p'], K: ['K', 'k'],
+  r: ['r'], i: ['i'], t: ['t'], a: ['a'], H: ['H'], N: ['N'], F: ['F'], B: ['B'], L: ['L'],
+  e: ['e'], n: ['n'], u: ['u'], g: ['g'], d: ['d'], h: ['h'], M: ['M'], Z: ['Z'], A: ['A'],
+};
+
+interface CharGuess {
+  options: { ch: string; score: number }[];
+  box: BBox;
+}
+
+// ── Main entry point ─────────────────────────────────────────────────────────
+
+export function recognizeSketch(
+  strokes: InkStroke[],
+  symbols: PointCloudRecognizer,
+  opts: SketchOptions = {},
+): SketchResult {
+  const minScore = opts.minSymbolScore ?? 0.6;
+  const n = strokes.length;
+  const roles: StrokeRole[] = new Array(n).fill('ignored');
+  const pts = strokes.map((s) => s.points.filter((p, i, a) => i === 0 || dist(p, a[i - 1]) > 0.01));
+  const boxes = pts.map(bbox);
+  const lengths = pts.map(pathLength);
+
+  // 1. Scale and shape ----------------------------------------------------------
+  const straws = pts.map((p) => (p.length >= 2 ? shortStraw(p) : { points: p, corners: [0] }));
+  const pieces = straws.map(({ points: rp, corners }) => {
+    const out: { seg: Segment; st: number; len: number }[] = [];
+    for (let k = 1; k < corners.length; k++) {
+      const piece = rp.slice(corners[k - 1], corners[k] + 1);
+      if (piece.length < 2) continue;
+      out.push({ seg: { a: piece[0], b: piece[piece.length - 1] }, st: straightness(piece), len: pathLength(piece) });
+    }
+    return out;
+  });
+  let L = estimateScale(pts, straws, lengths, boxes, opts.defaultBondPx ?? 60);
+
+  // Bond-like = every piece straight and long; a zig-zag chain or a polygon ring
+  // qualifies, letters (short or curved pieces) do not.
+  const straightLong = (i: number, scale: number) =>
+    pieces[i].length > 0 && pieces[i].every((p) => p.st > 0.93 && p.len > 0.4 * scale);
+  const compact = (i: number, scale: number) => bboxDiag(boxes[i]) < 0.9 * scale && lengths[i] < 2.2 * scale;
+
+  // A short straight stroke that overlaps a letter-like stroke is part of that
+  // letter (the stem of a "B", the bar of an "H"), not a bond.
+  const partOfLetter = new Set<number>();
+  const markLetterParts = (scale: number) => {
+    partOfLetter.clear();
+    const letterish = [...Array(n).keys()].filter((i) => !straightLong(i, scale) && compact(i, scale));
+    for (let i = 0; i < n; i++) {
+      if (!straightLong(i, scale) || lengths[i] > 0.85 * scale) continue;
+      // Both ends inside the letter's box (a bond only touches it with one end).
+      const first = pts[i][0], last = pts[i][pts[i].length - 1];
+      const touches = letterish.some((j) => {
+        const b = boxes[j], m = 0.12 * scale;
+        const inside = (p: Pt) => p.x > b.x - m && p.x < b.x + b.w + m && p.y > b.y - m && p.y < b.y + b.h + m;
+        return inside(first) && inside(last);
+      });
+      if (touches) partOfLetter.add(i);
+    }
+    // Short straight strokes that cross each other or meet in a T are letters
+    // (+, H, F, t, K…); bonds meet only end to end. Then strokes touching a
+    // letter part with an end are letter parts too (the top bar of an F).
+    const short = [...Array(n).keys()].filter((i) => straightLong(i, scale) && lengths[i] < 0.85 * scale);
+    const ends = (i: number) => [pts[i][0], pts[i][pts[i].length - 1]];
+    const tJunction = (i: number, j: number) =>
+      ends(i).some((p) => {
+        const { d, t } = pointSegment(p, pts[j][0], pts[j][pts[j].length - 1]);
+        return d < 0.1 * scale && t > 0.2 && t < 0.8;
+      });
+    for (const i of short) for (const j of short) {
+      if (i !== j && (tJunction(i, j) || crosses(pts[i], pts[j]))) { partOfLetter.add(i); partOfLetter.add(j); }
+    }
+    for (let changed = true; changed;) {
+      changed = false;
+      for (const i of short) {
+        if (partOfLetter.has(i)) continue;
+        const touchesPart = [...partOfLetter].some((j) =>
+          ends(i).some((p) => ends(j).some((q) => dist(p, q) < 0.1 * scale)) || tJunction(i, j));
+        if (touchesPart) { partOfLetter.add(i); changed = true; }
+      }
+    }
+  };
+  const bondLike = (i: number, scale: number) => straightLong(i, scale) && !partOfLetter.has(i);
+
+  // 2. Arrows ---------------------------------------------------------------
+  // Detected twice: first with the rough scale, so that long reaction arrows can
+  // be excluded from the bond-length estimate, then again with the refined scale.
+  type Found = { shaft: Pt[]; barbs: number; kindHint: 'curved' | 'straight' };
+  const detectArrows = (scale: number): Found[] => {
+    for (let i = 0; i < n; i++) if (roles[i] === 'arrow' || roles[i] === 'arrowhead') roles[i] = 'ignored';
+    markLetterParts(scale);
+    const small = (i: number) => !bondLike(i, scale) && compact(i, scale);
+    const found: Found[] = [];
+    const headUsed = new Set<number>();
+    // Longest strokes first, so an arrow claims its head before a nearby letter can.
+    const order = [...Array(n).keys()].sort((a, b) => lengths[b] - lengths[a]);
+    for (const i of order) {
+      if (roles[i] !== 'ignored' || pts[i].length < 2 || partOfLetter.has(i)) continue;
+      if (lengths[i] < 0.6 * scale || straightness(pts[i]) < 0.3) continue; // too short, or a closed letter (O)
+      const inStroke = splitInStrokeHead(pts[i], scale);
+      let shaft = inStroke ? inStroke.shaft : pts[i];
+      let barbs = inStroke ? inStroke.barbs : 0;
+      let head: { stroke: number; barbs: number; atStart: boolean } | null = null;
+      if (!inStroke) {
+        // Separate head stroke near either end of this stroke?
+        head = findSeparateHead(i, pts, boxes, roles, headUsed, small, scale);
+        if (head) {
+          barbs = head.barbs;
+          if (head.atStart) shaft = shaft.slice().reverse();
+        }
+      }
+      if (barbs === 0 || !smooth(shaft, scale)) continue;
+      const kindHint = straightness(shaft) > 0.93 ? 'straight' : 'curved';
+      if (kindHint === 'straight' && pathLength(shaft) < 0.8 * scale) continue;
+      if (head) {
+        headUsed.add(head.stroke);
+        roles[head.stroke] = 'arrowhead';
+      }
+      roles[i] = 'arrow';
+      found.push({ shaft, barbs, kindHint });
+    }
+    return found;
+  };
+  detectArrows(L);
+
+  // Refine the scale without the arrows found so far.
+  const notArrow = (i: number) => roles[i] === 'ignored';
+  L = estimateScale(pts, straws, lengths, boxes, L, notArrow);
+  const recognizedArrows = detectArrows(L);
+
+  // Dots: tiny strokes (lone pairs, radical dots, the dot of an "i").
+  for (let i = 0; i < n; i++) {
+    if (roles[i] === 'ignored' && bboxDiag(boxes[i]) < 0.1 * L && lengths[i] < 0.2 * L) roles[i] = 'dot';
+  }
+
+  // Text candidates: compact strokes that are not straight bond lines.
+  const isSmall = (i: number) => roles[i] !== 'dot' && !bondLike(i, L) && compact(i, L);
+
+  // 3. Text clusters -----------------------------------------------------------
+  const textIdx = [...Array(n).keys()].filter((i) => roles[i] === 'ignored' && isSmall(i));
+  const dotIdx = [...Array(n).keys()].filter((i) => roles[i] === 'dot');
+  const clusters = clusterBoxes(textIdx, boxes, 0.22 * L);
+  const labelGuesses = clusters.map((cluster) => {
+    cluster.forEach((i) => (roles[i] = 'text'));
+    // Attach "i" dots that sit just above a character of this cluster.
+    const cb = unionBox(cluster.map((i) => boxes[i]));
+    const dots = dotIdx.filter((d) => bboxGap(boxes[d], cb) < 0.15 * L && boxes[d].y + boxes[d].h <= cb.y + cb.h * 0.5);
+    dots.forEach((d) => (roles[d] = 'text'));
+    return decodeLabel(splitCharacters([...cluster, ...dots], pts, boxes, L), symbols, minScore);
+  });
+
+  // 4. Bonds ----------------------------------------------------------------
+  const segments: (Segment & { stroke: number })[] = [];
+  for (let i = 0; i < n; i++) {
+    if (roles[i] !== 'ignored' || pts[i].length < 2) continue;
+    // Keep the straight pieces; a round closed stroke (aromatic circle) or a
+    // scribble contributes none and stays 'ignored'.
+    const straight = pieces[i].filter((p) => p.st > 0.9 && p.len > 0.35 * L);
+    if (straight.length === 0 || straight.length < pieces[i].length / 2) continue;
+    roles[i] = 'bond';
+    segments.push(...straight.map((p) => ({ ...p.seg, stroke: i })));
+  }
+  const bondSegs = mergeMultipleBonds(segments, L);
+  const { atoms: nodePts, bonds: rawBonds } = buildGraph(bondSegs, L);
+
+  // 5. Scene assembly -----------------------------------------------------------
+  // Atoms are placed in pixels first: at bond vertices, moved to the centre of
+  // their label when one is attached (the label marks where the atom is).
+  const pos: Pt[] = nodePts.slice();
+  const atoms: SceneAtom[] = nodePts.map(() => ({ symbol: 'C', x: 0, y: 0, charge: 0, molecule: 0 }));
+  const bonds: SceneBond[] = rawBonds.map((b) => ({ begin: b.begin, end: b.end, order: b.order }));
+  const plusPx: Pt[] = [];
+  const labels: RecognizedLabel[] = [];
+
+  labelGuesses.forEach((g, ci) => {
+    if (!g) return;
+    const center = bboxCenter(unionBox(clusters[ci].map((i) => boxes[i])));
+    const nearest = nearestNode(center, pos);
+    if (!g.element && g.charge !== 0) {
+      // Charge sign alone: attach to the nearest atom, or a standalone plus.
+      if (nearest && nearest.d < 0.85 * L) {
+        atoms[nearest.index].charge += g.charge;
+        labels.push({ text: g.text, score: g.score, center, atom: nearest.index });
+      } else if (g.charge > 0) {
+        plusPx.push(center);
+        labels.push({ text: '+', score: g.score, center, atom: -1 });
+      }
+      return;
+    }
+    if (!g.element) return;
+    // Labels sit on a bond end (vertex) or stand alone (ions, metals, H₂O…).
+    const vertex = nearest && nearest.index < nodePts.length && nearest.d < 0.6 * L ? nearest.index : -1;
+    if (vertex >= 0 && atoms[vertex].symbol === 'C') {
+      atoms[vertex].symbol = g.element;
+      atoms[vertex].charge += g.charge;
+      pos[vertex] = center;
+      labels.push({ text: g.text, score: g.score, center, atom: vertex });
+    } else {
+      atoms.push({ symbol: g.element, x: 0, y: 0, charge: g.charge, molecule: 0 });
+      pos.push(center);
+      labels.push({ text: g.text, score: g.score, center, atom: atoms.length - 1 });
+    }
+  });
+
+  // Radical dots: a single dot next to an atom (pairs are lone pairs, ignored).
+  for (const d of dotIdx) {
+    if (roles[d] !== 'dot') continue;
+    const c = bboxCenter(boxes[d]);
+    const near = nearestNode(c, pos);
+    const otherDots = dotIdx.filter((e) => e !== d && roles[e] === 'dot' && dist(bboxCenter(boxes[e]), c) < 0.2 * L);
+    if (near && near.d < 0.5 * L && otherDots.length === 0) atoms[near.index].radical = 2;
+  }
+
+  // Final scale: median distance between bonded atom centres (= 1 Ketcher unit).
+  const centreDists = bonds.map((b) => dist(pos[b.begin], pos[b.end])).sort((p, q) => p - q);
+  const unit = centreDists.length ? centreDists[Math.floor(centreDists.length / 2)] : L;
+  const origin = sceneOrigin(pts.flat());
+  const toUnit = (p: Pt) => ({ x: (p.x - origin.x) / unit, y: -(p.y - origin.y) / unit });
+  atoms.forEach((a, i) => Object.assign(a, toUnit(pos[i])));
+  const pluses = plusPx.map(toUnit);
+  assignMolecules(atoms, bonds);
+
+  // Arrows → Scene arrows anchored to atoms/bonds.
+  const arrows: RecognizedArrow[] = recognizedArrows.map(({ shaft, barbs, kindHint }) => {
+    const startPx = shaft[0];
+    const endPx = shaft[shaft.length - 1];
+    const start = toUnit(startPx), end = toUnit(endPx);
+    let arrow: SceneArrow;
+    if (kindHint === 'straight') {
+      arrow = { kind: 'reaction', start, end, mode: 'open-angle' };
+    } else {
+      const height = signedBulge(shaft.map(toUnit), start, end);
+      const single = barbs === 1;
+      arrow = {
+        kind: single ? 'single-electron' : 'electron-pair',
+        start, end, height,
+        mode: single ? 'elliptical-arc-arrow-open-half-angle' : 'elliptical-arc-arrow-open-angle',
+      };
+    }
+    return {
+      arrow,
+      from: kindHint === 'curved' ? anchorFor(start, atoms, bonds) : { type: 'none' },
+      to: kindHint === 'curved' ? anchorFor(end, atoms, bonds) : { type: 'none' },
+    };
+  });
+
+  const scene: Scene = { atoms, bonds, arrows: arrows.map((a) => a.arrow), pluses };
+  const interpreted = roles.filter((r) => r !== 'ignored').length;
+  const labelScore = labels.length ? labels.reduce((a, l) => a + l.score, 0) / labels.length : 1;
+  const confidence = n === 0 ? 0 : (interpreted / n) * 0.6 + labelScore * 0.4;
+
+  return { scene, roles, labels, arrows, bondLengthPx: unit, confidence };
+}
+
+// ── Scale ────────────────────────────────────────────────────────────────────
+
+function estimateBondLength(
+  pts: Pt[][], straws: { points: Pt[]; corners: number[] }[], lengths: number[], fallback: number,
+  include: (i: number) => boolean = () => true,
+): number {
+  const candidates: number[] = [];
+  pts.forEach((p, i) => {
+    if (p.length < 2 || lengths[i] < 12 || !include(i)) return;
+    const { points: rp, corners } = straws[i];
+    for (let k = 1; k < corners.length; k++) {
+      const piece = rp.slice(corners[k - 1], corners[k] + 1);
+      if (piece.length >= 2 && straightness(piece) > 0.95) candidates.push(dist(piece[0], piece[piece.length - 1]));
+    }
+  });
+  if (candidates.length === 0) return fallback;
+  candidates.sort((a, b) => a - b);
+  // Upper median: letters produce many short segments, bonds are the long ones.
+  const longOnes = candidates.filter((c) => c >= candidates[candidates.length - 1] * 0.45);
+  return longOnes[Math.floor(longOnes.length / 2)];
+}
+
+/** Typical capital-letter height as a fraction of the bond length. */
+const LETTER_TO_BOND = 0.38;
+
+/**
+ * Bond length from two cues: straight bond pieces, and the height of clearly
+ * letter-like strokes (curly and compact: C, O, S, B, r…). With few bonds the
+ * straight-piece estimate is easily fooled by the straight parts of letters
+ * (l, H, +), so the letter height decides unless both cues agree.
+ */
+function estimateScale(
+  pts: Pt[][], straws: { points: Pt[]; corners: number[] }[], lengths: number[], boxes: BBox[],
+  fallback: number, include: (i: number) => boolean = () => true,
+): number {
+  const fromBonds = estimateBondLength(pts, straws, lengths, fallback, include);
+  const letterHeights = pts
+    .map((p, i) => ({ i, h: boxes[i].h, curly: lengths[i] / Math.max(1, bboxDiag(boxes[i])) }))
+    .filter(({ i, curly }) => include(i) && pts[i].length > 3 && lengths[i] > 6 && curly > 1.45 && straightness(pts[i]) < 0.85)
+    .map(({ h }) => h)
+    .sort((a, b) => a - b);
+  if (letterHeights.length < 2) return fromBonds;
+  // Capitals are the tallest letters: take the upper quartile, after dropping
+  // outliers far above the median (rings drawn in one go).
+  const median = letterHeights[Math.floor(letterHeights.length / 2)];
+  const kept = letterHeights.filter((h) => h <= 2.5 * median);
+  const fromLetters = kept[Math.min(kept.length - 1, Math.floor(0.75 * kept.length))] / LETTER_TO_BOND;
+  const ratio = fromBonds / fromLetters;
+  return ratio > 0.75 && ratio < 1.5 ? fromBonds : fromLetters;
+}
+
+// ── Arrowheads ───────────────────────────────────────────────────────────────
+
+/**
+ * Arrowhead drawn without lifting the pen: the stroke ends with one or two
+ * short segments that turn back sharply. Returns the shaft and the barb count.
+ */
+function splitInStrokeHead(raw: Pt[], L: number): { shaft: Pt[]; barbs: number } | null {
+  if (pathLength(raw) < 0.9 * L) return null;
+  // Examine the last ~L of the stroke at a fine resolution (heads are small).
+  let acc = 0, from = raw.length - 1;
+  while (from > 0 && acc < L) {
+    acc += dist(raw[from], raw[from - 1]);
+    from--;
+  }
+  const tail = resampleBySpacing(raw.slice(from), Math.max(1, L / 30));
+  const remain: number[] = new Array(tail.length).fill(0);
+  for (let i = tail.length - 2; i >= 0; i--) remain[i] = remain[i + 1] + dist(tail[i], tail[i + 1]);
+
+  const W = 3;
+  const sharp = (i: number) =>
+    angleBetween(vec(tail[Math.max(0, i - W)], tail[i]), vec(tail[i], tail[Math.min(tail.length - 1, i + W)])) >
+    (105 * Math.PI) / 180;
+  // Tip: the first sharp reversal after which only a short barb section remains.
+  let tip = -1;
+  for (let i = W; i < tail.length - 2; i++) {
+    if (remain[i] < 0.75 * L && remain[i] > 0.1 * L && sharp(i)) {
+      // Take the sharpest point of this turning region.
+      let j = i;
+      while (j + 1 < tail.length - 1 && sharp(j + 1) && dist(tail[j + 1], tail[i]) < 0.08 * L) j++;
+      tip = Math.round((i + j) / 2);
+      break;
+    }
+  }
+  if (tip < 0) return null;
+  // More sharp turns after the tip (barb end, back through the tip) = full head.
+  let turns = 0;
+  for (let i = tip + 2 * W; i < tail.length - 2; i++) {
+    if (sharp(i)) {
+      turns++;
+      i += 2 * W;
+    }
+  }
+  const shaft = [...raw.slice(0, from + 1), ...tail.slice(1, tip + 1)];
+  if (pathLength(shaft) < 0.85 * L) return null;
+  return { shaft, barbs: turns >= 1 ? 2 : 1 };
+}
+
+/** A small "V" (2 barbs) or a single short stroke (1 barb) at an end of stroke i. */
+function findSeparateHead(
+  i: number, pts: Pt[][], boxes: BBox[], roles: StrokeRole[], used: Set<number>,
+  isSmall: (j: number) => boolean, L: number,
+): { stroke: number; barbs: number; atStart: boolean } | null {
+  const shaft = pts[i];
+  const ends = [
+    { p: shaft[shaft.length - 1], atStart: false, dir: vec(shaft[Math.max(0, shaft.length - 6)], shaft[shaft.length - 1]) },
+    { p: shaft[0], atStart: true, dir: vec(shaft[Math.min(shaft.length - 1, 5)], shaft[0]) },
+  ];
+  let best: { stroke: number; barbs: number; atStart: boolean; d: number } | null = null;
+  for (let j = 0; j < pts.length; j++) {
+    if (j === i || used.has(j) || roles[j] !== 'ignored' || !isSmall(j) || pts[j].length < 2) continue;
+    if (bboxDiag(boxes[j]) > 0.55 * L) continue;
+    const { points: hp, corners } = shortStraw(pts[j]);
+    for (const end of ends) {
+      if (corners.length === 3) {
+        // "V": the vertex should be at the shaft end, legs pointing backwards.
+        const vtx = hp[corners[1]];
+        const d = dist(vtx, end.p);
+        const legA = vec(vtx, hp[0]), legB = vec(vtx, hp[hp.length - 1]);
+        const opening = angleBetween(legA, legB);
+        const back = (angleBetween(legA, end.dir) + angleBetween(legB, end.dir)) / 2;
+        if (d < 0.3 * L && opening > 0.35 && opening < 2.3 && back > 1.9) {
+          if (!best || d < best.d) best = { stroke: j, barbs: 2, atStart: end.atStart, d };
+        }
+      } else if (corners.length === 2 && straightness(hp) > 0.9) {
+        // Single barb: one end touches the shaft end, pointing backwards at an angle.
+        const [a, b] = [hp[0], hp[hp.length - 1]];
+        const near = dist(a, end.p) < dist(b, end.p) ? a : b;
+        const far = near === a ? b : a;
+        const d = dist(near, end.p);
+        const ang = angleBetween(vec(near, far), end.dir);
+        if (d < 0.25 * L && ang > 1.9 && ang < 2.95) {
+          if (!best || d < best.d) best = { stroke: j, barbs: 1, atStart: end.atStart, d };
+        }
+      }
+    }
+  }
+  return best ? { stroke: best.stroke, barbs: best.barbs, atStart: best.atStart } : null;
+}
+
+/** Arrow shafts are smooth: no sharp corner (unlike an N, a Z or a zig-zag chain). */
+function smooth(shaft: Pt[], L: number): boolean {
+  const r = resampleBySpacing(shaft, Math.max(1, L / 12));
+  const W = 2;
+  for (let i = W; i < r.length - W; i++) {
+    if (angleBetween(vec(r[i - W], r[i]), vec(r[i], r[i + W])) > (65 * Math.PI) / 180) return false;
+  }
+  return true;
+}
+
+// ── Text ─────────────────────────────────────────────────────────────────────
+
+function unionBox(bs: BBox[]): BBox {
+  const x = Math.min(...bs.map((b) => b.x)), y = Math.min(...bs.map((b) => b.y));
+  const x2 = Math.max(...bs.map((b) => b.x + b.w)), y2 = Math.max(...bs.map((b) => b.y + b.h));
+  return { x, y, w: x2 - x, h: y2 - y };
+}
+
+/** Single-linkage clustering of stroke boxes closer than `gap`. */
+function clusterBoxes(idx: number[], boxes: BBox[], gap: number): number[][] {
+  const parent = new Map(idx.map((i) => [i, i]));
+  const find = (i: number): number => (parent.get(i) === i ? i : find(parent.get(i)!));
+  for (let a = 0; a < idx.length; a++)
+    for (let b = a + 1; b < idx.length; b++)
+      if (bboxGap(boxes[idx[a]], boxes[idx[b]]) < gap) parent.set(find(idx[a]), find(idx[b]));
+  const groups = new Map<number, number[]>();
+  idx.forEach((i) => groups.set(find(i), [...(groups.get(find(i)) ?? []), i]));
+  return [...groups.values()];
+}
+
+/** Split a text cluster into characters by horizontal overlap of strokes. */
+function splitCharacters(cluster: number[], pts: Pt[][], boxes: BBox[], L: number): { strokes: Pt[][]; box: BBox }[] {
+  const sorted = cluster.slice().sort((a, b) => boxes[a].x - boxes[b].x);
+  const chars: { ids: number[]; box: BBox }[] = [];
+  for (const i of sorted) {
+    const b = boxes[i];
+    const last = chars[chars.length - 1];
+    const overlap = last ? Math.min(last.box.x + last.box.w, b.x + b.w) - Math.max(last.box.x, b.x) : -1;
+    if (last && overlap > -0.03 * L && overlap > -0.15 * Math.min(last.box.w, b.w)) {
+      last.ids.push(i);
+      last.box = unionBox([last.box, b]);
+    } else {
+      chars.push({ ids: [i], box: b });
+    }
+  }
+  return chars.map((c) => ({ strokes: c.ids.map((i) => pts[i]), box: c.box }));
+}
+
+/** ⊕ / ⊖: if one closed stroke encloses all the others, classify the inside only. */
+function withoutEnclosingCircle(strokes: Pt[][]): Pt[][] {
+  if (strokes.length < 2) return strokes;
+  const k = strokes.findIndex((s) => s.length > 4 && straightness(s) < 0.25);
+  if (k < 0) return strokes;
+  const ring = bbox(strokes[k]);
+  const inside = strokes.filter((_, i) => i !== k);
+  const enclosed = inside.every((s) => {
+    const b = bbox(s);
+    return b.x >= ring.x - 2 && b.y >= ring.y - 2 && b.x + b.w <= ring.x + ring.w + 2 && b.y + b.h <= ring.y + ring.h + 2;
+  });
+  return enclosed ? inside : strokes;
+}
+
+/** Do two polylines cross (any pair of segments intersects)? */
+function crosses(a: Pt[], b: Pt[]): boolean {
+  const ccw = (p: Pt, q: Pt, r: Pt) => (r.y - p.y) * (q.x - p.x) - (q.y - p.y) * (r.x - p.x);
+  const step = (s: Pt[]) => Math.max(1, Math.floor(s.length / 12));
+  for (let i = step(a); i < a.length; i += step(a)) {
+    const p1 = a[i - step(a)], p2 = a[i];
+    for (let j = step(b); j < b.length; j += step(b)) {
+      const q1 = b[j - step(b)], q2 = b[j];
+      if (ccw(p1, p2, q1) * ccw(p1, p2, q2) < 0 && ccw(q1, q2, p1) * ccw(q1, q2, p2) < 0) return true;
+    }
+  }
+  return false;
+}
+
+interface DecodedLabel {
+  text: string;
+  element: string | null;
+  charge: number;
+  score: number;
+}
+
+/** Choose the best valid reading of a sequence of characters. */
+function decodeLabel(
+  chars: { strokes: Pt[][]; box: BBox }[], symbols: PointCloudRecognizer, minScore: number,
+): DecodedLabel | null {
+  const guesses: CharGuess[] = chars.map((c) => ({
+    box: c.box,
+    options: symbols.classify(withoutEnclosingCircle(c.strokes), 4).flatMap((m) =>
+      m.symbol === '+' || m.symbol === '-'
+        ? [{ ch: m.symbol, score: m.score }]
+        : (SHAPE_LETTERS[m.symbol] ?? [m.symbol]).map((ch) => ({ ch, score: m.score })),
+    ),
+  }));
+  if (guesses.length === 0 || guesses.some((g) => g.options.length === 0)) return null;
+
+  // Enumerate combinations (labels are short: ≤ 4 characters).
+  let best: DecodedLabel | null = null;
+  const limit = guesses.slice(0, 4);
+  const walk = (k: number, acc: { ch: string; score: number }[]) => {
+    if (k === limit.length) {
+      const reading = interpret(acc);
+      if (reading && (!best || reading.score > best.score)) best = reading;
+      return;
+    }
+    for (const o of limit[k].options.slice(0, 4)) walk(k + 1, [...acc, o]);
+  };
+  walk(0, []);
+  return best && (best as DecodedLabel).score >= minScore ? best : null;
+}
+
+/** "Cl", "O-", "N+", "OH", "-", "+" … → element + charge, or null if invalid. */
+function interpret(seq: { ch: string; score: number }[]): DecodedLabel | null {
+  const text = seq.map((s) => s.ch).join('');
+  const score = seq.reduce((a, s) => a + s.score, 0) / seq.length;
+  const m = /^([A-Z][a-z]?)?(H[2-3]?)?([+-]*)$/.exec(text);
+  if (!m) return null;
+  const element = m[1] ?? null;
+  if (element && !ELEMENTS.has(element)) return null;
+  if (!element && m[2]) return null;
+  const signs = m[3] ?? '';
+  if (signs.includes('+') && signs.includes('-')) return null;
+  const charge = signs.length * (signs.startsWith('-') ? -1 : 1);
+  if (!element && charge === 0) return null;
+  // Prefer readings that use fewer lowercase substitutions of ambiguous shapes.
+  const penalty = element && element.length === 2 && !['Cl', 'Br', 'Si', 'Li', 'Na', 'Pt'].includes(element) ? 0.05 : 0;
+  return { text, element, charge, score: score - penalty };
+}
+
+// ── Bonds and atoms ──────────────────────────────────────────────────────────
+
+/** Merge near-parallel, overlapping, close segments into multiple bonds. */
+function mergeMultipleBonds(segs: Segment[], L: number): (Segment & { order: 1 | 2 | 3 })[] {
+  const used = new Array(segs.length).fill(false);
+  const out: (Segment & { order: 1 | 2 | 3 })[] = [];
+  const order = segs.map((_, i) => i).sort((a, b) => segLength(segs[b]) - segLength(segs[a]));
+  for (const i of order) {
+    if (used[i]) continue;
+    used[i] = true;
+    const s = segs[i];
+    let count = 1;
+    for (const j of order) {
+      if (used[j] || count >= 3) continue;
+      const t = segs[j];
+      const ang = angleBetween(vec(s.a, s.b), vec(t.a, t.b));
+      const parallel = Math.min(ang, Math.PI - ang) < (15 * Math.PI) / 180;
+      if (!parallel) continue;
+      const da = pointSegment(t.a, s.a, s.b), db = pointSegment(t.b, s.a, s.b);
+      const sep = (da.d + db.d) / 2;
+      const overlap = Math.abs(db.t - da.t);
+      if (sep < 0.4 * L && sep > 0.04 * L && overlap > 0.45) {
+        used[j] = true;
+        count++;
+      }
+    }
+    out.push({ a: s.a, b: s.b, order: count as 1 | 2 | 3 });
+  }
+  return out;
+}
+
+/** Cluster segment endpoints into atoms and build bonds between them. */
+function buildGraph(segs: (Segment & { order: 1 | 2 | 3 })[], L: number) {
+  const atoms: Pt[] = [];
+  const members: Pt[][] = [];
+  const snap = (p: Pt): number => {
+    let best = -1, bestD = 0.32 * L;
+    atoms.forEach((a, k) => {
+      const d = dist(a, p);
+      if (d < bestD) { bestD = d; best = k; }
+    });
+    if (best >= 0) {
+      members[best].push(p);
+      const m = members[best];
+      atoms[best] = { x: m.reduce((s, q) => s + q.x, 0) / m.length, y: m.reduce((s, q) => s + q.y, 0) / m.length };
+      return best;
+    }
+    atoms.push({ ...p });
+    members.push([p]);
+    return atoms.length - 1;
+  };
+  const bonds: { begin: number; end: number; order: 1 | 2 | 3 }[] = [];
+  for (const s of segs) {
+    const a = snap(s.a), b = snap(s.b);
+    if (a === b) continue;
+    if (bonds.some((x) => (x.begin === a && x.end === b) || (x.begin === b && x.end === a))) continue;
+    bonds.push({ begin: a, end: b, order: s.order });
+  }
+  return { atoms, bonds };
+}
+
+function nearestNode(p: Pt, nodes: Pt[]): { index: number; d: number } | null {
+  let best: { index: number; d: number } | null = null;
+  nodes.forEach((q, index) => {
+    const d = dist(p, q);
+    if (!best || d < best.d) best = { index, d };
+  });
+  return best;
+}
+
+function assignMolecules(atoms: SceneAtom[], bonds: SceneBond[]): void {
+  const parent = atoms.map((_, i) => i);
+  const find = (i: number): number => (parent[i] === i ? i : (parent[i] = find(parent[i])));
+  bonds.forEach((b) => (parent[find(b.begin)] = find(b.end)));
+  const ids = new Map<number, number>();
+  atoms.forEach((a, i) => {
+    const r = find(i);
+    if (!ids.has(r)) ids.set(r, ids.size);
+    a.molecule = ids.get(r)!;
+  });
+}
+
+// ── Arrow geometry and anchoring ─────────────────────────────────────────────
+
+/** Signed maximum deviation from the chord; positive = left of start→end (y up). */
+export function signedBulge(shaft: Pt[], start: Pt, end: Pt): number {
+  const dx = end.x - start.x, dy = end.y - start.y;
+  const len = Math.hypot(dx, dy) || 1;
+  let best = 0;
+  for (const p of shaft) {
+    const cross = (dx * (p.y - start.y) - dy * (p.x - start.x)) / len; // > 0 → left
+    if (Math.abs(cross) > Math.abs(best)) best = cross;
+  }
+  return best;
+}
+
+/** Electron source/sink: the nearest atom, or the bond whose midpoint is closer. */
+export function anchorFor(p: Pt, atoms: SceneAtom[], bonds: SceneBond[]): ArrowAnchor {
+  let best: ArrowAnchor = { type: 'none' };
+  let bestD = 1.0;
+  atoms.forEach((a, atom) => {
+    const d = Math.hypot(a.x - p.x, a.y - p.y);
+    if (d < bestD) { bestD = d; best = { type: 'atom', atom }; }
+  });
+  bonds.forEach((b, bond) => {
+    const a1 = atoms[b.begin], a2 = atoms[b.end];
+    const { d, t } = pointSegment(p, a1, a2);
+    if (t > 0.2 && t < 0.8 && d < bestD * 0.9) { bestD = d; best = { type: 'bond', bond }; }
+  });
+  return best;
+}
+
+function sceneOrigin(all: Pt[]): Pt {
+  if (all.length === 0) return { x: 0, y: 0 };
+  const b = bbox(all);
+  return bboxCenter(b);
+}

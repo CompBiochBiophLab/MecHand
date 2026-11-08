@@ -1,224 +1,55 @@
 /**
- * ConsolidateOverlay.tsx
- * The "is this what you meant?" UI panel.
- *
- * Shown after MolScribe returns a result. Renders:
- *  - The original freehand sketch (semi-transparent)
- *  - The interpreted clean structure (Ketcher mini-preview)
- *  - Confidence badge
- *  - Confirm / Reject / Edit buttons
- *
- * On confirm, the clean structure is inserted into the main Ketcher canvas.
+ * ConsolidateDialog: the "Is this what you meant?" step.
+ * Shows the recognized scene, the confidence, the electron-flow check and lets
+ * the user confirm (insert into Ketcher), keep editing the ink, or discard it.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
-import { RecognitionResult } from '../recognition/MolScribeClient';
+import type { MechanismIssue } from '../recognition/mechanismCheck';
+import type { SketchResult } from '../recognition/sketch';
+import { ScenePreview } from './ScenePreview';
+import { Modal, btn } from './Modal';
 
-export interface ConsolidateOverlayProps {
-  result: RecognitionResult | null;
-  sketchDataUrl: string;          // the original freehand strokes as PNG
-  onConfirm: (result: RecognitionResult) => void;
-  onReject: () => void;
-  onEdit: (result: RecognitionResult) => void; // open in Ketcher editor
+export interface ConsolidateDialogProps {
+  result: SketchResult;
+  issues: MechanismIssue[];
+  engineNote?: string;
+  onConfirm: () => void;
+  onEdit: () => void;
+  onDiscard: () => void;
 }
 
-export const ConsolidateOverlay: React.FC<ConsolidateOverlayProps> = ({
-  result,
-  sketchDataUrl,
-  onConfirm,
-  onReject,
-  onEdit,
-}) => {
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    // Animate in
-    const t = setTimeout(() => setVisible(true), 10);
-    return () => clearTimeout(t);
-  }, []);
-
-  if (!result) return null;
-
+export function ConsolidateDialog({ result, issues, engineNote, onConfirm, onEdit, onDiscard }: ConsolidateDialogProps) {
   const pct = Math.round(result.confidence * 100);
-  const confidenceColor =
-    pct >= 80 ? '#22c55e' : pct >= 55 ? '#f59e0b' : '#ef4444';
-
+  const colour = pct >= 80 ? '#16a34a' : pct >= 55 ? '#d97706' : '#dc2626';
+  const { atoms, bonds, arrows } = result.scene;
   return (
-    <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0,0,0,0.45)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 9999,
-        opacity: visible ? 1 : 0,
-        transition: 'opacity 0.18s ease',
-      }}
-    >
-      <div
-        style={{
-          background: '#fff',
-          borderRadius: 12,
-          padding: '24px 28px',
-          width: 520,
-          maxWidth: '95vw',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
-          fontFamily: 'system-ui, sans-serif',
-        }}
-      >
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 18 }}>
-          <span style={{ fontSize: 18, fontWeight: 600, flex: 1 }}>
-            Is this what you meant?
-          </span>
-          <span
-            style={{
-              background: confidenceColor,
-              color: '#fff',
-              borderRadius: 20,
-              padding: '2px 10px',
-              fontSize: 13,
-              fontWeight: 600,
-            }}
-          >
-            {pct}% confidence
-          </span>
-        </div>
-
-        {/* Side-by-side preview */}
-        <div style={{ display: 'flex', gap: 16, marginBottom: 20 }}>
-          {/* Freehand sketch */}
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>
-              Your sketch
-            </div>
-            <div
-              style={{
-                border: '1px solid #e5e7eb',
-                borderRadius: 8,
-                overflow: 'hidden',
-                background: '#fafafa',
-                height: 180,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <img
-                src={sketchDataUrl}
-                alt="freehand sketch"
-                style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-              />
-            </div>
-          </div>
-
-          {/* Interpreted structure */}
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>
-              Interpreted structure
-            </div>
-            <div
-              style={{
-                border: '1px solid #e5e7eb',
-                borderRadius: 8,
-                overflow: 'hidden',
-                background: '#fff',
-                height: 180,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'column',
-                gap: 6,
-              }}
-            >
-              {/* SMILES label */}
-              <code
-                style={{
-                  fontSize: 11,
-                  color: '#6b7280',
-                  background: '#f3f4f6',
-                  padding: '2px 6px',
-                  borderRadius: 4,
-                  maxWidth: '90%',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {result.smiles || '—'}
-              </code>
-              {/* Ketcher mini-viewer would mount here via ref */}
-              <KetcherMiniView smiles={result.smiles} />
-            </div>
-          </div>
-        </div>
-
-        {/* Action buttons */}
-        <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
-          <button
-            onClick={onReject}
-            style={btnStyle('#f3f4f6', '#374151')}
-          >
-            ✗ Discard
-          </button>
-          <button
-            onClick={() => onEdit(result)}
-            style={btnStyle('#eff6ff', '#1d4ed8')}
-          >
-            ✎ Edit first
-          </button>
-          <button
-            onClick={() => onConfirm(result)}
-            style={btnStyle('#f0fdf4', '#15803d')}
-          >
-            ✓ Confirm
-          </button>
-        </div>
+    <Modal title="Is this what you meant?" onClose={onEdit} testId="mechand-consolidate">
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+        <span style={{ background: colour, color: '#fff', borderRadius: 999, padding: '2px 10px', fontSize: 12, fontWeight: 600 }}>
+          {pct}% confidence
+        </span>
+        <span style={{ fontSize: 12, color: '#6b7280' }}>
+          {atoms.length} atoms · {bonds.length} bonds · {arrows.length} arrows
+        </span>
       </div>
-    </div>
+      <div style={{ border: '1px solid #e5e7eb', borderRadius: 8, display: 'grid', placeItems: 'center', background: '#fff' }}>
+        <ScenePreview scene={result.scene} width={420} height={220} />
+      </div>
+      <p style={{ fontSize: 12, color: '#6b7280', margin: '8px 0' }}>
+        Ink colours: <b style={{ color: '#2563eb' }}>bonds</b>, <b style={{ color: '#059669' }}>labels</b>,{' '}
+        <b style={{ color: '#dc2626' }}>arrows</b>, <b style={{ color: '#9ca3af' }}>not understood</b>.
+        {engineNote ? ` ${engineNote}` : ''}
+      </p>
+      {issues.length > 0 && (
+        <ul data-testid="mechand-issues" style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8, padding: '8px 12px 8px 28px', fontSize: 13, margin: '0 0 10px' }}>
+          {issues.map((i, k) => <li key={k}>{i.message}</li>)}
+        </ul>
+      )}
+      <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+        <button style={btn('#f3f4f6', '#374151')} onClick={onDiscard}>✗ Discard ink</button>
+        <button style={btn('#eff6ff', '#1d4ed8')} onClick={onEdit}>✎ Keep drawing</button>
+        <button style={btn('#16a34a', '#fff')} onClick={onConfirm} data-testid="mechand-confirm" autoFocus>✓ Insert into Ketcher</button>
+      </div>
+    </Modal>
   );
-};
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-function btnStyle(bg: string, color: string): React.CSSProperties {
-  return {
-    background: bg,
-    color,
-    border: 'none',
-    borderRadius: 8,
-    padding: '8px 16px',
-    fontSize: 14,
-    fontWeight: 500,
-    cursor: 'pointer',
-  };
 }
-
-/** Minimal inline Ketcher viewer — renders a SMILES as SVG via Ketcher API */
-const KetcherMiniView: React.FC<{ smiles: string }> = ({ smiles }) => {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!ref.current || !smiles) return;
-    // TODO: integrate with Ketcher's public renderMolecule() API
-    // Placeholder until Ketcher integration hook is wired
-    ref.current.textContent = smiles ? '(structure preview)' : '';
-  }, [smiles]);
-
-  return (
-    <div
-      ref={ref}
-      style={{
-        width: '90%',
-        height: 120,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 12,
-        color: '#9ca3af',
-      }}
-    />
-  );
-};

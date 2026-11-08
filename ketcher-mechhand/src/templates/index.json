@@ -1,0 +1,119 @@
+[
+  {
+    "id": "sn2",
+    "file": "mechanisms/sn2.ket",
+    "title": "SN2: hydroxide + bromomethane",
+    "category": "organic",
+    "description": "Concerted backside attack of hydroxide on bromomethane with loss of bromide; the C–H 'umbrella' inverts (Walden inversion).",
+    "electrons": "2e",
+    "reference": "Clayden, Greeves & Warren, Organic Chemistry, 2nd ed., ch. 15"
+  },
+  {
+    "id": "e2",
+    "file": "mechanisms/e2.ket",
+    "title": "E2: ethoxide + 2-bromopropane",
+    "category": "organic",
+    "description": "Ethoxide removes the β-hydrogen anti-periplanar to bromine while the C=C π bond forms and bromide leaves, all in one concerted step.",
+    "electrons": "2e",
+    "reference": "Clayden, Greeves & Warren, Organic Chemistry, 2nd ed., ch. 17"
+  },
+  {
+    "id": "carbonyl_addition",
+    "file": "mechanisms/carbonyl_addition.ket",
+    "title": "Nucleophilic addition: cyanide + acetaldehyde",
+    "category": "organic",
+    "description": "Cyanide attacks the electrophilic carbonyl carbon of acetaldehyde; the C=O π electrons move onto oxygen to give a tetrahedral alkoxide (cyanohydrin anion).",
+    "electrons": "2e",
+    "reference": "Clayden, Greeves & Warren, Organic Chemistry, 2nd ed., ch. 6"
+  },
+  {
+    "id": "eas_nitration",
+    "file": "mechanisms/eas_nitration.ket",
+    "title": "Electrophilic aromatic substitution: nitration, step 1",
+    "category": "organic",
+    "description": "A benzene π bond attacks the nitronium ion to give the resonance-stabilised arenium (Wheland) intermediate; loss of H⁺ in the next step restores aromaticity.",
+    "electrons": "2e",
+    "reference": "Clayden, Greeves & Warren, Organic Chemistry, 2nd ed., ch. 21"
+  },
+  {
+    "id": "diels_alder",
+    "file": "mechanisms/diels_alder.ket",
+    "title": "Diels–Alder: buta-1,3-diene + ethene",
+    "category": "organic",
+    "description": "Concerted [4+2] cycloaddition: three π bonds are converted into two new σ bonds and one new π bond in a single cyclic, six-electron transition state.",
+    "electrons": "2e",
+    "reference": "Clayden, Greeves & Warren, Organic Chemistry, 2nd ed., ch. 34"
+  },
+  {
+    "id": "radical_homolysis",
+    "file": "mechanisms/radical_homolysis.ket",
+    "title": "Radical homolysis: Cl₂ under light",
+    "category": "organic",
+    "description": "Light (hν) cleaves the Cl–Cl bond homolytically; each chlorine atom keeps one electron of the bond (two fishhook arrows), giving two chlorine radicals.",
+    "electrons": "1e",
+    "reference": "Clayden, Greeves & Warren, Organic Chemistry, 2nd ed., ch. 37"
+  },
+  {
+    "id": "lewis_adduct",
+    "file": "mechanisms/lewis_adduct.ket",
+    "title": "Lewis acid–base adduct: NH₃ + BF₃",
+    "category": "inorganic",
+    "description": "The nitrogen lone pair of ammonia (Lewis base) is donated into the empty 2p orbital of boron trifluoride (Lewis acid), giving the adduct H₃N⁺–B⁻F₃.",
+    "electrons": "2e",
+    "reference": "Housecroft & Sharpe, Inorganic Chemistry, 5th ed., ch. 'Acids, bases and ions in aqueous solution' (Lewis acids and bases)"
+  },
+  {
+    "id": "pt_substitution",
+    "file": "mechanisms/pt_substitution.ket",
+    "title": "Associative ligand substitution: [PtCl₄]²⁻ + NH₃",
+    "category": "inorganic",
+    "description": "NH₃ adds to square-planar Pt(II) to give a five-coordinate (trigonal-bipyramidal) intermediate, which then loses Cl⁻ to give [PtCl₃(NH₃)]⁻. M–L bonds are drawn as single bonds with formal charges (Pt 2−/3−, coordinated N⁺).",
+    "electrons": "2e",
+    "reference": "Housecroft & Sharpe, Inorganic Chemistry, 5th ed., ch. 'd-Block metal complexes: reaction mechanisms' (substitution in square planar complexes)"
+  },
+  {
+    "id": "sicl4_hydrolysis",
+    "file": "mechanisms/sicl4_hydrolysis.ket",
+    "title": "Hydrolysis of SiCl₄: attack of water at silicon",
+    "category": "inorganic",
+    "description": "A water lone pair attacks silicon and chloride is displaced (drawn as one concerted, SN2-like step; the five-coordinate silicon species is not shown). Loss of H⁺ then gives Cl₃SiOH, and repetition gives Si(OH)₄/SiO₂.",
+    "electrons": "2e",
+    "reference": "Housecroft & Sharpe, Inorganic Chemistry, 5th ed., ch. 'The group 14 elements' (halides of Si)"
+  },
+  {
+    "id": "aqua_acidity",
+    "file": "mechanisms/aqua_acidity.ket",
+    "title": "Brønsted acidity of a metal aqua ion: [Fe(OH₂)₆]³⁺ + H₂O",
+    "category": "inorganic",
+    "description": "Polarisation by Fe(III) makes a coordinated water acidic: a solvent water removes a proton to give [Fe(OH₂)₅(OH)]²⁺ and H₃O⁺. M–L bonds are single bonds with formal charges (Fe 3−, aqua O⁺).",
+    "electrons": "2e",
+    "reference": "Housecroft & Sharpe, Inorganic Chemistry, 5th ed., ch. 'Acids, bases and ions in aqueous solution' (aqua acids)"
+  },
+  {
+    "id": "serine_protease",
+    "file": "mechanisms/serine_protease.ket",
+    "title": "Serine protease acylation: catalytic triad attack on a peptide bond",
+    "category": "biochemistry",
+    "description": "His57, held by Asp102, acts as a general base and takes the Ser195 hydroxyl proton as the serine oxygen attacks the amide carbonyl, giving the tetrahedral oxyanion intermediate. Side chains are truncated (acetate, 4-methylimidazole, ethanol, N-methylacetamide).",
+    "electrons": "2e",
+    "reference": "Berg, Tymoczko, Gatto & Stryer, Biochemistry, 9th ed., ch. 9; Fersht, Structure and Mechanism in Protein Science (1999)"
+  },
+  {
+    "id": "adh_hydride",
+    "file": "mechanisms/adh_hydride.ket",
+    "title": "Alcohol dehydrogenase: hydride transfer to NAD⁺",
+    "category": "biochemistry",
+    "description": "The zinc-bound alkoxide of ethanol collapses to acetaldehyde while its C–H hydrogen is delivered as hydride to C4 of the nicotinamide ring (NAD⁺ modelled as 1-methylnicotinamide), giving the 1,4-dihydropyridine (NADH). Zn²⁺ is omitted.",
+    "electrons": "2e",
+    "reference": "Berg, Tymoczko, Gatto & Stryer, Biochemistry, 9th ed., ch. 16; Fersht, Structure and Mechanism in Protein Science (1999)"
+  },
+  {
+    "id": "kinase",
+    "file": "mechanisms/kinase.ket",
+    "title": "Kinase: in-line phosphoryl transfer from ATP",
+    "category": "biochemistry",
+    "description": "An active-site Asp acts as general base while the substrate hydroxyl attacks the γ-phosphorus in line with the β,γ-bridging oxygen, which leaves as ADP. ATP is modelled as methyl triphosphate, the substrate as ethanol; Mg²⁺ is omitted.",
+    "electrons": "2e",
+    "reference": "Berg, Tymoczko, Gatto & Stryer, Biochemistry, 9th ed., ch. 9 (nucleoside monophosphate kinases); Fersht, Structure and Mechanism in Protein Science (1999)"
+  }
+]

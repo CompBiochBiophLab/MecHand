@@ -13,7 +13,7 @@
  */
 
 import React, {
-  createContext, useContext, useRef, useState, useEffect, ReactNode,
+  createContext, useContext, useRef, useState, type ReactNode,
 } from 'react';
 
 // ── Help content registry ─────────────────────────────────────────────────────
@@ -27,109 +27,55 @@ export interface HelpEntry {
 }
 
 export const HELP_CONTENT: Record<string, HelpEntry> = {
-  // ── Drawing tools ──────────────────────────────────────────────────────────
-  'tool-freehand': {
-    brief: 'Draw atoms and bonds freehand. MecHand will recognise and clean up.',
+  'btn-freehand': {
+    brief: 'Freehand mode: draw on top of Ketcher with pen, trackpad or mouse.',
     student:
-      'Use your pen, stylus or mouse to sketch atoms and bonds naturally. ' +
-      'When you pause or press Consolidate, MecHand will interpret your sketch ' +
-      'and convert it to a clean structure. You can correct it before accepting.',
-    shortcut: 'F',
+      'Turn this on and draw the mechanism as on paper: bonds as lines (zig-zag chains ' +
+      'and rings can be one stroke), atom labels as letters, charges as + or −, and ' +
+      'curved arrows with a head. Turn it off to use Ketcher\'s own tools again.',
+    shortcut: 'Alt+F',
   },
-  'tool-atom': {
-    brief: 'Click to place an atom; type its symbol.',
+  'btn-recognize': {
+    brief: 'Recognize the ink and propose a clean structure.',
     student:
-      'Click anywhere on the canvas to add an atom. A text cursor appears — ' +
-      'type the element symbol (C, N, O, H, Ser, His…). ' +
-      'Press Enter to confirm, Escape to cancel.',
-    shortcut: 'A',
-  },
-  'tool-bond-single': {
-    brief: 'Draw a single bond between two atoms.',
-    student:
-      'Click on a source atom and drag to the destination atom. ' +
-      'Single bonds represent a shared electron pair (σ bond). ' +
-      'If you click on empty space, a new carbon atom is created at both ends.',
-    shortcut: '1',
-  },
-  'tool-bond-double': {
-    brief: 'Draw a double bond (σ + π).',
-    student:
-      'Double bonds have one σ and one π component. ' +
-      'They appear in C=O (carbonyl), C=C (alkene) and similar groups. ' +
-      'Draw like a single bond — MecHand adds the second line automatically.',
-    shortcut: '2',
-  },
-  'tool-arrow-curved': {
-    brief: 'Draw a curved arrow showing electron movement.',
-    student:
-      'Curved arrows are the core of a reaction mechanism. ' +
-      'They show where electrons move: draw from the electron source ' +
-      '(lone pair, bond) to the destination (new bond, atom). ' +
-      'Full arrows = 2 electrons; half-arrows (fishhook) = 1 electron (radicals).',
-    shortcut: 'E',
-  },
-  'tool-arrow-half': {
-    brief: 'Half-headed (fishhook) arrow — single electron movement.',
-    student:
-      'Use fishhook arrows in radical mechanisms where only one electron ' +
-      'moves at a time. Draw from the radical centre to its destination.',
-    shortcut: 'R',
-  },
-  'tool-charge-plus': {
-    brief: 'Add a formal positive charge to an atom.',
-    student:
-      'A formal positive charge (⁺) means the atom has lost one electron ' +
-      'relative to its neutral state. Click the atom to toggle the charge.',
-  },
-  'tool-charge-minus': {
-    brief: 'Add a formal negative charge to an atom.',
-    student:
-      'A formal negative charge (⁻) means the atom has gained one electron ' +
-      'relative to its neutral state. Common on O⁻, N⁻ in intermediates.',
-  },
-  'tool-lone-pair': {
-    brief: 'Show a lone pair of electrons on an atom.',
-    student:
-      'Lone pairs are non-bonding electron pairs. Showing them explicitly ' +
-      'helps clarify the source of curved arrows in nucleophilic steps. ' +
-      'Click an atom, then pick how many lone pairs to display (1–3).',
-  },
-  // ── Consolidate ────────────────────────────────────────────────────────────
-  'btn-consolidate': {
-    brief: 'Recognise the current freehand sketch and propose a clean structure.',
-    student:
-      'Press Consolidate after sketching to let MecHand interpret what you drew. ' +
-      'It will show you the interpreted structure and ask "is this what you meant?". ' +
-      'You can confirm, edit or discard the proposal.',
+      'MecHand reads your strokes in the browser (no server), shows what it understood ' +
+      'and checks the electron flow of the curved arrows. Confirm to insert it into Ketcher.',
     shortcut: 'Space',
   },
-  // ── Export ─────────────────────────────────────────────────────────────────
-  'btn-export-chemfig': {
-    brief: 'Export the current diagram as chemfig LaTeX code.',
-    student:
-      'chemfig is a LaTeX package for drawing chemical structures. ' +
-      'The exported code can be pasted directly into your .tex file. ' +
-      'Add \\usepackage{chemfig} to your preamble.',
+  'btn-undo-ink': {
+    brief: 'Remove the last stroke.',
+    student: 'Removes only the last freehand stroke; Ketcher\'s structure is not touched.',
+    shortcut: 'Ctrl/⌘+Z (in freehand mode)',
   },
-  'btn-export-tikz': {
-    brief: 'Export as TikZ code (absolute coordinates, easy to edit by hand).',
-    student:
-      'TikZ is a powerful LaTeX graphics library. ' +
-      'The exported code uses absolute coordinates, which makes it easy to ' +
-      'adjust atom positions and arrow curvatures manually in your editor.',
+  'btn-clear-ink': {
+    brief: 'Remove all ink.',
+    student: 'Deletes all freehand strokes that have not been inserted yet.',
   },
-  'btn-export-svg': {
-    brief: 'Export as SVG vector image.',
+  'menu-templates': {
+    brief: 'Open a standard mechanism (organic, inorganic, biochemistry).',
     student:
-      'SVG files can be opened in Inkscape, Illustrator or any vector editor. ' +
-      'They scale to any size without loss of quality.',
+      'Loads a textbook mechanism into Ketcher. Use it to see how arrows are drawn, to ' +
+      'practise redrawing it by hand, or to try the LaTeX export.',
   },
-  // ── Help toggle itself ─────────────────────────────────────────────────────
+  'btn-export': {
+    brief: 'Export to TikZ, chemfig, ChemDraw (CDXML), MOL/RXN, KET or SMILES.',
+    student:
+      'Converts the Ketcher canvas, including curved arrows, into code for your LaTeX ' +
+      'document, or into files that ChemDraw, Marvin and other editors open.',
+  },
+  'btn-teach': {
+    brief: 'Teach MecHand your handwriting.',
+    student:
+      'Draw a few examples of a letter or sign. They are stored in this browser and used ' +
+      'immediately; export them to contribute them to the shared model.',
+  },
+  'btn-about': {
+    brief: 'How recognition works, model version and browser support.',
+    student: 'Shows the recognition model in use, what it can read, and known browser issues.',
+  },
   'btn-help-toggle': {
-    brief: 'Show or hide contextual help labels.',
-    student: 'Toggle the help system on or off. When on, each tool shows a brief description.',
-    shortcut: '?',
+    brief: 'Show or hide these help labels.',
+    student: 'Toggle the help labels. Choose Expert for one-liners or Student for explanations.',
   },
 };
 
@@ -154,17 +100,9 @@ export const useHelp = () => useContext(HelpContext);
 // ── Provider ──────────────────────────────────────────────────────────────────
 
 export const HelpProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [visible, setVisible] = useState(true); // on by default for new users
+  const [visible, setVisible] = useState(false);
   const [level, setLevel] = useState<HelpLevel>('student');
 
-  // Keyboard shortcut: ?
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === '?' && !e.ctrlKey && !e.metaKey) setVisible((v) => !v);
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, []);
 
   return (
     <HelpContext.Provider value={{ visible, level, toggle: () => setVisible((v) => !v), setLevel }}>
@@ -197,7 +135,7 @@ export const HelpToggleButton: React.FC = () => {
       {/* Toggle button */}
       <button
         onClick={toggle}
-        title="Toggle help (shortcut: ?)"
+        title="Toggle help labels"
         style={{
           width: 26, height: 26, borderRadius: 13,
           border: `2px solid ${visible ? '#3b82f6' : '#d1d5db'}`,

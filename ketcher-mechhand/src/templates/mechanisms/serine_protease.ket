@@ -1,0 +1,150 @@
+{
+  "root": {
+    "nodes": [
+      {"$ref": "mol0"},
+      {"$ref": "mol1"},
+      {"$ref": "mol2"},
+      {"$ref": "mol3"},
+      {"$ref": "mol4"},
+      {"$ref": "mol5"},
+      {"$ref": "mol6"},
+      {
+        "type": "arrow",
+        "data": {
+          "mode": "open-angle",
+          "pos": [{"x": 14.9946, "y": 0.0, "z": 0.0}, {"x": 16.9946, "y": 0.0, "z": 0.0}]
+        }
+      },
+      {
+        "type": "arrow",
+        "data": {
+          "mode": "elliptical-arc-arrow-open-angle",
+          "pos": [{"x": 5.6966, "y": -0.4251, "z": 0.0}, {"x": 7.4966, "y": -0.4251, "z": 0.0}],
+          "height": -0.65
+        }
+      },
+      {
+        "type": "arrow",
+        "data": {
+          "mode": "elliptical-arc-arrow-open-angle",
+          "pos": [{"x": 7.9953, "y": -0.0651, "z": 0.0}, {"x": 12.0027, "y": 0.0249, "z": 0.0}],
+          "height": 0.8
+        }
+      },
+      {
+        "type": "arrow",
+        "data": {
+          "mode": "elliptical-arc-arrow-open-angle",
+          "pos": [{"x": 12.3151, "y": 0.3461, "z": 0.0}, {"x": 12.5257, "y": 0.731, "z": 0.0}],
+          "height": -0.35
+        }
+      }
+    ]
+  },
+  "mol0": {
+    "type": "molecule",
+    "atoms": [
+      {"label": "C", "location": [0.3498, -0.991, 0.0]},
+      {"label": "C", "location": [0.8499, -0.1251, 0.0]},
+      {"label": "O", "location": [0.35, 0.741, 0.0]},
+      {"label": "O", "location": [1.8499, -0.1251, 0.0], "charge": -1}
+    ],
+    "bonds": [{"type": 1, "atoms": [0, 1]}, {"type": 2, "atoms": [1, 2]}, {"type": 1, "atoms": [1, 3]}]
+  },
+  "mol1": {
+    "type": "molecule",
+    "atoms": [
+      {"label": "C", "location": [3.7999, 1.6352, 0.0]},
+      {"label": "C", "location": [4.3876, 0.8261, 0.0]},
+      {"label": "C", "location": [5.3877, 0.826, 0.0]},
+      {"label": "N", "location": [5.6966, -0.1251, 0.0]},
+      {"label": "C", "location": [4.8875, -0.7128, 0.0]},
+      {"label": "N", "location": [4.0787, -0.1251, 0.0]}
+    ],
+    "bonds": [
+      {"type": 1, "atoms": [0, 1]},
+      {"type": 2, "atoms": [1, 2]},
+      {"type": 1, "atoms": [2, 3]},
+      {"type": 2, "atoms": [3, 4]},
+      {"type": 1, "atoms": [4, 5]},
+      {"type": 1, "atoms": [5, 1]}
+    ]
+  },
+  "mol2": {
+    "type": "molecule",
+    "atoms": [
+      {"label": "C", "location": [9.9964, -0.9912, 0.0]},
+      {"label": "C", "location": [8.9964, -0.9912, 0.0]},
+      {"label": "O", "location": [8.4966, -0.1251, 0.0]},
+      {"label": "H", "location": [7.4966, -0.1251, 0.0]}
+    ],
+    "bonds": [{"type": 1, "atoms": [0, 1]}, {"type": 1, "atoms": [1, 2]}, {"type": 1, "atoms": [2, 3]}]
+  },
+  "mol3": {
+    "type": "molecule",
+    "atoms": [
+      {"label": "C", "location": [11.3964, -0.625, 0.0]},
+      {"label": "C", "location": [12.2625, -0.1251, 0.0]},
+      {"label": "O", "location": [12.2625, 0.875, 0.0]},
+      {"label": "N", "location": [13.1285, -0.625, 0.0]},
+      {"label": "C", "location": [13.9946, -0.125, 0.0]}
+    ],
+    "bonds": [
+      {"type": 1, "atoms": [0, 1]},
+      {"type": 2, "atoms": [1, 2]},
+      {"type": 1, "atoms": [1, 3]},
+      {"type": 1, "atoms": [3, 4]}
+    ]
+  },
+  "mol4": {
+    "type": "molecule",
+    "atoms": [
+      {"label": "C", "location": [18.2444, -0.991, 0.0]},
+      {"label": "C", "location": [18.7445, -0.1251, 0.0]},
+      {"label": "O", "location": [18.2446, 0.741, 0.0]},
+      {"label": "O", "location": [19.7445, -0.1251, 0.0], "charge": -1}
+    ],
+    "bonds": [{"type": 1, "atoms": [0, 1]}, {"type": 2, "atoms": [1, 2]}, {"type": 1, "atoms": [1, 3]}]
+  },
+  "mol5": {
+    "type": "molecule",
+    "atoms": [
+      {"label": "C", "location": [21.6945, 1.6352, 0.0]},
+      {"label": "C", "location": [22.2822, 0.8261, 0.0]},
+      {"label": "C", "location": [23.2822, 0.826, 0.0]},
+      {"label": "N", "location": [23.5912, -0.1251, 0.0], "charge": 1},
+      {"label": "C", "location": [22.7821, -0.7128, 0.0]},
+      {"label": "N", "location": [21.9733, -0.1251, 0.0]}
+    ],
+    "bonds": [
+      {"type": 1, "atoms": [0, 1]},
+      {"type": 2, "atoms": [1, 2]},
+      {"type": 1, "atoms": [2, 3]},
+      {"type": 2, "atoms": [3, 4]},
+      {"type": 1, "atoms": [4, 5]},
+      {"type": 1, "atoms": [5, 1]}
+    ]
+  },
+  "mol6": {
+    "type": "molecule",
+    "atoms": [
+      {"label": "C", "location": [25.5412, -0.933, 0.0]},
+      {"label": "C", "location": [26.5412, -0.933, 0.0]},
+      {"label": "O", "location": [27.0412, -0.0669, 0.0]},
+      {"label": "C", "location": [28.0412, -0.0669, 0.0]},
+      {"label": "C", "location": [28.9072, 0.433, 0.0]},
+      {"label": "O", "location": [28.0412, 0.9331, 0.0], "charge": -1},
+      {"label": "N", "location": [28.541, -0.9331, 0.0]},
+      {"label": "C", "location": [29.541, -0.9333, 0.0]}
+    ],
+    "bonds": [
+      {"type": 1, "atoms": [0, 1]},
+      {"type": 1, "atoms": [1, 2]},
+      {"type": 1, "atoms": [2, 3]},
+      {"type": 1, "atoms": [3, 4]},
+      {"type": 1, "atoms": [3, 5]},
+      {"type": 1, "atoms": [3, 6]},
+      {"type": 1, "atoms": [6, 7]}
+    ]
+  }
+}

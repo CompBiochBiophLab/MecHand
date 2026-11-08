@@ -1,0 +1,37 @@
+{
+  "root": {
+    "nodes": [
+      {"$ref": "mol0"},
+      {"$ref": "mol1"},
+      {"$ref": "mol2"},
+      {"type": "plus", "location": [6.95, 0.0, 0.0]},
+      {
+        "type": "arrow",
+        "data": {"mode": "open-angle", "pos": [{"x": 2.6, "y": 0.0, "z": 0.0}, {"x": 4.6, "y": 0.0, "z": 0.0}]}
+      },
+      {
+        "type": "arrow",
+        "data": {
+          "mode": "elliptical-arc-arrow-open-half-angle",
+          "pos": [{"x": 0.85, "y": 0.1, "z": 0.0}, {"x": 0.175, "y": 0.3031, "z": 0.0}],
+          "height": -0.4
+        }
+      },
+      {
+        "type": "arrow",
+        "data": {
+          "mode": "elliptical-arc-arrow-open-half-angle",
+          "pos": [{"x": 0.85, "y": 0.1, "z": 0.0}, {"x": 1.525, "y": 0.3031, "z": 0.0}],
+          "height": 0.4
+        }
+      }
+    ]
+  },
+  "mol0": {
+    "type": "molecule",
+    "atoms": [{"label": "Cl", "location": [0.35, 0.0, 0.0]}, {"label": "Cl", "location": [1.35, 0.0, 0.0]}],
+    "bonds": [{"type": 1, "atoms": [0, 1]}]
+  },
+  "mol1": {"type": "molecule", "atoms": [{"label": "Cl", "location": [5.85, 0.0, 0.0], "radical": 2}], "bonds": []},
+  "mol2": {"type": "molecule", "atoms": [{"label": "Cl", "location": [8.05, 0.0, 0.0], "radical": 2}], "bonds": []}
+}

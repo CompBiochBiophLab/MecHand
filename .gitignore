@@ -52,3 +52,7 @@ manuscript/*.toc
 # Springer Nature template, downloaded by `make template`
 manuscript/sn-jnl.cls
 manuscript/sn-*.bst
+
+# ── Playwright ────────────────────────────────────────────────────────────────
+ketcher-mechhand/test-results/
+ketcher-mechhand/playwright-report/

@@ -1,0 +1,6 @@
+# Install with:  pip install --no-deps -r requirements-nodeps.txt
+# (after `pip install -r requirements.txt`). Their own dependency pins are
+# obsolete; the packages they actually need are in requirements.txt.
+MolScribe==1.1.1
+OpenNMT-py==2.2.0
+torchtext==0.5.0

@@ -1,0 +1,66 @@
+{
+  "root": {
+    "nodes": [
+      {"$ref": "mol0"},
+      {"$ref": "mol1"},
+      {"$ref": "mol2"},
+      {"$ref": "mol3"},
+      {"type": "plus", "location": [1.45, 0.0, 0.0]},
+      {"type": "plus", "location": [11.9626, 0.0, 0.0]},
+      {
+        "type": "arrow",
+        "data": {"mode": "open-angle", "pos": [{"x": 5.7063, "y": 0.0, "z": 0.0}, {"x": 7.7063, "y": 0.0, "z": 0.0}]}
+      },
+      {
+        "type": "arrow",
+        "data": {
+          "mode": "elliptical-arc-arrow-open-angle",
+          "pos": [{"x": 0.3501, "y": 0.3, "z": 0.0}, {"x": 3.6063, "y": 0.2991, "z": 0.0}],
+          "height": 0.8
+        }
+      },
+      {
+        "type": "arrow",
+        "data": {
+          "mode": "elliptical-arc-arrow-open-angle",
+          "pos": [{"x": 3.9275, "y": -0.0134, "z": 0.0}, {"x": 4.3123, "y": -0.2239, "z": 0.0}],
+          "height": -0.35
+        }
+      }
+    ]
+  },
+  "mol0": {"type": "molecule", "atoms": [{"label": "O", "location": [0.35, 0.0, 0.0]}], "bonds": []},
+  "mol1": {
+    "type": "molecule",
+    "atoms": [
+      {"label": "Si", "location": [3.4563, 0.0392, 0.0]},
+      {"label": "Cl", "location": [4.4563, 0.0392, 0.0]},
+      {"label": "Cl", "location": [3.0337, 0.9456, 0.0]},
+      {"label": "Cl", "location": [2.55, -0.3834, 0.0]},
+      {"label": "Cl", "location": [3.2827, -0.9456, 0.0]}
+    ],
+    "bonds": [
+      {"type": 1, "atoms": [0, 1]},
+      {"type": 1, "atoms": [0, 2]},
+      {"type": 1, "atoms": [0, 3], "stereo": 1},
+      {"type": 1, "atoms": [0, 4], "stereo": 6}
+    ]
+  },
+  "mol2": {
+    "type": "molecule",
+    "atoms": [
+      {"label": "Si", "location": [9.9563, 0.0392, 0.0]},
+      {"label": "O", "location": [8.9563, 0.0392, 0.0], "charge": 1},
+      {"label": "Cl", "location": [10.3789, 0.9456, 0.0]},
+      {"label": "Cl", "location": [10.8626, -0.3834, 0.0]},
+      {"label": "Cl", "location": [10.13, -0.9456, 0.0]}
+    ],
+    "bonds": [
+      {"type": 1, "atoms": [0, 1]},
+      {"type": 1, "atoms": [0, 2]},
+      {"type": 1, "atoms": [0, 3], "stereo": 1},
+      {"type": 1, "atoms": [0, 4], "stereo": 6}
+    ]
+  },
+  "mol3": {"type": "molecule", "atoms": [{"label": "Cl", "location": [13.0626, 0.0, 0.0], "charge": -1}], "bonds": []}
+}

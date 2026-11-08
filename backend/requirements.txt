@@ -8,9 +8,9 @@ python-multipart>=0.0.9
 pillow>=10.3
 huggingface_hub>=0.23              # downloads the MolScribe checkpoint
 
-# MolScribe. Its PyPI package declares no dependencies (its setup.py uses
-# distutils), so they are listed here, following MolScribe's own setup.py.
-MolScribe==1.1.1
+# MolScribe's runtime dependencies (MolScribe itself, OpenNMT-py and torchtext
+# are installed WITHOUT their pinned dependencies from requirements-nodeps.txt,
+# because OpenNMT-py 2.2.0 pins packages that no longer install on Python 3.11).
 numpy>=1.26,<2
 torch>=2.1
 torchvision                        # required by timm
@@ -21,4 +21,9 @@ rdkit>=2023.9
 SmilesPE==0.0.3
 albumentations==1.1.0
 timm==0.4.12
-OpenNMT-py==2.2.0
+configargparse
+pyyaml
+sentencepiece
+tqdm
+requests
+six
