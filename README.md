@@ -3,7 +3,7 @@
 > Draw reaction mechanisms by hand. MecHand recognizes them in your browser, checks the electron
 > flow, and exports them to LaTeX, ChemDraw and Marvin.
 
-**▶ Open MecHand: <https://compbiochbiophlab.github.io/MecHand/app/>** ·
+**▶ Open MecHand: [https://compbiochbiophlab.github.io/MecHand/app/](https://compbiochbiophlab.github.io/MecHand/app/)** ·
 [Website and documentation](https://compbiochbiophlab.github.io/MecHand/) ·
 [Tutorial (PDF)](https://compbiochbiophlab.github.io/MecHand/tutorial.pdf)
 
@@ -48,10 +48,12 @@ electron-flow arrows into Ketcher.
 
 ### Online
 
-Open **<https://compbiochbiophlab.github.io/MecHand/app/>**. The first visit downloads about 9 MB
+Open **[https://compbiochbiophlab.github.io/MecHand/app/](https://compbiochbiophlab.github.io/MecHand/app/)**. The first visit downloads about 9 MB
 (mostly Ketcher's WebAssembly chemistry engine), which the browser then caches.
 
 ### On your own computer
+
+
 
 You need [Node.js](https://nodejs.org) ≥ 20.19 (an LTS release is recommended). npm comes with
 Node.js; yarn is not needed (Ketcher itself has moved from yarn to npm).
@@ -94,17 +96,17 @@ make server      # optional DECIMER server at http://localhost:8000 (Python 3.10
    and any electron-flow warnings.
 3. **✓ Insert into Ketcher**, **✎ Keep drawing** (to fix strokes), or **✗ Discard ink**.
 
-| You draw | MecHand reads |
-| --- | --- |
-| A line; a zig-zag or a closed polygon in one stroke | bonds; a chain or a ring |
-| Two or three close parallel lines | a double or triple bond |
-| Letters at a bond end, or on their own | atom labels: C, H, N, O, S, P, F, Cl, Br, I, B, Si, Li, Na, K, Mg, Al, Fe, Cu, Zn, Pt, Pd… |
-| `+`, `−`, ⊕, ⊖, `2−`, `3+` at the upper right of an atom | a formal charge |
-| A single dot next to an atom | a radical |
-| `+` between molecules | a reaction plus sign |
-| A curve with a full head (drawn with the curve or separately) | an electron-pair arrow |
-| A curve with a single barb | a single-electron (fishhook) arrow |
-| A long straight arrow | a reaction arrow |
+| You draw                                                             | MecHand reads                                                                               |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| A line; a zig-zag or a closed polygon in one stroke                  | bonds; a chain or a ring                                                                    |
+| Two or three close parallel lines                                    | a double or triple bond                                                                     |
+| Letters at a bond end, or on their own                               | atom labels: C, H, N, O, S, P, F, Cl, Br, I, B, Si, Li, Na, K, Mg, Al, Fe, Cu, Zn, Pt, Pd… |
+| `+`, `−`, ⊕, ⊖, `2−`, `3+` at the upper right of an atom | a formal charge                                                                             |
+| A single dot next to an atom                                         | a radical                                                                                   |
+| `+` between molecules                                              | a reaction plus sign                                                                        |
+| A curve with a full head (drawn with the curve or separately)        | an electron-pair arrow                                                                      |
+| A curve with a single barb                                           | a single-electron (fishhook) arrow                                                          |
+| A long straight arrow                                                | a reaction arrow                                                                            |
 
 Draw bonds two or three times longer than letters are tall and leave a small gap between a bond and
 its label. Start a curved arrow at the electrons (a lone pair or the middle of a bond) and end it at
@@ -114,12 +116,12 @@ the atom or bond that receives them.
 when an electron-pair arrow starts at an atom without a lone pair, when an arrow starts or ends on
 nothing, or when it would give C, N, O or F more than an octet while no bond to that atom breaks.
 
-| Keys | Action |
-| --- | --- |
-| Alt+F (⌥F on a Mac) | Freehand on/off |
-| Space | Recognize (freehand mode) |
-| Ctrl+Z / ⌘Z | Remove the last stroke (freehand mode; otherwise Ketcher's undo) |
-| Esc | Close a dialog |
+| Keys                 | Action                                                           |
+| -------------------- | ---------------------------------------------------------------- |
+| Alt+F (⌥F on a Mac) | Freehand on/off                                                  |
+| Space                | Recognize (freehand mode)                                        |
+| Ctrl+Z / ⌘Z         | Remove the last stroke (freehand mode; otherwise Ketcher's undo) |
+| Esc                  | Close a dialog                                                   |
 
 More in the [guide](https://compbiochbiophlab.github.io/MecHand/guide/drawing) and the
 [tutorial](https://compbiochbiophlab.github.io/MecHand/tutorial.pdf).
@@ -150,11 +152,11 @@ light-weight, transparent recognizer possible that runs entirely in the browser.
 
 ### The model, and how to update it
 
-| Where | What |
-| --- | --- |
+| Where                                                                                                    | What                                                                                                                             |
+| -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | [`src/recognition/model/symbols-model.json`](ketcher-mechhand/src/recognition/model/symbols-model.json) | Versioned glyph skeletons (letters, digits, + and −), expanded at start-up into slanted, scaled, rotated and jittered variants. |
-| [`src/recognition/model/contrib/`](ketcher-mechhand/src/recognition/model/contrib/) | Real handwriting samples contributed by users. |
-| Your browser | Samples recorded with **✍ Teach** (applied immediately). |
+| [`src/recognition/model/contrib/`](ketcher-mechhand/src/recognition/model/contrib/)                     | Real handwriting samples contributed by users.                                                                                   |
+| Your browser                                                                                             | Samples recorded with **✍ Teach** (applied immediately).                                                                  |
 
 To improve the model for everyone: record samples with ✍ Teach → **Export samples**, put the JSON
 file in `model/contrib/`, bump `version` in `symbols-model.json`, and open a pull request. The model
@@ -166,12 +168,12 @@ tested and deployed with the rest of the app.
 Each template is rendered as synthetic handwriting in three styles (different slant, jitter, letter
 shapes, and arrowheads drawn with the shaft or separately), recognized, and compared with the original:
 
-| 13 templates × 3 styles (9 November 2026) | |
-| --- | --- |
-| Atoms (element and charge) | **87 %** |
-| Bonds (connectivity and order) | **85 %** |
-| Arrows (number and kind) | **100 %** |
-| Whole mechanism exactly right | 31 % |
+| 13 templates × 3 styles (9 November 2026) |                 |
+| ------------------------------------------ | --------------- |
+| Atoms (element and charge)                 | **87 %**  |
+| Bonds (connectivity and order)             | **85 %**  |
+| Arrows (number and kind)                   | **100 %** |
+| Whole mechanism exactly right              | 31 %            |
 
 This benchmark runs with `npm test` and fails if accuracy drops. It is not a user study: real
 handwriting varies more, which is why recognition always ends in a confirmation dialog. The weakest
@@ -186,14 +188,14 @@ cases are crowded metal complexes and labels with many explicit hydrogens.
 reproducibly with RDKit by [`templates/build_templates.py`](ketcher-mechhand/templates/build_templates.py),
 which also checks that charges and atoms balance across each arrow.
 
-| Organic | Inorganic | Biochemistry |
-| --- | --- | --- |
-| SN2 (HO⁻ + CH₃Br) | Lewis adduct NH₃ + BF₃ | Serine protease acylation (catalytic triad) |
-| E2 (EtO⁻ + 2-bromopropane) | Associative substitution at Pt(II) | Alcohol dehydrogenase: hydride transfer to NAD⁺ |
-| Cyanide addition to acetaldehyde | Hydrolysis of SiCl₄ | Kinase: in-line phosphoryl transfer |
-| Aromatic nitration (Wheland ion) | Acidity of [Fe(OH₂)₆]³⁺ | |
-| Diels–Alder | | |
-| Cl₂ homolysis (fishhook arrows) | | |
+| Organic                          | Inorganic                          | Biochemistry                                     |
+| -------------------------------- | ---------------------------------- | ------------------------------------------------ |
+| SN2 (HO⁻ + CH₃Br)              | Lewis adduct NH₃ + BF₃           | Serine protease acylation (catalytic triad)      |
+| E2 (EtO⁻ + 2-bromopropane)      | Associative substitution at Pt(II) | Alcohol dehydrogenase: hydride transfer to NAD⁺ |
+| Cyanide addition to acetaldehyde | Hydrolysis of SiCl₄               | Kinase: in-line phosphoryl transfer              |
+| Aromatic nitration (Wheland ion) | Acidity of [Fe(OH₂)₆]³⁺        |                                                  |
+| Diels–Alder                     |                                    |                                                  |
+| Cl₂ homolysis (fishhook arrows) |                                    |                                                  |
 
 References (Clayden; Housecroft & Sharpe; Berg/Tymoczko/Gatto/Stryer; Fersht) are listed on the
 [templates page](https://compbiochbiophlab.github.io/MecHand/guide/templates).
@@ -204,14 +206,14 @@ References (Clayden; Housecroft & Sharpe; Berg/Tymoczko/Gatto/Stryer; Fersht) ar
 
 **⇩ Export** converts the whole canvas, curved arrows included:
 
-| Format | Use |
-| --- | --- |
-| TikZ | Absolute coordinates; electron-pair arrows as cubic Bézier curves, fishhooks with half heads. Needs `\usepackage{tikz}` and `\usetikzlibrary{arrows.meta,bending}`. |
-| chemfig | `\schemestart … \schemestop` scheme; curved arrows as `\chemmove` (compile twice). Needs `\usepackage{chemfig}` and `\usetikzlibrary{arrows.meta,bending,calc}`. |
-| CDXML | ChemDraw (Marvin also reads it). |
-| MOL / RXN | Marvin, ChemDraw, RDKit, Open Babel… |
-| KET | Ketcher's native format; keeps everything. |
-| SMILES | Structures only. |
+| Format    | Use                                                                                                                                                                       |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TikZ      | Absolute coordinates; electron-pair arrows as cubic Bézier curves, fishhooks with half heads. Needs `\usepackage{tikz}` and `\usetikzlibrary{arrows.meta,bending}`.  |
+| chemfig   | `\schemestart … \schemestop` scheme; curved arrows as `\chemmove` (compile twice). Needs `\usepackage{chemfig}` and `\usetikzlibrary{arrows.meta,bending,calc}`. |
+| CDXML     | ChemDraw (Marvin also reads it).                                                                                                                                          |
+| MOL / RXN | Marvin, ChemDraw, RDKit, Open Babel…                                                                                                                                     |
+| KET       | Ketcher's native format; keeps everything.                                                                                                                                |
+| SMILES    | Structures only.                                                                                                                                                          |
 
 The TikZ and chemfig exports of every template are compiled with pdflatex in the test suite
 (`npm run test:latex`).
@@ -225,16 +227,16 @@ WebAssembly, Web Workers and SVG — and is tested automatically on every change
 Firefox and WebKit** with Playwright (open a template, draw a molecule with the pointer, recognize,
 insert, export).
 
-| Browser | Status | Notes |
-| --- | --- | --- |
-| Chrome / Edge (desktop) | ✅ | Reference platform |
-| Firefox (desktop) | ✅ | |
-| Safari 18.2+ (macOS) | ✅ | |
-| Safari 16.4–18.1 | ⚠️ works | No `PointerEvent.getCoalescedEvents()` before 18.2: fewer points per stroke when drawing fast (more angular ink); recognition still works |
-| Safari on iPad 18.2+ with Apple Pencil | ✅ | Pencil pressure is used; the palm is ignored once the Pencil has been used |
-| Chrome on Android with a stylus | ✅ | |
-| Firefox on Android | ⚠️ works | `getCoalescedEvents()` only partly implemented: slightly coarser ink |
-| Internet Explorer, old Edge (EdgeHTML) | ❌ | No WebAssembly / modern JavaScript |
+| Browser                                | Status     | Notes                                                                                                                                       |
+| -------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Chrome / Edge (desktop)                | ✅         | Reference platform                                                                                                                          |
+| Firefox (desktop)                      | ✅         |                                                                                                                                             |
+| Safari 18.2+ (macOS)                   | ✅         |                                                                                                                                             |
+| Safari 16.4–18.1                      | ⚠️ works | No `PointerEvent.getCoalescedEvents()` before 18.2: fewer points per stroke when drawing fast (more angular ink); recognition still works |
+| Safari on iPad 18.2+ with Apple Pencil | ✅         | Pencil pressure is used; the palm is ignored once the Pencil has been used                                                                  |
+| Chrome on Android with a stylus        | ✅         |                                                                                                                                             |
+| Firefox on Android                     | ⚠️ works | `getCoalescedEvents()` only partly implemented: slightly coarser ink                                                                      |
+| Internet Explorer, old Edge (EdgeHTML) | ❌         | No WebAssembly / modern JavaScript                                                                                                          |
 
 Feature support from MDN browser-compat-data 8.1.8 (November 2026). Known issues:
 
@@ -297,15 +299,15 @@ hand-drawn model.
 
 ## Ideas taken from ChemDraw and Marvin
 
-| Feature | In ChemDraw / Marvin | In MecHand |
-| --- | --- | --- |
-| Electron-flow arrows attached to lone pairs/bonds, with rules on valid sources and targets | Marvin JS electron-flow arrows | Arrows anchored to atoms/bonds automatically + electron-flow check |
-| Curved-arrow mechanisms with full and half heads | Both | Recognized from handwriting; exported to TikZ/chemfig |
-| Template libraries | Both (ring and structure templates) | Mechanism templates (organic, inorganic, biochemistry) — Ketcher also has ring/functional-group templates |
-| Structure clean-up, valence checks, stereo labels, calculated properties | Both | Provided by Ketcher (Layout, Clean up, Check structure, Calculated values) |
-| File interchange | CDXML / MRV | Export CDXML, MOL/RXN, KET, SMILES; Ketcher opens CDXML, CDX, MOL, RXN, SMILES |
-| Freehand drawing with recognition | — | MecHand's own contribution |
-| Publication-ready LaTeX | — | TikZ and chemfig export |
+| Feature                                                                                    | In ChemDraw / Marvin                | In MecHand                                                                                                 |
+| ------------------------------------------------------------------------------------------ | ----------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Electron-flow arrows attached to lone pairs/bonds, with rules on valid sources and targets | Marvin JS electron-flow arrows      | Arrows anchored to atoms/bonds automatically + electron-flow check                                         |
+| Curved-arrow mechanisms with full and half heads                                           | Both                                | Recognized from handwriting; exported to TikZ/chemfig                                                      |
+| Template libraries                                                                         | Both (ring and structure templates) | Mechanism templates (organic, inorganic, biochemistry) — Ketcher also has ring/functional-group templates |
+| Structure clean-up, valence checks, stereo labels, calculated properties                   | Both                                | Provided by Ketcher (Layout, Clean up, Check structure, Calculated values)                                 |
+| File interchange                                                                           | CDXML / MRV                         | Export CDXML, MOL/RXN, KET, SMILES; Ketcher opens CDXML, CDX, MOL, RXN, SMILES                             |
+| Freehand drawing with recognition                                                          | —                                  | MecHand's own contribution                                                                                 |
+| Publication-ready LaTeX                                                                    | —                                  | TikZ and chemfig export                                                                                    |
 
 Sources: [Marvin JS electron-flow arrows](https://docs.chemaxon.com/Electron_Flow_Arrows.html),
 [Reactions and mechanisms in Marvin JS](https://docs.chemaxon.com/Reactions_and_Mechanisms_in_Marvin_JS.html).
@@ -350,8 +352,7 @@ cd ../docs && npm ci && npm run dev                                # website
 ```
 
 **Ketcher** is a pinned npm dependency (`ketcher-core`, `ketcher-react`, `ketcher-standalone`), not a
-copy of its code. Update it with `npm install --save-exact ketcher-core@<v> ketcher-react@<v>
-ketcher-standalone@<v>` and run the tests.
+copy of its code. Update it with `npm install --save-exact ketcher-core@<v> ketcher-react@<v> ketcher-standalone@<v>` and run the tests.
 
 **Continuous integration** (`.github/workflows/ci.yml`) runs the type check, unit tests and benchmark,
 the LaTeX compile check, the browser tests in all three engines and the server tests on every push.

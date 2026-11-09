@@ -1,0 +1,196 @@
+[
+ {
+  "id": "practica-aspirina",
+  "set": "practica",
+  "kind": "molecula",
+  "file": "practica-aspirina.png",
+  "task": "Dibuixa l'àcid acetilsalicílic (aspirina).",
+  "reference": {
+   "smiles": [
+    "CC(=O)Oc1ccccc1C(=O)O"
+   ],
+   "curvedArrows": 0
+  },
+  "source": {
+   "title": "File:Aspirin-skeletal.svg",
+   "url": "https://commons.wikimedia.org/wiki/File:Aspirin-skeletal.svg",
+   "author": "Originally User:Benjah-bmm27",
+   "license": "Public domain",
+   "licenseUrl": null
+  }
+ },
+ {
+  "id": "A1-paracetamol",
+  "set": "A",
+  "kind": "molecula",
+  "file": "A1-paracetamol.png",
+  "task": "Dibuixa el paracetamol.",
+  "reference": {
+   "smiles": [
+    "CC(=O)Nc1ccc(O)cc1"
+   ],
+   "curvedArrows": 0
+  },
+  "source": {
+   "title": "File:Paracetamol-skeletal.svg",
+   "url": "https://commons.wikimedia.org/wiki/File:Paracetamol-skeletal.svg",
+   "author": "Benjah-bmm27",
+   "license": "Public domain",
+   "licenseUrl": null
+  }
+ },
+ {
+  "id": "A2-cafeina",
+  "set": "A",
+  "kind": "molecula",
+  "file": "A2-cafeina.png",
+  "task": "Dibuixa la cafeïna.",
+  "reference": {
+   "smiles": [
+    "Cn1c(=O)c2c(ncn2C)n(C)c1=O"
+   ],
+   "curvedArrows": 0
+  },
+  "source": {
+   "title": "File:Caffeine-2D-skeletal.svg",
+   "url": "https://commons.wikimedia.org/wiki/File:Caffeine-2D-skeletal.svg",
+   "author": "Benjah-bmm27",
+   "license": "Public domain",
+   "licenseUrl": null
+  }
+ },
+ {
+  "id": "A3-sn2-walden",
+  "set": "A",
+  "kind": "mecanisme",
+  "file": "A3-sn2-walden.png",
+  "task": "Dibuixa els reactius amb les fletxes corbes i els productes. No cal dibuixar l'estat de transició (entre claudàtors).",
+  "reference": {
+   "smiles": [
+    "[OH-]",
+    "CC(F)Br",
+    "CC(O)F",
+    "[Na+]",
+    "[Br-]"
+   ],
+   "curvedArrows": 2
+  },
+  "source": {
+   "title": "File:SN2 Walden inversion example.svg",
+   "url": "https://commons.wikimedia.org/wiki/File:SN2_Walden_inversion_example.svg",
+   "author": "Pillsmarch",
+   "license": "CC BY 4.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
+  }
+ },
+ {
+  "id": "A4-aldol-basic",
+  "set": "A",
+  "kind": "mecanisme",
+  "file": "A4-aldol-basic.png",
+  "task": "Dibuixa només la primera línia del mecanisme (fins a l'alcòxid), amb totes les fletxes corbes.",
+  "reference": {
+   "smiles": [
+    "O=CC[*]",
+    "[OH-]",
+    "[O-]C=C[*]",
+    "O=CC([*])C([O-])C[*]"
+   ],
+   "curvedArrows": 4
+  },
+  "source": {
+   "title": "File:Base-catalysed aldol condensation.svg",
+   "url": "https://commons.wikimedia.org/wiki/File:Base-catalysed_aldol_condensation.svg",
+   "author": "Pillsmarch",
+   "license": "CC BY 4.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
+  }
+ },
+ {
+  "id": "B1-dopamina",
+  "set": "B",
+  "kind": "molecula",
+  "file": "B1-dopamina.png",
+  "task": "Dibuixa la dopamina.",
+  "reference": {
+   "smiles": [
+    "NCCc1ccc(O)c(O)c1"
+   ],
+   "curvedArrows": 0
+  },
+  "source": {
+   "title": "File:Dopamine.svg",
+   "url": "https://commons.wikimedia.org/wiki/File:Dopamine.svg",
+   "author": "No machine-readable author provided. Sunridin assumed (based on copyright claims).",
+   "license": "Public domain",
+   "licenseUrl": null
+  }
+ },
+ {
+  "id": "B2-serotonina",
+  "set": "B",
+  "kind": "molecula",
+  "file": "B2-serotonina.png",
+  "task": "Dibuixa la serotonina.",
+  "reference": {
+   "smiles": [
+    "NCCc1c[nH]c2ccc(O)cc12"
+   ],
+   "curvedArrows": 0
+  },
+  "source": {
+   "title": "File:Serotonin-2D-skeletal.svg",
+   "url": "https://commons.wikimedia.org/wiki/File:Serotonin-2D-skeletal.svg",
+   "author": "CYL",
+   "license": "Public domain",
+   "licenseUrl": null
+  }
+ },
+ {
+  "id": "B3-sn2-cianur",
+  "set": "B",
+  "kind": "mecanisme",
+  "file": "B3-sn2-cianur.png",
+  "task": "Dibuixa els reactius amb les fletxes corbes i els productes. No cal dibuixar els parells d'electrons solitaris.",
+  "reference": {
+   "smiles": [
+    "CC(Cl)c1ccccc1",
+    "[C-]#N",
+    "CC(C#N)c1ccccc1",
+    "[Na+]",
+    "[Cl-]"
+   ],
+   "curvedArrows": 2
+  },
+  "source": {
+   "title": "File:Mechanism of sn2 reaction between (1-chloroethyl)benzene and sodium cyanide.svg",
+   "url": "https://commons.wikimedia.org/wiki/File:Mechanism_of_sn2_reaction_between_(1-chloroethyl)benzene_and_sodium_cyanide.svg",
+   "author": "Unknown authorUnknown author",
+   "license": "CC BY 4.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
+  }
+ },
+ {
+  "id": "B4-aldol-acid",
+  "set": "B",
+  "kind": "mecanisme",
+  "file": "B4-aldol-acid.png",
+  "task": "Dibuixa només la primera línia del mecanisme, amb totes les fletxes corbes.",
+  "reference": {
+   "smiles": [
+    "O=CC[*]",
+    "[H+]",
+    "[OH+]=CC[*]",
+    "OC=C[*]"
+   ],
+   "curvedArrows": 4
+  },
+  "source": {
+   "title": "File:Acid-catalysed aldol condensation.svg",
+   "url": "https://commons.wikimedia.org/wiki/File:Acid-catalysed_aldol_condensation.svg",
+   "author": "Pillsmarch",
+   "license": "CC BY 4.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
+  }
+ }
+]
