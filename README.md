@@ -96,7 +96,7 @@ make server      # optional DECIMER server at http://localhost:8000 (Python 3.10
 2. Press **Recognize** (Space). Your ink is coloured by how it was read — blue bonds, green labels,
    red arrows, grey not understood — and a clean drawing of the result is shown with its confidence
    and any electron-flow warnings.
-3. **✓ Insert into Ketcher**, **✎ Keep drawing** (to fix strokes), or **✗ Discard ink**.
+3. **Insert into Ketcher** (Enter), **Keep drawing** (Esc; to fix strokes), or **Discard ink**.
 
 | You draw                                                             | MecHand reads                                                                               |
 | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |

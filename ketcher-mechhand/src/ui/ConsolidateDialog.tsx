@@ -7,6 +7,7 @@
 import type { MechanismIssue } from '../recognition/mechanismCheck';
 import type { SketchResult } from '../recognition/sketch';
 import { ScenePreview } from './ScenePreview';
+import { CheckIcon, PenIcon, TrashIcon } from './icons';
 import { Modal, btn } from './Modal';
 
 export interface ConsolidateDialogProps {
@@ -17,6 +18,8 @@ export interface ConsolidateDialogProps {
   onEdit: () => void;
   onDiscard: () => void;
 }
+
+const withIcon = { display: 'inline-flex', alignItems: 'center', gap: 6 } as const;
 
 export function ConsolidateDialog({ result, issues, engineNote, onConfirm, onEdit, onDiscard }: ConsolidateDialogProps) {
   const pct = Math.round(result.confidence * 100);
@@ -45,10 +48,12 @@ export function ConsolidateDialog({ result, issues, engineNote, onConfirm, onEdi
           {issues.map((i, k) => <li key={k}>{i.message}</li>)}
         </ul>
       )}
-      <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-        <button style={btn('#f3f4f6', '#374151')} onClick={onDiscard}>✗ Discard ink</button>
-        <button style={btn('#eff6ff', '#1d4ed8')} onClick={onEdit}>✎ Keep drawing</button>
-        <button style={btn('#16a34a', '#fff')} onClick={onConfirm} data-testid="mechand-confirm" autoFocus>✓ Insert into Ketcher</button>
+      <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+        <button style={{ ...btn('#f3f4f6', '#374151'), ...withIcon }} onClick={onDiscard} data-testid="mechand-discard"><TrashIcon size={16} />Discard ink</button>
+        <button style={{ ...btn('#eff6ff', '#1d4ed8'), ...withIcon }} onClick={onEdit} data-testid="mechand-keep-drawing" title="Esc"><PenIcon size={16} />Keep drawing</button>
+        <button style={{ ...btn('#16a34a', '#fff'), ...withIcon }} onClick={onConfirm} data-testid="mechand-confirm" autoFocus title="Enter">
+          <CheckIcon size={16} />Insert into Ketcher
+        </button>
       </div>
     </Modal>
   );

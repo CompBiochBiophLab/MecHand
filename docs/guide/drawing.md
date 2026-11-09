@@ -60,9 +60,9 @@ Tips:
 
 ![Recognition dialog](/img/recognize-dialog.png)
 
-- **✓ Insert into Ketcher** adds the structure and arrows to the canvas, where you can edit them with Ketcher's tools.
-- **✎ Keep drawing** closes the dialog and keeps the ink, so you can add or fix strokes (the eraser removes a stroke; Undo ink undoes the last change).
-- **✗ Discard ink** deletes the strokes.
+- **Insert into Ketcher** (Enter) adds the structure and arrows to the canvas, where you can edit them with Ketcher's tools.
+- **Keep drawing** (Esc) closes the dialog and keeps the ink, so you can add or fix strokes (the eraser removes a stroke; Undo ink undoes the last change).
+- **Discard ink** deletes the strokes (Undo ink brings them back).
 
 ### Electron-flow check
 
