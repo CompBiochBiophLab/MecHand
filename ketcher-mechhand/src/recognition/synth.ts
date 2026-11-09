@@ -90,7 +90,9 @@ export function synthesizeSketch(scene: Scene, opts: SynthOptions = {}): InkStro
     }
     if (a.charge !== 0) {
       const off = a.symbol === 'C' && !labelled(i) ? 0.25 : 0.3 + 0.12 * (a.symbol.length - 1);
-      glyph(a.charge > 0 ? '+' : '-', { x: c.x + off * L, y: c.y - 0.3 * L }, 0.2 * L);
+      // Charges are written as superscripts: "+", "−", "2−", "3+"…
+      if (Math.abs(a.charge) > 1) glyph(String(Math.abs(a.charge)), { x: c.x + off * L, y: c.y - 0.3 * L }, 0.2 * L);
+      glyph(a.charge > 0 ? '+' : '-', { x: c.x + (off + (Math.abs(a.charge) > 1 ? 0.17 : 0)) * L, y: c.y - 0.3 * L }, 0.2 * L);
     }
   });
 

@@ -1,21 +1,25 @@
 """
-MecHand backend — FastAPI service wrapping MolScribe + arrow detector.
+MecHand optional recognition server — FastAPI + DECIMER.
+
+MecHand works without this server: its default recognizer runs in the browser.
+Run this only to try DECIMER's image-based structure recognition as an
+alternative engine for the structures (About → Structure engine → DECIMER
+server). Curved arrows and charges always come from the in-browser recognizer.
 
 Endpoints
 ---------
-POST /recognize   receive a PNG sketch, return structured molecule + arrows
-GET  /health      liveness probe
+GET  /health      liveness probe (answers once the model is loaded)
+POST /recognize   PNG of the ink → SMILES, molfile, atoms, bonds
 
-Run locally (Python 3.10–3.12):
+Run locally (Python 3.10–3.13):
     pip install -r requirements.txt
     uvicorn main:app --port 8000
 
-The server loads MolScribe before it starts answering requests; the first run
-downloads the ~1.1 GB checkpoint, so /health only responds once the model is ready.
+The first start downloads the DECIMER hand-drawn model (~285 MB).
 
 Docker:
-    docker build -t mechand-backend .
-    docker run -p 8000:8000 mechand-backend
+    docker build -t mechand-server .
+    docker run -p 8000:8000 mechand-server
 """
 
 from __future__ import annotations
@@ -27,29 +31,27 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 
-from arrow_detector import ArrowDetector
-from molscribe_service import MolScribeService
+from decimer_service import DecimerService
 
-molscribe = MolScribeService()
-arrow_detector = ArrowDetector()
+decimer = DecimerService()
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    print("[MecHand] Loading MolScribe (the first run downloads ~1.1 GB)...")
-    molscribe.load()
-    print("[MecHand] MolScribe ready.")
+    print(f"[MecHand] Loading {decimer.engine} (the first run downloads ~285 MB)...")
+    decimer.load()
+    print("[MecHand] Ready.")
     yield
 
 
 app = FastAPI(
-    title="MecHand Recognition API",
-    version="0.1.0",
-    description="Sketch recognition backend for MecHand (Ketcher extension).",
+    title="MecHand Recognition Server",
+    version="0.2.0",
+    description="Optional image-based structure recognition for MecHand, using DECIMER.",
     lifespan=lifespan,
 )
 
-# Allow the MecHand frontend (any origin in dev; restrict in production)
+# The MecHand web app may be served from GitHub Pages or from localhost.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -58,9 +60,22 @@ app.add_middleware(
 )
 
 
+@app.middleware("http")
+async def private_network_access(request, call_next):
+    """Allow https pages (e.g. GitHub Pages) to call this server on localhost.
+
+    Chromium asks local servers for permission with a preflight carrying
+    Access-Control-Request-Private-Network (Private Network Access).
+    """
+    response = await call_next(request)
+    if request.headers.get("access-control-request-private-network") == "true":
+        response.headers["Access-Control-Allow-Private-Network"] = "true"
+    return response
+
+
 @app.get("/health")
 def health():
-    return {"status": "ok", "models_loaded": molscribe.loaded}
+    return {"status": "ok", "models_loaded": decimer.loaded, "engine": decimer.engine}
 
 
 @app.post("/recognize")
@@ -72,25 +87,22 @@ def recognize(image: UploadFile = File(...)):
     ---------------
     {
       "smiles":     str,
-      "molfile":    str,           # MDL molfile from MolScribe
+      "molfile":    str,           # MDL molfile with 2D coordinates (RDKit)
       "atoms":      [{"symbol", "x", "y", "charge", "isotope"}, ...],
       "bonds":      [{"beginAtom", "endAtom", "type"}, ...],
-      "arrows":     [{"path", "fromAtom", "toAtom"}, ...],
-      "confidence": float          # 0–1
+      "confidence": float,         # mean token confidence, 0–1 (0 if the SMILES is invalid)
+      "valid":      bool,          # RDKit could parse the SMILES
+      "engine":     str
     }
 
-    Declared with `def` (not `async def`) so FastAPI runs the CPU-heavy model in
-    a worker thread instead of blocking the event loop.
+    Declared with `def` (not `async def`) so FastAPI runs the model in a
+    worker thread instead of blocking the event loop.
     """
     if not (image.content_type or "").startswith("image/"):
         raise HTTPException(400, "Only image uploads are accepted.")
-
     try:
         pil_img = Image.open(io.BytesIO(image.file.read())).convert("RGB")
     except Exception as e:
         raise HTTPException(400, f"Cannot decode image: {e}")
 
-    mol_result = molscribe.predict(pil_img)            # structure recognition
-    arrow_result = arrow_detector.detect(pil_img)      # curved mechanism arrows
-
-    return {**mol_result, "arrows": arrow_result["arrows"]}
+    return decimer.predict(pil_img)

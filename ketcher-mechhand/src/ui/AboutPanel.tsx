@@ -3,13 +3,14 @@
 import type { SymbolModel } from '../recognition/model';
 import { Modal } from './Modal';
 
-export type Engine = 'browser' | 'molscribe';
+export type Engine = 'browser' | 'server';
 
-export function AboutPanel({ model, engine, backendUrl, backendOk, onEngine, onBackendUrl, onClose }: {
+export function AboutPanel({ model, engine, backendUrl, backendOk, backendEngine, onEngine, onBackendUrl, onClose }: {
   model: SymbolModel;
   engine: Engine;
   backendUrl: string;
   backendOk: boolean | null;
+  backendEngine?: string;
   onEngine: (e: Engine) => void;
   onBackendUrl: (u: string) => void;
   onClose: () => void;
@@ -37,13 +38,13 @@ export function AboutPanel({ model, engine, backendUrl, backendOk, onEngine, onB
           <input type="radio" checked={engine === 'browser'} onChange={() => onEngine('browser')} /> In-browser (default, works offline)
         </label>
         <label style={{ display: 'block' }}>
-          <input type="radio" checked={engine === 'molscribe'} onChange={() => onEngine('molscribe')} /> MolScribe server (optional,
-          image-based; arrows and charges still come from the in-browser recognizer)
+          <input type="radio" checked={engine === 'server'} onChange={() => onEngine('server')} /> DECIMER server (optional,
+          image-based, runs on your computer; arrows and charges still come from the in-browser recognizer)
         </label>
-        {engine === 'molscribe' && (
+        {engine === 'server' && (
           <div style={{ marginTop: 4 }}>
             <input value={backendUrl} onChange={(e) => onBackendUrl(e.target.value)} style={{ width: 260 }} />{' '}
-            {backendOk === null ? 'checking…' : backendOk ? '● connected' : '○ not reachable (see README, "Optional MolScribe server")'}
+            {backendOk === null ? 'checking…' : backendOk ? `● connected — ${backendEngine ?? 'server'}` : '○ not reachable (see README, "Optional recognition server")'}
           </div>
         )}
         <h3 style={{ fontSize: 14, marginBottom: 4 }}>Browsers</h3>

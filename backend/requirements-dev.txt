@@ -1,3 +1,9 @@
--r requirements.txt
+# Tests do not need DECIMER/TensorFlow: they use a fake model.
+fastapi>=0.115
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9
+pillow>=10.3
+rdkit>=2024.9
+numpy
 pytest>=8
 httpx>=0.27

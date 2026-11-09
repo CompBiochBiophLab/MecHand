@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MecHand</title>
+    <!-- Full-window app: no page margin or page scroll (Safari would otherwise
+         scroll the toolbar out of reach, and iPad would bounce while drawing). -->
+    <style>
+      html, body, #root { margin: 0; height: 100%; overflow: hidden; overscroll-behavior: none; }
+    </style>
     <!-- Ketcher's drag-and-drop dependency expects a Node-style `global`. -->
     <script>window.global = window.global || window;</script>
   </head>

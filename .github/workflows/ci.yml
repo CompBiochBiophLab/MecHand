@@ -1,4 +1,4 @@
-# Tests on pull requests and pushes: app (unit tests, types, build) and backend (API tests with a fake model).
+# Checks every push and pull request.
 name: CI
 
 on:
@@ -8,6 +8,7 @@ on:
 
 jobs:
   app:
+    name: App (types, unit tests, recognition benchmark, build)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -24,7 +25,46 @@ jobs:
       - run: npm test
       - run: npm run build
 
-  backend:
+  latex:
+    name: LaTeX export compiles (TikZ, chemfig)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ketcher-mechhand
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: ketcher-mechhand/package-lock.json
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends texlive-latex-extra texlive-pictures texlive-science
+      - run: npm ci
+      - run: npm run test:latex
+
+  e2e:
+    name: Browser tests (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    defaults:
+      run:
+        working-directory: ketcher-mechhand
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: ketcher-mechhand/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: npx playwright test --project=${{ matrix.browser }}
+
+  server:
+    name: Recognition server (Python 3.13)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -33,6 +73,6 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
         with:
-          python-version: '3.11'
-      - run: pip install fastapi uvicorn python-multipart pillow "numpy<2" opencv-python-headless pytest httpx
+          python-version: '3.13'
+      - run: pip install -r requirements-dev.txt
       - run: pytest -q

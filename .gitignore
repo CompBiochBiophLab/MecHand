@@ -6,7 +6,8 @@ build/
 .pnp.*
 *.tsbuildinfo
 
-# ── Python backend ────────────────────────────────────────────────────────────
+# ── Python (optional recognition server) ─────────────────────────────────────
+.venv/
 backend/.venv/
 backend/__pycache__/
 backend/**/__pycache__/
@@ -17,14 +18,12 @@ backend/*.egg-info/
 .Python
 .env
 
-# MolScribe model weights (large; download on first run)
+# DECIMER model weights (downloaded on first run)
 backend/models/
 
-# ── Jekyll docs ───────────────────────────────────────────────────────────────
-docs/_site/
-docs/.jekyll-cache/
-docs/.jekyll-metadata
-docs/vendor/
+# ── VitePress docs ────────────────────────────────────────────────────────────
+docs/.vitepress/dist/
+docs/.vitepress/cache/
 
 # ── macOS ─────────────────────────────────────────────────────────────────────
 .DS_Store
@@ -56,3 +55,15 @@ manuscript/sn-*.bst
 # ── Playwright ────────────────────────────────────────────────────────────────
 ketcher-mechhand/test-results/
 ketcher-mechhand/playwright-report/
+
+# ── LaTeX tutorial build (see tutorial/Makefile; the PDF is published to docs/public/tutorial.pdf)
+tutorial/*.aux
+tutorial/*.fdb_latexmk
+tutorial/*.fls
+tutorial/*.out
+tutorial/*.toc
+tutorial/*.synctex.gz
+tutorial/mechand-tutorial.pdf
+
+# Personal notes
+kk.txt

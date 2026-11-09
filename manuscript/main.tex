@@ -67,13 +67,15 @@ directly integrated into digital manuscripts.
 We present \textbf{MecHand}, an open-source web application built on the
 Ketcher chemical drawing platform that accepts freehand input from stylus,
 trackpad or mouse and converts sketched mechanisms into clean, editable
-chemical diagrams. Stroke classification heuristics separate atom nodes,
-bonds and curved mechanism arrows before the sketch is rasterised and
-processed by MolScribe, a transformer-based molecular image recognition
-model. A ``consolidating'' interface presents the recognised structure to
+chemical diagrams. An online sketch recogniser running in the browser reads
+the pen strokes directly: geometric rules separate bonds, atom labels, charges
+and curved electron-flow arrows, atom labels are classified with the \$P
+point-cloud recogniser, and every curved arrow is anchored to an atom or bond
+and checked for consistent electron flow. A ``consolidating'' interface presents the recognised structure to
 the user for confirmation or correction before it is committed to the
-canvas. MecHand exports diagrams directly to \texttt{chemfig} and TikZ
-(for LaTeX), as well as SVG and PNG. A context-sensitive help system
+canvas. MecHand exports diagrams, including curved arrows, directly to TikZ
+and \texttt{chemfig} for \LaTeX{}, and to ChemDraw (CDXML) and MDL formats.
+A context-sensitive help system
 provides tool descriptions calibrated for both expert chemists and
 undergraduate students.
 
@@ -81,12 +83,12 @@ undergraduate students.
 MecHand fills a gap between the informality of hand sketching and the
 rigidity of graphical editors, lowering the barrier to producing
 publication-quality mechanism figures. The tool is freely available at
-\url{https://github.com/JordiVillaFreixa/Article_MecHand} and runs entirely
+\url{https://github.com/JordiVillaFreixa/MecHand} and runs entirely
 in the browser without installation, with an optional self-hosted
-backend for sketch recognition.}
+DECIMER server for image-based structure recognition.}
 
-\keywords{reaction mechanism, chemical drawing, sketch recognition, MolScribe,
-  chemfig, TikZ, open source}
+\keywords{reaction mechanism, chemical drawing, sketch recognition,
+  electron-flow arrows, chemfig, TikZ, open source}
 
 \maketitle
 
@@ -98,7 +100,7 @@ Reaction mechanisms are routinely drawn by hand on paper or whiteboards
 during teaching and research discussions. Translating these sketches into
 digital manuscript-quality figures currently requires either expensive
 commercial software (e.g.\ ChemDraw, Marvin) or manual reconstruction in
-programmatic tools such as \texttt{chemfig}~\cite{Teletchea2011} or
+programmatic tools such as \texttt{chemfig}~\cite{Tellechea2024} or
 TikZ~\cite{Tantau2015}.
 
 %% TODO: expand — survey of existing tools, gap analysis
@@ -112,15 +114,19 @@ MecHand is structured as a three-layer system
 (Figure~\ref{fig:architecture}):
 
 \begin{enumerate}
-  \item \textbf{Frontend} — a fork of Ketcher~\cite{Ketcher} augmented
-        with a freehand drawing overlay, the consolidating interface,
-        a context-sensitive help system, and chemfig/TikZ export modules.
-  \item \textbf{Stroke classifier} — a lightweight geometric module that
-        partitions pointer-event strokes into atom sites, bonds and
-        mechanism arrows before recognition.
-  \item \textbf{Recognition backend} — a FastAPI service wrapping
-        MolScribe~\cite{Qian2023} for molecular structure recognition and
-        a contour-based arrow detector (Section~\ref{sec:arrows}).
+  \item \textbf{Frontend} — the Ketcher editor~\cite{Ketcher}, used as
+        a pinned npm dependency rather than a fork, augmented with a
+        freehand ink layer, the consolidating interface, a context-sensitive
+        help system, mechanism templates and chemfig/TikZ export modules.
+  \item \textbf{Online sketch recogniser} — a TypeScript module running in
+        the browser that turns pointer-event strokes into a molecular graph
+        with curved electron-flow arrows, using ShortStraw corner
+        finding~\cite{Wolin2008} and the \$P point-cloud
+        recogniser~\cite{Vatavu2012} for atom labels and charges
+        (Sections~\ref{sec:strokes} and~\ref{sec:arrows}).
+  \item \textbf{Optional recognition server} — a FastAPI service wrapping
+        DECIMER~\cite{Rajan2023ai,Brinkhaus2024} as an alternative,
+        image-based engine for the structures.
 \end{enumerate}
 
 \subsection{Freehand input and stroke classification}
@@ -158,6 +164,9 @@ hand-drawn molecule dataset~\cite{Rajan2023}, which contains X
 structures scanned from student notebooks and published manuscripts.
 
 %% TODO: table of Tanimoto / SMILES accuracy
+%% Note (software, 2026-11-09): the repository's synthetic-handwriting benchmark
+%% (13 mechanism templates x 3 hand styles, `npm test`) gives atoms 87 %,
+%% bonds 85 %, curved/reaction arrows 100 %, whole mechanism exact 31 %.
 
 \subsection{User evaluation}
 
@@ -173,12 +182,15 @@ structures scanned from student notebooks and published manuscripts.
 \begin{itemize}
   \item \textbf{Project name:} MecHand
   \item \textbf{Project home page:}
-        \url{https://github.com/JordiVillaFreixa/Article_MecHand}
+        \url{https://jordivillafreixa.github.io/MecHand/}
+        (source: \url{https://github.com/JordiVillaFreixa/MecHand})
   \item \textbf{Operating system(s):} Platform independent (web application)
-  \item \textbf{Programming language:} TypeScript (frontend), Python (backend)
+  \item \textbf{Programming language:} TypeScript (web application);
+        Python (optional recognition server)
   \item \textbf{Other requirements:}
-        Modern browser (Chrome~\(\geq\)110, Firefox~\(\geq\)115,
-        Safari~\(\geq\)16); optional Python~3.10+ for the recognition backend.
+        A current web browser (Chrome, Edge, Firefox or Safari; tested
+        automatically with Chromium, Firefox and WebKit); optional
+        Python~3.10--3.13 for the DECIMER recognition server.
   \item \textbf{License:} MIT (MecHand additions);
         Apache~2.0 (Ketcher upstream)
   \item \textbf{Any restrictions to use by non-academics:} None

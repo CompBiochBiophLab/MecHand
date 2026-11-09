@@ -18,11 +18,11 @@
  */
 
 import type { Scene, SceneArrow, SceneAtom, SceneBond } from '../scene/types';
-import type { PointCloudRecognizer } from './dollarP';
+import type { Match, PointCloudRecognizer } from './dollarP';
 import {
   type BBox, type Pt, type Segment,
   angleBetween, bbox, bboxCenter, bboxDiag, bboxGap, dist, pathLength,
-  pointSegment, resampleBySpacing, segLength, shortStraw, straightness, vec,
+  pointSegment, resampleBySpacing, robustStraightness, segLength, shortStraw, straightness, vec,
 } from './geometry';
 
 export interface InkStroke {
@@ -58,6 +58,8 @@ export interface SketchResult {
   arrows: RecognizedArrow[];
   /** Drawn bond length in pixels (1 Ketcher unit). */
   bondLengthPx: number;
+  /** Stroke scale used for classification (px), for diagnostics. */
+  scalePx: number;
   /** 0..1 rough overall confidence. */
   confidence: number;
 }
@@ -67,6 +69,8 @@ export interface SketchOptions {
   defaultBondPx?: number;
   /** Minimum $P score to accept a character. */
   minSymbolScore?: number;
+  /** Diagnostics callback (development only). */
+  debug?: (what: string, data: unknown) => void;
 }
 
 // Element symbols the label decoder accepts (case-sensitive).
@@ -80,6 +84,7 @@ const SHAPE_LETTERS: Record<string, string[]> = {
   I: ['I', 'l'], O: ['O', 'o'], C: ['C', 'c'], S: ['S', 's'], P: ['P', 'p'], K: ['K', 'k'],
   r: ['r'], i: ['i'], t: ['t'], a: ['a'], H: ['H'], N: ['N'], F: ['F'], B: ['B'], L: ['L'],
   e: ['e'], n: ['n'], u: ['u'], g: ['g'], d: ['d'], h: ['h'], M: ['M'], Z: ['Z'], A: ['A'],
+  '2': ['2'], '3': ['3'], '4': ['4'],
 };
 
 interface CharGuess {
@@ -108,7 +113,7 @@ export function recognizeSketch(
     for (let k = 1; k < corners.length; k++) {
       const piece = rp.slice(corners[k - 1], corners[k] + 1);
       if (piece.length < 2) continue;
-      out.push({ seg: { a: piece[0], b: piece[piece.length - 1] }, st: straightness(piece), len: pathLength(piece) });
+      out.push({ seg: { a: piece[0], b: piece[piece.length - 1] }, st: robustStraightness(piece), len: pathLength(piece) });
     }
     return out;
   });
@@ -137,10 +142,38 @@ export function recognizeSketch(
       });
       if (touches) partOfLetter.add(i);
     }
+    // A short upright stroke beside a letter, as tall as the letter and level
+    // with it, is the next letter (the l of "Cl", the I of "Il"), not a bond.
+    for (const i of [...Array(n).keys()]) {
+      if (!straightLong(i, scale) || lengths[i] > 0.85 * scale) continue;
+      const bi = boxes[i];
+      if (bi.w > 0.4 * bi.h) continue;
+      const besideLetter = letterish.some((j) => {
+        const bj = boxes[j];
+        const gapX = Math.max(bj.x - (bi.x + bi.w), bi.x - (bj.x + bj.w));
+        const overlapY = Math.min(bi.y + bi.h, bj.y + bj.h) - Math.max(bi.y, bj.y);
+        return gapX < 0.3 * scale && overlapY > 0.7 * bi.h && bi.h < 1.4 * bj.h;
+      });
+      if (besideLetter) partOfLetter.add(i);
+    }
+    // Strokes meeting end to end at an acute angle are a letter (N, M, Z, V):
+    // bonds never meet at less than 60° (cyclopropane), letters often do.
+    const shortish = [...Array(n).keys()].filter((i) => pieces[i].length === 1 && pieces[i][0].st > 0.93 && lengths[i] < 0.55 * scale);
+    for (const i of shortish) for (const j of shortish) {
+      if (i >= j) continue;
+      for (const p of [pts[i][0], pts[i][pts[i].length - 1]]) for (const q of [pts[j][0], pts[j][pts[j].length - 1]]) {
+        if (dist(p, q) > 0.12 * scale) continue;
+        const pi = p === pts[i][0] ? pts[i][pts[i].length - 1] : pts[i][0];
+        const qj = q === pts[j][0] ? pts[j][pts[j].length - 1] : pts[j][0];
+        if (angleBetween(vec(p, pi), vec(q, qj)) < (50 * Math.PI) / 180) { partOfLetter.add(i); partOfLetter.add(j); }
+      }
+    }
     // Short straight strokes that cross each other or meet in a T are letters
     // (+, H, F, t, K…); bonds meet only end to end. Then strokes touching a
     // letter part with an end are letter parts too (the top bar of an F).
-    const short = [...Array(n).keys()].filter((i) => straightLong(i, scale) && lengths[i] < 0.85 * scale);
+    // Letter-sized straight strokes only (≤ ~0.5 L): a bond that stops next to a
+    // letter stem would otherwise look like the bar of a T.
+    const short = [...Array(n).keys()].filter((i) => pieces[i].length > 0 && pieces[i].every((p) => p.st > 0.93) && lengths[i] < 0.55 * scale);
     const ends = (i: number) => [pts[i][0], pts[i][pts[i].length - 1]];
     const tJunction = (i: number, j: number) =>
       ends(i).some((p) => {
@@ -176,8 +209,12 @@ export function recognizeSketch(
     const order = [...Array(n).keys()].sort((a, b) => lengths[b] - lengths[a]);
     for (const i of order) {
       if (roles[i] !== 'ignored' || pts[i].length < 2 || partOfLetter.has(i)) continue;
-      if (lengths[i] < 0.6 * scale || straightness(pts[i]) < 0.3) continue; // too short, or a closed letter (O)
+      // Electron-flow arrows span at least most of a bond; shorter strokes are letters.
+      if (lengths[i] < 0.75 * scale) continue;
       const inStroke = splitInStrokeHead(pts[i], scale);
+      // A closed loop is a letter (O), not a shaft; judged on the shaft, because
+      // a head drawn in the same stroke brings the end back towards the tip.
+      if (straightness(inStroke ? inStroke.shaft : pts[i]) < 0.3) continue;
       let shaft = inStroke ? inStroke.shaft : pts[i];
       let barbs = inStroke ? inStroke.barbs : 0;
       let head: { stroke: number; barbs: number; atStart: boolean } | null = null;
@@ -189,9 +226,13 @@ export function recognizeSketch(
           if (head.atStart) shaft = shaft.slice().reverse();
         }
       }
-      if (barbs === 0 || !smooth(shaft, scale)) continue;
-      const kindHint = straightness(shaft) > 0.93 ? 'straight' : 'curved';
-      if (kindHint === 'straight' && pathLength(shaft) < 0.8 * scale) continue;
+      if (barbs === 0 || !smooth(shaft, scale, Boolean(inStroke))) continue;
+      // Judge straightness without the tip region (an in-stroke head can bend it).
+      const body = inStroke ? trimEnd(shaft, 0.2 * scale) : shaft;
+      const kindHint = straightness(body) > 0.93 ? 'straight' : 'curved';
+      // Reaction arrows are long and have a full head; a long bond with a charge
+      // sign near its end is not one.
+      if (kindHint === 'straight' && (pathLength(shaft) < 1.2 * scale || barbs < 2)) continue;
       if (head) {
         headUsed.add(head.stroke);
         roles[head.stroke] = 'arrowhead';
@@ -207,6 +248,7 @@ export function recognizeSketch(
   const notArrow = (i: number) => roles[i] === 'ignored';
   L = estimateScale(pts, straws, lengths, boxes, L, notArrow);
   const recognizedArrows = detectArrows(L);
+  opts.debug?.('letterParts', { scale: L, parts: [...partOfLetter] });
 
   // Dots: tiny strokes (lone pairs, radical dots, the dot of an "i").
   for (let i = 0; i < n; i++) {
@@ -226,7 +268,7 @@ export function recognizeSketch(
     const cb = unionBox(cluster.map((i) => boxes[i]));
     const dots = dotIdx.filter((d) => bboxGap(boxes[d], cb) < 0.15 * L && boxes[d].y + boxes[d].h <= cb.y + cb.h * 0.5);
     dots.forEach((d) => (roles[d] = 'text'));
-    return decodeLabel(splitCharacters([...cluster, ...dots], pts, boxes, L), symbols, minScore);
+    return readLabel([...cluster, ...dots], pts, boxes, L, symbols, minScore);
   });
 
   // 4. Bonds ----------------------------------------------------------------
@@ -252,15 +294,25 @@ export function recognizeSketch(
   const plusPx: Pt[] = [];
   const labels: RecognizedLabel[] = [];
 
+  const removed = new Set<number>();
   labelGuesses.forEach((g, ci) => {
     if (!g) return;
     const center = bboxCenter(unionBox(clusters[ci].map((i) => boxes[i])));
-    const nearest = nearestNode(center, pos);
+    const nearest = nearestNode(center, pos.map((p, k) => (removed.has(k) ? { x: Infinity, y: Infinity } : p)));
     if (!g.element && g.charge !== 0) {
-      // Charge sign alone: attach to the nearest atom, or a standalone plus.
-      if (nearest && nearest.d < 0.85 * L) {
-        atoms[nearest.index].charge += g.charge;
-        labels.push({ text: g.text, score: g.score, center, atom: nearest.index });
+      // A charge is written as a superscript at the upper right of its atom:
+      // among atoms within reach, prefer those the sign sits up and to the right of.
+      let target = -1, bestCost = Infinity;
+      pos.forEach((p, k) => {
+        if (removed.has(k)) return;
+        const d = dist(p, center);
+        if (d > 0.85 * L) return;
+        const cost = d / L + (center.x < p.x - 0.05 * L ? 0.4 : 0) + (center.y > p.y + 0.1 * L ? 0.2 : 0);
+        if (cost < bestCost) { bestCost = cost; target = k; }
+      });
+      if (target >= 0) {
+        atoms[target].charge += g.charge;
+        labels.push({ text: g.text, score: g.score, center, atom: target });
       } else if (g.charge > 0) {
         plusPx.push(center);
         labels.push({ text: '+', score: g.score, center, atom: -1 });
@@ -275,6 +327,19 @@ export function recognizeSketch(
       atoms[vertex].charge += g.charge;
       pos[vertex] = center;
       labels.push({ text: g.text, score: g.score, center, atom: vertex });
+      // Bonds stop short of a label, so the ends of several bonds to the same
+      // labelled atom (B in BF3, a metal centre) need not meet: all bare bond
+      // ends close to the label belong to that atom.
+      for (let k = 0; k < nodePts.length; k++) {
+        if (k === vertex || removed.has(k) || atoms[k].symbol !== 'C' || atoms[k].charge !== 0) continue;
+        if (dist(nodePts[k], center) < 0.5 * L) {
+          bonds.forEach((b) => {
+            if (b.begin === k) b.begin = vertex;
+            if (b.end === k) b.end = vertex;
+          });
+          removed.add(k);
+        }
+      }
     } else {
       atoms.push({ symbol: g.element, x: 0, y: 0, charge: g.charge, molecule: 0 });
       pos.push(center);
@@ -289,6 +354,27 @@ export function recognizeSketch(
     const near = nearestNode(c, pos);
     const otherDots = dotIdx.filter((e) => e !== d && roles[e] === 'dot' && dist(bboxCenter(boxes[e]), c) < 0.2 * L);
     if (near && near.d < 0.5 * L && otherDots.length === 0) atoms[near.index].radical = 2;
+  }
+
+  // Drop merged vertices; drop bonds that became loops or duplicates.
+  if (removed.size) {
+    const keep = atoms.map((_, i) => i).filter((i) => !removed.has(i));
+    const newIndex = new Map(keep.map((old, i) => [old, i]));
+    const kept = keep.map((i) => atoms[i]);
+    const keptPos = keep.map((i) => pos[i]);
+    const seenBonds = new Set<string>();
+    const keptBonds = bonds
+      .map((b) => ({ ...b, begin: newIndex.get(b.begin)!, end: newIndex.get(b.end)! }))
+      .filter((b) => {
+        const key = [Math.min(b.begin, b.end), Math.max(b.begin, b.end)].join('-');
+        if (b.begin === b.end || seenBonds.has(key)) return false;
+        seenBonds.add(key);
+        return true;
+      });
+    labels.forEach((l) => { if (l.atom >= 0) l.atom = newIndex.get(l.atom) ?? -1; });
+    atoms.splice(0, atoms.length, ...kept);
+    pos.splice(0, pos.length, ...keptPos);
+    bonds.splice(0, bonds.length, ...keptBonds);
   }
 
   // Final scale: median distance between bonded atom centres (= 1 Ketcher unit).
@@ -329,7 +415,7 @@ export function recognizeSketch(
   const labelScore = labels.length ? labels.reduce((a, l) => a + l.score, 0) / labels.length : 1;
   const confidence = n === 0 ? 0 : (interpreted / n) * 0.6 + labelScore * 0.4;
 
-  return { scene, roles, labels, arrows, bondLengthPx: unit, confidence };
+  return { scene, roles, labels, arrows, bondLengthPx: unit, scalePx: L, confidence };
 }
 
 // ── Scale ────────────────────────────────────────────────────────────────────
@@ -389,8 +475,8 @@ function estimateScale(
  * Arrowhead drawn without lifting the pen: the stroke ends with one or two
  * short segments that turn back sharply. Returns the shaft and the barb count.
  */
-function splitInStrokeHead(raw: Pt[], L: number): { shaft: Pt[]; barbs: number } | null {
-  if (pathLength(raw) < 0.9 * L) return null;
+export function splitInStrokeHead(raw: Pt[], L: number): { shaft: Pt[]; barbs: number } | null {
+  if (pathLength(raw) < 0.75 * L) return null;
   // Examine the last ~L of the stroke at a fine resolution (heads are small).
   let acc = 0, from = raw.length - 1;
   while (from > 0 && acc < L) {
@@ -426,7 +512,7 @@ function splitInStrokeHead(raw: Pt[], L: number): { shaft: Pt[]; barbs: number }
     }
   }
   const shaft = [...raw.slice(0, from + 1), ...tail.slice(1, tip + 1)];
-  if (pathLength(shaft) < 0.85 * L) return null;
+  if (pathLength(shaft) < 0.6 * L) return null;
   return { shaft, barbs: turns >= 1 ? 2 : 1 };
 }
 
@@ -472,11 +558,25 @@ function findSeparateHead(
   return best ? { stroke: best.stroke, barbs: best.barbs, atStart: best.atStart } : null;
 }
 
+/** The polyline without its last `len` of path length. */
+function trimEnd(pts: Pt[], len: number): Pt[] {
+  let acc = 0;
+  for (let i = pts.length - 1; i > 0; i--) {
+    acc += dist(pts[i], pts[i - 1]);
+    if (acc >= len) return pts.slice(0, Math.max(2, i));
+  }
+  return pts;
+}
+
 /** Arrow shafts are smooth: no sharp corner (unlike an N, a Z or a zig-zag chain). */
-function smooth(shaft: Pt[], L: number): boolean {
-  const r = resampleBySpacing(shaft, Math.max(1, L / 12));
+export function smooth(shaft: Pt[], L: number, headInStroke: boolean): boolean {
+  const spacing = Math.max(1, L / 12);
+  const r = resampleBySpacing(shaft, spacing);
   const W = 2;
-  for (let i = W; i < r.length - W; i++) {
+  // When the head is drawn without lifting the pen, the detected tip can lag a
+  // little and keep the start of a barb: ignore the last ~0.25 L in that case.
+  const end = r.length - W - (headInStroke ? Math.ceil((0.25 * L) / spacing) : 0);
+  for (let i = W; i < end; i++) {
     if (angleBetween(vec(r[i - W], r[i]), vec(r[i], r[i + W])) > (65 * Math.PI) / 180) return false;
   }
   return true;
@@ -503,14 +603,18 @@ function clusterBoxes(idx: number[], boxes: BBox[], gap: number): number[][] {
 }
 
 /** Split a text cluster into characters by horizontal overlap of strokes. */
-function splitCharacters(cluster: number[], pts: Pt[][], boxes: BBox[], L: number): { strokes: Pt[][]; box: BBox }[] {
+function splitCharacters(
+  cluster: number[], pts: Pt[][], boxes: BBox[], L: number, tolerance: number,
+): { strokes: Pt[][]; box: BBox }[] {
   const sorted = cluster.slice().sort((a, b) => boxes[a].x - boxes[b].x);
   const chars: { ids: number[]; box: BBox }[] = [];
   for (const i of sorted) {
     const b = boxes[i];
     const last = chars[chars.length - 1];
     const overlap = last ? Math.min(last.box.x + last.box.w, b.x + b.w) - Math.max(last.box.x, b.x) : -1;
-    if (last && overlap > -0.03 * L && overlap > -0.15 * Math.min(last.box.w, b.w)) {
+    // Strokes of one character overlap horizontally (or almost touch, e.g. the
+    // bar and stems of an H); a new character starts after a gap.
+    if (last && overlap > -tolerance * L) {
       last.ids.push(i);
       last.box = unionBox([last.box, b]);
     } else {
@@ -518,6 +622,26 @@ function splitCharacters(cluster: number[], pts: Pt[][], boxes: BBox[], L: numbe
     }
   }
   return chars.map((c) => ({ strokes: c.ids.map((i) => pts[i]), box: c.box }));
+}
+
+/**
+ * Letter spacing varies between writers, so the cluster is segmented with a few
+ * gap tolerances and the best valid reading wins (e.g. "H" vs "I-I", "Cl" vs "d").
+ */
+function readLabel(
+  cluster: number[], pts: Pt[][], boxes: BBox[], L: number, symbols: PointCloudRecognizer, minScore: number,
+): DecodedLabel | null {
+  let best: DecodedLabel | null = null;
+  const seen = new Set<string>();
+  for (const tol of [0, 0.04, 0.09]) {
+    const chars = splitCharacters(cluster, pts, boxes, L, tol);
+    const key = chars.map((c) => c.strokes.length).join(',');
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const r = decodeLabel(chars, symbols, minScore);
+    if (r && (!best || r.score > best.score)) best = r;
+  }
+  return best;
 }
 
 /** ⊕ / ⊖: if one closed stroke encloses all the others, classify the inside only. */
@@ -535,7 +659,7 @@ function withoutEnclosingCircle(strokes: Pt[][]): Pt[][] {
 }
 
 /** Do two polylines cross (any pair of segments intersects)? */
-function crosses(a: Pt[], b: Pt[]): boolean {
+export function crosses(a: Pt[], b: Pt[]): boolean {
   const ccw = (p: Pt, q: Pt, r: Pt) => (r.y - p.y) * (q.x - p.x) - (q.y - p.y) * (r.x - p.x);
   const step = (s: Pt[]) => Math.max(1, Math.floor(s.length / 12));
   for (let i = step(a); i < a.length; i += step(a)) {
@@ -556,12 +680,27 @@ interface DecodedLabel {
 }
 
 /** Choose the best valid reading of a sequence of characters. */
+// The same group of strokes is classified once, whichever segmentation it appears in.
+const strokeIds = new WeakMap<Pt[], number>();
+let nextStrokeId = 0;
+const classifyCache = new WeakMap<PointCloudRecognizer, Map<string, Match[]>>();
+function classifyCached(symbols: PointCloudRecognizer, strokes: Pt[][]): Match[] {
+  const key = strokes.map((s) => {
+    if (!strokeIds.has(s)) strokeIds.set(s, nextStrokeId++);
+    return strokeIds.get(s);
+  }).join(',');
+  let cache = classifyCache.get(symbols);
+  if (!cache) classifyCache.set(symbols, (cache = new Map()));
+  if (!cache.has(key)) cache.set(key, symbols.classify(withoutEnclosingCircle(strokes), 4));
+  return cache.get(key)!;
+}
+
 function decodeLabel(
   chars: { strokes: Pt[][]; box: BBox }[], symbols: PointCloudRecognizer, minScore: number,
 ): DecodedLabel | null {
   const guesses: CharGuess[] = chars.map((c) => ({
     box: c.box,
-    options: symbols.classify(withoutEnclosingCircle(c.strokes), 4).flatMap((m) =>
+    options: classifyCached(symbols, c.strokes).flatMap((m) =>
       m.symbol === '+' || m.symbol === '-'
         ? [{ ch: m.symbol, score: m.score }]
         : (SHAPE_LETTERS[m.symbol] ?? [m.symbol]).map((ch) => ({ ch, score: m.score })),
@@ -581,21 +720,34 @@ function decodeLabel(
     for (const o of limit[k].options.slice(0, 4)) walk(k + 1, [...acc, o]);
   };
   walk(0, []);
-  return best && (best as DecodedLabel).score >= minScore ? best : null;
+  if (!best) return null;
+  const b = best as DecodedLabel;
+  if (b.score >= minScore) return b;
+  // A slightly weaker reading is still accepted when every character clearly
+  // beats its runner-up (an unusual but unambiguous handwriting).
+  const clearWinners = limit.every((g) => {
+    // Margin between different shapes ("O" and "o" are the same shape).
+    const scores = [...new Set(g.options.map((o) => o.score))].sort((p, q) => q - p);
+    return scores.length < 2 || scores[0] - scores[1] >= 0.1;
+  });
+  return b.score >= minScore - 0.1 && clearWinners ? b : null;
 }
 
-/** "Cl", "O-", "N+", "OH", "-", "+" … → element + charge, or null if invalid. */
+/** "Cl", "O-", "N+", "OH", "Pt2-", "-", "+" … → element + charge, or null if invalid. */
 function interpret(seq: { ch: string; score: number }[]): DecodedLabel | null {
   const text = seq.map((s) => s.ch).join('');
   const score = seq.reduce((a, s) => a + s.score, 0) / seq.length;
-  const m = /^([A-Z][a-z]?)?(H[2-3]?)?([+-]*)$/.exec(text);
+  // element, optional H count, optional charge magnitude (superscript digit), signs
+  const m = /^([A-Z][a-z]?)?(H[2-3]?)?([2-4])?([+-]*)$/.exec(text);
   if (!m) return null;
   const element = m[1] ?? null;
   if (element && !ELEMENTS.has(element)) return null;
   if (!element && m[2]) return null;
-  const signs = m[3] ?? '';
+  const signs = m[4] ?? '';
+  if (m[3] && signs.length !== 1) return null; // a digit is only a charge with one sign: 2-, 3+
   if (signs.includes('+') && signs.includes('-')) return null;
-  const charge = signs.length * (signs.startsWith('-') ? -1 : 1);
+  const magnitude = m[3] ? Number(m[3]) : signs.length;
+  const charge = magnitude * (signs.startsWith('-') ? -1 : 1);
   if (!element && charge === 0) return null;
   // Prefer readings that use fewer lowercase substitutions of ambiguous shapes.
   const penalty = element && element.length === 2 && !['Cl', 'Br', 'Si', 'Li', 'Na', 'Pt'].includes(element) ? 0.05 : 0;

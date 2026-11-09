@@ -1,19 +1,19 @@
-FROM python:3.11-slim
+FROM python:3.13-slim
 
 WORKDIR /app
 
-# System libraries used by OpenCV
+# Libraries used by OpenCV (a DECIMER dependency)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libglib2.0-0 libgomp1 \
+    libglib2.0-0 libgomp1 libgl1 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt requirements-nodeps.txt ./
-RUN pip install --no-cache-dir -r requirements.txt \
- && pip install --no-cache-dir --no-deps -r requirements-nodeps.txt
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Download the MolScribe checkpoint (~1.1 GB) at build time so the first
+# Download the DECIMER hand-drawn model (~285 MB) at build time so the first
 # request is fast. Remove this line to download it on first start instead.
-RUN python -c "from huggingface_hub import hf_hub_download; hf_hub_download('yujieq/MolScribe', 'swin_base_char_aux_1m.pth')"
+ENV PYSTOW_HOME=/models
+RUN python -c "import DECIMER; DECIMER.load_models(printed=False, hand_drawn=True)"
 
 COPY . .
 

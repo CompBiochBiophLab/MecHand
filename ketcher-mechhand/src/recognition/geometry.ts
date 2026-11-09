@@ -49,6 +49,25 @@ export function straightness(pts: Pt[]): number {
   return arc > 0 ? dist(pts[0], pts[pts.length - 1]) / arc : 1;
 }
 
+/**
+ * Straightness that is robust to pen jitter: a short stroke sampled densely with
+ * ±0.5 px noise has an inflated path length, so smooth it first (moving average
+ * over ~1/8 of the points) and then take chord / arc.
+ */
+export function robustStraightness(pts: Pt[]): number {
+  if (pts.length < 5) return straightness(pts);
+  const w = Math.max(1, Math.floor(pts.length / 16));
+  const smooth = pts.map((_, i) => {
+    let x = 0, y = 0, c = 0;
+    for (let k = Math.max(0, i - w); k <= Math.min(pts.length - 1, i + w); k++) { x += pts[k].x; y += pts[k].y; c++; }
+    return { x: x / c, y: y / c };
+  });
+  // Keep the true endpoints (smoothing pulls them inwards).
+  smooth[0] = pts[0];
+  smooth[smooth.length - 1] = pts[pts.length - 1];
+  return straightness(smooth);
+}
+
 /** Resample a polyline to points spaced `spacing` apart along the path. */
 export function resampleBySpacing(pts: Pt[], spacing: number): Pt[] {
   if (pts.length < 2 || spacing <= 0) return pts.slice();

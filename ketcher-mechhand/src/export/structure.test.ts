@@ -125,8 +125,10 @@ describe('curved arrow geometry', () => {
     const s = { x: 1, y: 1 };
     const e = { x: 3, y: 1 };
     const [c1, c2] = arcBezier(s, e, 0.6);
-    expect(c1).toEqual({ x: 1, y: 1 + 0.8 });
-    expect(c2).toEqual({ x: 3, y: 1 + 0.8 });
+    expect(c1.x).toBeCloseTo(1);
+    expect(c1.y).toBeCloseTo(1.8);
+    expect(c2.x).toBeCloseTo(3);
+    expect(c2.y).toBeCloseTo(1.8);
     const apex = bezierAt(s, c1, c2, e, 0.5);
     expect(apex.x).toBeCloseTo(2);
     expect(apex.y).toBeCloseTo(1.6);

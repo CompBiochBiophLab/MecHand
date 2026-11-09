@@ -1,28 +1,8 @@
-# Web service
-fastapi>=0.111
-uvicorn[standard]>=0.29
+# MecHand optional recognition server. Python 3.10–3.13
+# (TensorFlow 2.20, used by DECIMER, has no wheels for Python 3.14 yet).
+fastapi>=0.115
+uvicorn[standard]>=0.30
 python-multipart>=0.0.9
 pillow>=10.3
-huggingface_hub>=0.23
-
-# Core AI & Chemistry dependencies (Modern & Native)
-numpy>=1.26,<2
-torch>=2.1
-torchvision
-opencv-python-headless>=4.9,<4.12
-pandas
-matplotlib
-rdkit>=2023.9
-
-# MolScribe directly from updated GitHub repository
-git+https://github.com/thomas0809/MolScribe
-# Specific auxiliary dependencies required by the model
-SmilesPE==0.0.3
-albumentations==1.1.0
-timm==0.4.12
-configargparse
-pyyaml
-sentencepiece
-tqdm
-requests
-six
+rdkit>=2024.9
+decimer>=2.8.1,<3        # brings TensorFlow, OpenCV and the model downloader

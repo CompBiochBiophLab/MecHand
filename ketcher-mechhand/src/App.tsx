@@ -4,7 +4,7 @@ import { StandaloneStructServiceProvider } from 'ketcher-standalone';
 import 'ketcher-react/dist/index.css';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FreehandLayer } from './ink/FreehandLayer';
-import { MolScribeClient } from './recognition/MolScribeClient';
+import { RecognitionServer } from './recognition/serverClient';
 import { type MechanismIssue, checkMechanism } from './recognition/mechanismCheck';
 import { buildModel, loadUserSamples, saveUserSamples } from './recognition/model';
 import type { SymbolSample } from './recognition/dollarP';
@@ -47,9 +47,10 @@ export default function App() {
   const [dialog, setDialog] = useState<Dialog>({ kind: 'none' });
   const [userSamples, setUserSamples] = useState<SymbolSample[]>(loadUserSamples);
   const model = useMemo(() => buildModel({ userSamples }), [userSamples]);
-  const [engine, setEngine] = useState<Engine>(params.get('engine') === 'molscribe' ? 'molscribe' : 'browser');
-  const [backendUrl, setBackendUrl] = useState(params.get('backend') ?? 'http://localhost:8000');
+  const [engine, setEngine] = useState<Engine>(params.get('engine') === 'server' ? 'server' : 'browser');
+  const [backendUrl, setBackendUrl] = useState(params.get('server') ?? 'http://localhost:8000');
   const [backendOk, setBackendOk] = useState<boolean | null>(null);
+  const [backendEngine, setBackendEngine] = useState<string | undefined>();
 
   // Mount the ink layer once Ketcher is ready.
   useEffect(() => {
@@ -66,9 +67,12 @@ export default function App() {
   useEffect(() => layerRef.current?.setEnabled(freehand), [freehand, strokeCount]);
 
   useEffect(() => {
-    if (engine !== 'molscribe') return;
+    if (engine !== 'server') return;
     setBackendOk(null);
-    new MolScribeClient({ backendUrl }).isAvailable().then(setBackendOk);
+    new RecognitionServer(backendUrl).health().then((h) => {
+      setBackendOk(h.ok);
+      setBackendEngine(h.engine);
+    });
   }, [engine, backendUrl]);
 
   const recognize = useCallback(async () => {
@@ -77,13 +81,17 @@ export default function App() {
     const result = recognizeSketch(layer.strokes, model.recognizer);
     layer.showRoles(result.roles);
     const issues = checkMechanism(result.scene, result.arrows);
-    if (engine === 'molscribe') {
+    if (engine === 'server') {
       try {
-        const r = await new MolScribeClient({ backendUrl }).recognize(await layer.toPng());
-        setDialog({ kind: 'consolidate', result, issues, smiles: r.smiles, note: `MolScribe read: ${r.smiles}` });
+        const r = await new RecognitionServer(backendUrl).recognize(await layer.toPng());
+        if (r.valid) {
+          setDialog({ kind: 'consolidate', result, issues, smiles: r.smiles, note: `${r.engine} read ${r.smiles} (${Math.round(r.confidence * 100)}%); it will be inserted instead of the in-browser structure.` });
+        } else {
+          setDialog({ kind: 'consolidate', result, issues, note: `${r.engine} could not read a valid structure; using the in-browser result.` });
+        }
         return;
       } catch (e) {
-        setDialog({ kind: 'consolidate', result, issues, note: `MolScribe unavailable (${String(e)}); using in-browser result.` });
+        setDialog({ kind: 'consolidate', result, issues, note: `Recognition server not reachable (${String(e)}); using the in-browser result.` });
         return;
       }
     }
@@ -133,7 +141,7 @@ export default function App() {
 
   return (
     <HelpProvider>
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         <MecHandBar
           freehand={freehand}
           strokeCount={strokeCount}
@@ -193,6 +201,7 @@ export default function App() {
           engine={engine}
           backendUrl={backendUrl}
           backendOk={backendOk}
+          backendEngine={backendEngine}
           onEngine={setEngine}
           onBackendUrl={setBackendUrl}
           onClose={() => setDialog({ kind: 'none' })}

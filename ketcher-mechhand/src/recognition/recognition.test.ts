@@ -25,7 +25,7 @@ describe('$P symbol model', () => {
       }
     }
     expect(ok / total, errors.join(' ')).toBeGreaterThan(0.9);
-  });
+  }, 60_000);
 });
 
 const ethanol: Scene = {

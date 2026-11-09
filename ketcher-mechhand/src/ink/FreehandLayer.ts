@@ -98,7 +98,7 @@ export class FreehandLayer {
     this.paths.forEach((p) => p.setAttribute('stroke', '#111827'));
   }
 
-  /** PNG of the ink (white background), for the optional MolScribe engine. */
+  /** PNG of the ink (white background), for the optional DECIMER recognition server. */
   async toPng(padding = 20): Promise<Blob> {
     const box = this.svg.getBBox();
     const w = Math.ceil(box.width + 2 * padding), h = Math.ceil(box.height + 2 * padding);
