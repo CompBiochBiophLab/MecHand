@@ -189,10 +189,18 @@ in-browser recogniser with an image-based model.
 Strokes are captured with the W3C Pointer Events API, which gives a single code
 path for mouse, trackpad, touch and stylus. When the browser provides them,
 coalesced events are used to obtain all samples between screen frames, which
-matters for fast pen movements. Once a stylus has been used, touch input is
-ignored for drawing (palm rejection), and the ink layer disables the browser's
-touch gestures while freehand mode is on. Turning freehand mode off lets the
-pointer through to Ketcher, so that hand drawing and Ketcher's tools can be
+matters for fast pen movements. Palm rejection depends on an input mode: by default,
+once a stylus has been used, or merely hovers over the screen, touch input is
+ignored for drawing; the user can instead let only the stylus draw, or let fingers
+always draw. Large contacts and a second simultaneous finger are always ignored.
+Because drawing with a laptop trackpad normally requires click-and-drag, a trackpad
+mode draws by click, move without pressing, click. A pen toolbar offers a stroke
+eraser (also the eraser end of a stylus), undo and redo of strokes, erasures and
+clears, and the colour, kind of line (including a pressure- or speed-dependent
+fountain pen) and width of the ink; the appearance of the ink never affects
+recognition, which uses the sampled points only. The ink layer disables the
+browser's touch gestures while freehand mode is on. Turning freehand mode off lets
+the pointer through to Ketcher, so that hand drawing and Ketcher's tools can be
 alternated at any time.
 
 \subsection{Online recognition}
