@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="840" height="190" viewBox="30 50 840 190">
+  <title>Pràctica: àcid acètic + hidròxid → acetat + aigua (elaboració pròpia, CC0 1.0)</title>
+  <defs>
+    <marker id="h" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L10,5 L0,9 z" fill="#000"/>
+    </marker>
+  </defs>
+  <rect x="30" y="50" width="840" height="190" fill="#fff"/>
+  <g stroke="#000" stroke-width="3" stroke-linecap="round" fill="none">
+    <!-- acetic acid -->
+    <path d="M58 172 L108 143"/>
+    <path d="M104 143 L104 104 M113 143 L113 104"/>
+    <path d="M108 143 L146 165"/>
+    <path d="M176 172 L199 172"/>
+    <!-- hydroxide -->
+    <path d="M336 172 L352 172"/>
+    <!-- reaction arrow -->
+    <path d="M415 172 L495 172" marker-end="url(#r)"/>
+    <!-- acetate -->
+    <path d="M528 172 L578 143"/>
+    <path d="M574 143 L574 104 M583 143 L583 104"/>
+    <path d="M578 143 L616 165"/>
+    <!-- water -->
+    <path d="M762 186 L777 175 M803 175 L818 186"/>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif" font-size="34" text-anchor="middle" fill="#000">
+    <text x="108" y="96">O</text>
+    <text x="161" y="184">O</text>
+    <text x="214" y="184">H</text>
+    <text x="263" y="182">+</text>
+    <text x="321" y="184">O</text>
+    <text x="368" y="184">H</text>
+    <text x="578" y="96">O</text>
+    <text x="631" y="184">O</text>
+    <text x="700" y="182">+</text>
+    <text x="750" y="207">H</text>
+    <text x="790" y="172">O</text>
+    <text x="830" y="207">H</text>
+  </g>
+  <!-- circled charges -->
+  <g stroke="#000" stroke-width="2" fill="none">
+    <circle cx="300" cy="144" r="10"/><path d="M294 144 L306 144"/>
+    <circle cx="654" cy="146" r="10"/><path d="M648 146 L660 146"/>
+  </g>
+  <!-- curved arrows: hydroxide lone pair to H; O-H bond to O -->
+  <g stroke="#dc2626" stroke-width="2.6" fill="none" stroke-linecap="round">
+    <path d="M318 150 Q 272 82 222 147" marker-end="url(#h)"/>
+    <path d="M189 181 Q 196 236 157 199" marker-end="url(#h)"/>
+  </g>
+</svg>

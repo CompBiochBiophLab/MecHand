@@ -42,6 +42,14 @@ export interface Participant {
   experience: 'cap' | 'poca' | 'molta';
 }
 
+export interface StudyComments {
+  freehand: string;
+  ketcher: string;
+  /** Which way the participant prefers for drawing mechanisms ("" = not answered). */
+  preference: 'mechand' | 'ketcher' | 'igual' | '';
+  other: string;
+}
+
 export interface StudyEvent {
   /** Milliseconds since the session started. */
   t: number;
@@ -59,8 +67,8 @@ export interface StudySession {
   /** Random code such as "MH-7K3Q9", with no link to the participant's identity. */
   code: string;
   group: Group;
-  /** Date only (YYYY-MM-DD), no time of day. */
-  date: string;
+  /** Year of the session only (data minimisation: no day, no time). */
+  year: number;
   participant: Participant;
   environment: StudyEnvironment;
   tasks: StudyTask[];
@@ -69,8 +77,8 @@ export interface StudySession {
   events: StudyEvent[];
   /** System Usability Scale answers (1–5) per condition, in item order. */
   sus: Partial<Record<Condition, number[]>>;
-  /** Open answers of the final questionnaire. */
-  comments: { liked: string; disliked: string; other: string };
+  /** Final questionnaire: open answers about each way of working, and the preferred one. */
+  comments: StudyComments;
   /** Teach samples are included only if the participant agreed to share them. */
   shareTeachSamples: boolean;
   /** …and may be published (without any other data) only if the participant also agreed to that. */
@@ -134,14 +142,14 @@ export class StudyRecorder {
     this.save();
   }
 
-  static create(init: Omit<StudySession, 'schema' | 'events' | 'date' | 'progress' | 'sus' | 'comments'>): StudyRecorder {
+  static create(init: Omit<StudySession, 'schema' | 'events' | 'year' | 'progress' | 'sus' | 'comments'>): StudyRecorder {
     return new StudyRecorder({
       schema: SESSION_SCHEMA,
-      date: new Date().toISOString().slice(0, 10),
+      year: new Date().getFullYear(),
       events: [],
       progress: { phase: 'teach', task: 0 },
       sus: {},
-      comments: { liked: '', disliked: '', other: '' },
+      comments: { freehand: '', ketcher: '', preference: '', other: '' },
       ...init,
     });
   }

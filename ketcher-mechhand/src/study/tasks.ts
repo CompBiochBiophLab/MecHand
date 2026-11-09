@@ -7,8 +7,10 @@
  * and two mechanisms (an SN2 step with two curved arrows and the first line of an
  * aldol mechanism), are drawn once with MecHand's freehand mode and once with
  * Ketcher's own tools. The four groups counterbalance which set goes with which
- * condition and which condition comes first (crossover design). Each block starts
- * with the same practice item (aspirin), which is not analysed.
+ * condition and which condition comes first (crossover design); within a block the
+ * four tasks come in a random order, drawn for each participant. Each block starts
+ * with the same practice item (an acid–base step with two curved arrows), which is
+ * not analysed.
  */
 
 import stimuli from './stimuli.json';
@@ -55,12 +57,28 @@ const PLAN: Record<Group, [{ set: 'A' | 'B'; condition: Condition }, { set: 'A' 
 
 export const GROUPS = Object.keys(PLAN) as Group[];
 
-export function tasksFor(group: Group): StudyTask[] {
+/** Fisher–Yates shuffle with the given source of random numbers in [0, 1). */
+export function shuffled<T>(items: readonly T[], random: () => number): T[] {
+  const a = [...items];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/** A uniform random number from the browser's cryptographic generator. */
+export function cryptoRandom(): number {
+  return crypto.getRandomValues(new Uint32Array(1))[0] / 2 ** 32;
+}
+
+/** The ten tasks of a participant: per block, the practice item and the set's four tasks in random order. */
+export function tasksFor(group: Group, random: () => number = cryptoRandom): StudyTask[] {
   return PLAN[group].flatMap((block, b) => {
     const n = (b + 1) as 1 | 2;
     return [
       { id: `B${n}T0`, stimulus: PRACTICE, condition: block.condition, block: n, practice: true },
-      ...SET[block.set].map((stimulus, k) => ({ id: `B${n}T${k + 1}`, stimulus, condition: block.condition, block: n, practice: false })),
+      ...shuffled(SET[block.set], random).map((stimulus, k) => ({ id: `B${n}T${k + 1}`, stimulus, condition: block.condition, block: n, practice: false })),
     ];
   });
 }

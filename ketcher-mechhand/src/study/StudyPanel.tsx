@@ -15,7 +15,7 @@ import { btn } from '../ui/Modal';
 import { FIRST_COUNTRY_COUNT, countryOptions } from './countries';
 import { type StudyEnvironment, describeEnvironment, detectEnvironment } from './environment';
 import {
-  type Device, type Participant, type Role, StudyRecorder, newParticipantCode, studyState,
+  type Device, type Participant, type Role, type StudyComments, StudyRecorder, newParticipantCode, studyState,
 } from './recorder';
 import { CONDITION_LABEL, type Condition, GROUPS, type Group, stimulus, tasksFor } from './tasks';
 
@@ -185,7 +185,7 @@ export function StudyPanel({ ketcher, getLayer, appVersion, modelVersion, teach,
           <b>1. Entrenament (uns 10 minuts)</b>
           <p>Ensenya a MecHand la teva lletra. Obre <b>✍ Teach</b> i desa unes 3 mostres de cada:</p>
           <ul style={{ paddingLeft: 18, margin: '4px 0' }}>
-            <li><i>Letters &amp; signs</i>: C, O, N, H, F, l (de Cl), r (de Br), a (de Na), +, −</li>
+            <li><i>Letters &amp; signs</i>: C, O, N, H, F, l (de Cl), r (de Br), a (de Na), +, − (i ⊕, ⊖ si les escrius encerclades)</li>
             <li><i>Arrows</i>: fletxa corba de 2 e⁻, fletxa de reacció, equilibri</li>
             <li><i>Electrons</i>: parell solitari</li>
           </ul>
@@ -214,6 +214,12 @@ export function StudyPanel({ ketcher, getLayer, appVersion, modelVersion, teach,
               background: task.condition === 'freehand' ? '#dbeafe' : '#fef3c7', color: task.condition === 'freehand' ? '#1e3a8a' : '#78350f',
             }}>{CONDITION_LABEL[task.condition]}</div>
             <p style={{ margin: '6px 0' }}>{s.task}</p>
+            {task.condition === 'ketcher' && (
+              <p style={{ fontSize: 11, color: '#6b7280', margin: '0 0 6px' }} data-testid="study-ketcher-tip">
+                Fletxes corbes a Ketcher: eina de fletxes → «Arrow Elliptical Arc Open Angle» (2 e⁻) o «… Open Half
+                Angle» (1 e⁻). Càrregues: eines «A+» i «A−».
+              </p>
+            )}
             <img src={`${import.meta.env.BASE_URL}study/${s.file}`} alt={s.source.title}
               onClick={() => setZoom(true)} style={{ width: '100%', cursor: 'zoom-in', border: '1px solid #e5e7eb', borderRadius: 4, background: '#fff' }} />
             <div style={{ fontSize: 10, color: '#6b7280', marginTop: 2 }}>
@@ -440,20 +446,27 @@ function SusForm({ condition, onDone }: { condition: Condition; onDone: (answers
   );
 }
 
-function FinalForm({ onDone }: { onDone: (c: { liked: string; disliked: string; other: string }) => void }) {
-  const [c, setC] = useState({ liked: '', disliked: '', other: '' });
-  const area = (k: keyof typeof c, q: string) => (
+function FinalForm({ onDone }: { onDone: (c: StudyComments) => void }) {
+  const [c, setC] = useState<StudyComments>({ freehand: '', ketcher: '', preference: '', other: '' });
+  const area = (k: 'freehand' | 'ketcher' | 'other', q: string) => (
     <>
       <label style={label}>{q}</label>
-      <textarea style={{ ...field, minHeight: 60 }} value={c[k]} onChange={(e) => setC({ ...c, [k]: e.target.value })} />
+      <textarea style={{ ...field, minHeight: 56 }} value={c[k]} onChange={(e) => setC({ ...c, [k]: e.target.value })} data-testid={`study-comment-${k}`} />
     </>
   );
   return (
     <div style={box}>
       <b>Per acabar (opcional)</b>
       <p style={{ fontSize: 12, color: '#4b5563' }}>No hi escriguis cap dada personal (noms, correus…).</p>
-      {area('liked', 'Què és el que més t\'ha agradat del dibuix a mà alçada?')}
-      {area('disliked', 'Què milloraries? Què no ha reconegut bé?')}
+      {area('freehand', 'Què t\'ha agradat i què no del dibuix a mà alçada (MecHand)?')}
+      {area('ketcher', 'Què t\'ha agradat i què no de dibuixar només amb les eines de Ketcher?')}
+      <label style={label}>Per dibuixar mecanismes, quina manera prefereixes?</label>
+      <select style={field} value={c.preference} onChange={(e) => setC({ ...c, preference: e.target.value as StudyComments['preference'] })} data-testid="study-preference">
+        <option value="">Prefereixo no respondre</option>
+        <option value="mechand">Dibuix a mà alçada (MecHand)</option>
+        <option value="ketcher">Eines de Ketcher</option>
+        <option value="igual">M'és igual</option>
+      </select>
       {area('other', 'Altres comentaris')}
       <button style={{ ...btn('#16a34a', '#fff'), width: '100%', marginTop: 8 }} data-testid="study-final-done" onClick={() => onDone(c)}>Desa la sessió</button>
     </div>

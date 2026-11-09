@@ -102,6 +102,7 @@ test('runs a study session locally and produces a minimal session file', async (
   await page.locator('button', { hasText: 'About' }).click();
   await expect(page.locator('[data-testid="mechand-engine-locked"]')).toBeVisible();
   await page.keyboard.press('Escape');
+  await page.selectOption('[data-testid="study-preference"]', 'igual');
   await page.click('[data-testid="study-final-done"]');
   await expect(page.locator('[data-testid="study-choices"]')).toContainText('no');
 
@@ -119,7 +120,8 @@ test('runs a study session locally and produces a minimal session file', async (
   expect(s.schema).toBe('mechand-study-session/3');
   expect(s.code).toMatch(/^MH-[A-Z2-9]{5}$/);
   expect(s.group).toBe('A1');
-  expect(s.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  expect(s.year).toBeGreaterThan(2025);
+  expect(s.date).toBeUndefined(); // no day of the session
   expect(s.participant).toEqual({ role: 'estudiant', course: 2, device: 'ordinador-ratoli', literacyCountry: 'MA', handedness: null, experience: 'poca' });
   expect(Object.keys(s.environment).sort()).toEqual(
     ['architecture', 'architectureSource', 'browser', 'maxTouchPoints', 'mobile', 'os', 'pointerTypes', 'screen'].sort());
@@ -144,6 +146,7 @@ test('runs a study session locally and produces a minimal session file', async (
   expect(s.teachSamples).toBeUndefined(); // not shared unless the participant opts in
   expect(s.shareTeachSamples).toBe(false);
   expect(s.publishTeachSamples).toBe(false);
+  expect(s.comments).toEqual({ freehand: '', ketcher: '', preference: 'igual', other: '' });
   // Nothing that identifies the browser or the person.
   const ua = await page.evaluate(() => navigator.userAgent);
   expect(text).not.toContain(ua);

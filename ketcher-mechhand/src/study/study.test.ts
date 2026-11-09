@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseUserAgent } from './environment';
-import { STIMULI, tasksFor } from './tasks';
+import { STIMULI, shuffled, tasksFor } from './tasks';
 
 describe('study environment', () => {
   it('derives coarse browser, OS and architecture fields from a user-agent string', () => {
@@ -32,6 +32,22 @@ describe('study design', () => {
     // Over the four groups each stimulus is drawn twice in each condition.
     expect([...seen.values()].every((n) => n === 2)).toBe(true);
     expect(seen.size).toBe(16);
+  });
+
+  it('puts the four tasks of each block in a random order', () => {
+    let seed = 1;
+    const rng = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+    const orders = new Set<string>();
+    for (let i = 0; i < 40; i++) {
+      const tasks = tasksFor('A1', rng);
+      expect(tasks.map((t) => t.id)).toEqual(['B1T0', 'B1T1', 'B1T2', 'B1T3', 'B1T4', 'B2T0', 'B2T1', 'B2T2', 'B2T3', 'B2T4']);
+      // Block 1 of group A1 is set A with MecHand, whatever the order.
+      const b1 = tasks.filter((t) => t.block === 1 && !t.practice);
+      expect(b1.every((t) => t.stimulus.startsWith('A') && t.condition === 'freehand')).toBe(true);
+      orders.add(b1.map((t) => t.stimulus).join());
+    }
+    expect(orders.size).toBeGreaterThan(5);
+    expect(shuffled([1, 2, 3], () => 0.999).sort()).toEqual([1, 2, 3]);
   });
 
   it('has matched sets: same kinds and the same number of curved arrows', () => {

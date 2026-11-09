@@ -192,7 +192,16 @@ export default function App() {
     } else {
       await ketcher.addFragment(sceneToKet(result.scene));
     }
-    studyLog('insert', { engine: smiles ? 'server' : 'browser' });
+    // Study: the canvas right after inserting, to count the corrections made afterwards with Ketcher.
+    if (studyState.recorder && studyState.task) {
+      let ket: string | null = null;
+      try {
+        ket = await ketcher.getKet();
+      } catch {
+        ket = null;
+      }
+      studyLog('insert', { engine: smiles ? 'server' : 'browser', ket });
+    }
     layerRef.current?.clear();
     setDialog({ kind: 'none' });
   }, [dialog, ketcher]);

@@ -1,22 +1,25 @@
 [
  {
-  "id": "practica-aspirina",
+  "id": "practica-acid-base",
   "set": "practica",
-  "kind": "molecula",
-  "file": "practica-aspirina.png",
-  "task": "Dibuixa l'àcid acetilsalicílic (aspirina).",
+  "kind": "mecanisme",
+  "file": "practica-acid-base.png",
+  "task": "Pràctica (no compta): dibuixa la reacció sencera, amb les dues fletxes corbes, la fletxa de reacció i els productes. Prova-hi les eines que necessitaràs.",
   "reference": {
    "smiles": [
-    "CC(=O)Oc1ccccc1C(=O)O"
+    "CC(=O)O",
+    "[OH-]",
+    "CC(=O)[O-]",
+    "O"
    ],
-   "curvedArrows": 0
+   "curvedArrows": 2
   },
   "source": {
-   "title": "File:Aspirin-skeletal.svg",
-   "url": "https://commons.wikimedia.org/wiki/File:Aspirin-skeletal.svg",
-   "author": "Benjah-bmm27",
-   "license": "Public domain",
-   "licenseUrl": null
+   "title": "Àcid acètic + hidròxid (elaboració pròpia)",
+   "url": "https://github.com/CompBiochBiophLab/MecHand/blob/main/estudi/estimuls/font/practica-acid-base.svg",
+   "author": "Projecte MecHand",
+   "license": "CC0 1.0",
+   "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
   }
  },
  {
@@ -64,14 +67,12 @@
   "set": "A",
   "kind": "mecanisme",
   "file": "A3-sn2-walden.png",
-  "task": "Dibuixa els reactius amb les fletxes corbes i els productes. No cal dibuixar l'estat de transició (entre claudàtors).",
+  "task": "Dibuixa els reactius amb les fletxes corbes i el producte orgànic. No cal dibuixar l'estat de transició (entre claudàtors), ni l'estereoquímica (falques), ni el Na⁺ ni el NaBr.",
   "reference": {
    "smiles": [
     "[OH-]",
-    "[Na+]",
     "CC(F)Br",
-    "CC(O)F",
-    "[Na+].[Br-]"
+    "CC(O)F"
    ],
    "curvedArrows": 2
   },
@@ -88,12 +89,12 @@
   "set": "A",
   "kind": "mecanisme",
   "file": "A4-aldol-basic.png",
-  "task": "Dibuixa només el primer pas (a dalt a l'esquerra): l'aldehid i l'ió hidròxid amb les tres fletxes corbes, la fletxa d'equilibri i l'enolat que es forma.",
+  "task": "Dibuixa només el primer pas (a dalt a l'esquerra): l'aldehid i l'ió hidròxid amb les tres fletxes corbes, la fletxa d'equilibri i l'enolat que es forma. On hi ha R, posa-hi un CH₃ (n'hi ha prou amb l'extrem d'una línia).",
   "reference": {
    "smiles": [
-    "O=CC[*]",
+    "CCC=O",
     "[OH-]",
-    "[O-]C=C[*]"
+    "CC=C[O-]"
    ],
    "curvedArrows": 3
   },
@@ -150,15 +151,12 @@
   "set": "B",
   "kind": "mecanisme",
   "file": "B3-sn2-cianur.png",
-  "task": "Dibuixa els reactius amb les fletxes corbes i els productes. No cal dibuixar els parells d'electrons solitaris.",
+  "task": "Dibuixa els reactius amb les fletxes corbes i el producte orgànic. No cal dibuixar els parells d'electrons solitaris, ni el Na⁺ ni els ions Na⁺ i Cl⁻ dels productes.",
   "reference": {
    "smiles": [
     "CC(Cl)c1ccccc1",
-    "[Na+]",
     "[C-]#N",
-    "CC(C#N)c1ccccc1",
-    "[Na+]",
-    "[Cl-]"
+    "CC(C#N)c1ccccc1"
    ],
    "curvedArrows": 2
   },
@@ -175,12 +173,12 @@
   "set": "B",
   "kind": "mecanisme",
   "file": "B4-aldol-acid.png",
-  "task": "Dibuixa només el segon pas (a dalt, el segon i el tercer compost): l'aldehid protonat i l'aigua amb les tres fletxes corbes, la fletxa d'equilibri i l'enol que es forma.",
+  "task": "Dibuixa només el segon pas (a dalt, el segon i el tercer compost): l'aldehid protonat i l'aigua amb les tres fletxes corbes, la fletxa d'equilibri i l'enol que es forma. On hi ha R, posa-hi un CH₃ (n'hi ha prou amb l'extrem d'una línia).",
   "reference": {
    "smiles": [
-    "[OH+]=CC[*]",
+    "CCC=[OH+]",
     "O",
-    "OC=C[*]"
+    "CC=CO"
    ],
    "curvedArrows": 3
   },
