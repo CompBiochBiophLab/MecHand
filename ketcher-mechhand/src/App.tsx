@@ -29,11 +29,18 @@ type Dialog =
 const isEditable = (t: EventTarget | null) =>
   t instanceof HTMLElement && (t.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName));
 
-/** Ketcher's drawing area (falls back to the whole editor). */
+/**
+ * Ketcher's drawing area (falls back to the whole editor). Ketcher renders more
+ * than one element with this test id — the drawing area and a hidden 0×0 one that
+ * can come first in the page — so take the visible one with the largest area.
+ */
 async function waitForCanvasHost(): Promise<HTMLElement> {
-  for (let i = 0; i < 100; i++) {
-    const canvas = document.querySelector<HTMLElement>('[data-testid="ketcher-canvas"]');
-    if (canvas?.parentElement) return canvas.parentElement;
+  for (let i = 0; i < 200; i++) {
+    const visible = [...document.querySelectorAll<HTMLElement>('[data-testid="ketcher-canvas"]')]
+      .map((el) => ({ el, r: el.getBoundingClientRect() }))
+      .filter(({ el, r }) => el.parentElement && r.width > 50 && r.height > 50)
+      .sort((a, b) => b.r.width * b.r.height - a.r.width * a.r.height);
+    if (visible.length) return visible[0].el.parentElement!;
     await new Promise((r) => setTimeout(r, 50));
   }
   return document.querySelector<HTMLElement>('.Ketcher-root') ?? document.body;
