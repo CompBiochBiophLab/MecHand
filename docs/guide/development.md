@@ -41,7 +41,7 @@ npm test && npm run e2e
 | `npm test` | Recognizer unit tests, recognition benchmark on the templates, KET parsing, exporters |
 | `npm run test:latex` | Compiles every template's TikZ and chemfig export with pdflatex |
 | `npm run typecheck` | TypeScript |
-| `npm run e2e` | Playwright in Chromium, Firefox and WebKit (`npx playwright install` first) |
+| `npm run e2e` | Playwright in Chromium, Firefox and WebKit, including the privacy test (`npx playwright install` first) |
 | `cd backend && pytest` | Server API with a fake model (`pip install -r requirements-dev.txt`) |
 
 GitHub Actions runs them on every push (`.github/workflows/ci.yml`) and deploys the website and the

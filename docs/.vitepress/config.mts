@@ -25,6 +25,7 @@ export default defineConfig({
           { text: 'Mechanism templates', link: '/guide/templates' },
           { text: 'Export to LaTeX and other editors', link: '/guide/export' },
           { text: 'Browser support', link: '/guide/browsers' },
+          { text: 'Privacy', link: '/guide/privacy' },
         ],
       },
       {

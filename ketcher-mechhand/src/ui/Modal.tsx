@@ -11,9 +11,14 @@ export function Modal({ title, children, onClose, testId, width = 520 }: {
   title: string; children: ReactNode; onClose: () => void; testId?: string; width?: number;
 }) {
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    // Capture phase: Ketcher handles Escape itself and stops it before it bubbles to window.
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      e.stopPropagation();
+      onClose();
+    };
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
   }, [onClose]);
   return (
     <div

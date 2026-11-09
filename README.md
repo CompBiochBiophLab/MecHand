@@ -34,6 +34,7 @@ electron-flow arrows into Ketcher.
 - [Templates](#templates)
 - [Export](#export)
 - [Browser support](#browser-support)
+- [Privacy](#privacy)
 - [Optional recognition server (DECIMER)](#optional-recognition-server-decimer)
 - [Ideas taken from ChemDraw and Marvin](#ideas-taken-from-chemdraw-and-marvin)
 - [Repository layout](#repository-layout)
@@ -69,6 +70,17 @@ npm run dev                          # → http://localhost:5173
 ```
 
 `npm run build` produces a static site in `ketcher-mechhand/dist/` that any web server can host.
+
+From the repository root, a `Makefile` wraps the usual tasks:
+
+```sh
+make install     # dependencies of the app and the website
+make dev         # MecHand at http://localhost:5173
+make site        # app + website exactly as on GitHub Pages, at http://localhost:8080/MecHand/
+make test        # type check, unit tests, recognition benchmark, LaTeX export check
+make e2e         # browser tests (Chromium, Firefox, WebKit)
+make server      # optional DECIMER server at http://localhost:8000 (Python 3.10–3.13)
+```
 
 ---
 
@@ -233,6 +245,24 @@ Feature support from MDN browser-compat-data 8.1.8 (November 2026). Known issues
 - **Optional server from the public site:** an https page calling `http://localhost:8000` is a
   local-network request. Chrome/Edge ask for permission once (allow it); Firefox allows it; Safari
   may block it as mixed content — then run MecHand locally (`npm run dev`) or serve the server over https.
+
+---
+
+## Privacy
+
+MecHand processes everything in the browser: drawings and handwriting samples are never sent
+anywhere. An automated test ([`e2e/privacy.spec.ts`](ketcher-mechhand/e2e/privacy.spec.ts)) checks
+this in Chromium, Firefox and WebKit on every change: after the page has loaded, using every feature
+makes **no network request**, no data is sent, and no cookie is set.
+
+- **Teach samples** are kept only in your browser's local storage and contain just the symbol and
+  the *x, y* points of the strokes (no timestamps, pressure, device or identity). *Teach → Delete
+  all* removes them.
+- **Only what you choose leaves your computer:** samples you contribute by pull request (they then
+  become public — use a file name without personal information), and, if you enable it, the ink
+  image sent to the optional DECIMER server (by default on your own computer).
+- The public site is hosted on GitHub Pages, which sees the page request like any web server. To
+  avoid even that, run MecHand locally (`make dev`).
 
 ---
 

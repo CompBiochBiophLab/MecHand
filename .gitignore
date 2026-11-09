@@ -67,3 +67,6 @@ tutorial/mechand-tutorial.pdf
 
 # Personal notes
 kk.txt
+
+# Local copy of the GitHub Pages site (make site)
+.site/
