@@ -5,7 +5,10 @@
  *  1. Scale: estimate the drawn bond length L from straight segments.
  *  2. Arrowheads: in-stroke hooks or small separate "V" / barb strokes at the
  *     end of a long stroke. Curved shaft → electron-flow arrow (full head = 2 e⁻,
- *     single barb = 1 e⁻, fishhook); straight long shaft → reaction arrow.
+ *     single barb = 1 e⁻, fishhook); straight long shaft → reaction arrow; two
+ *     antiparallel straight shafts with half heads → equilibrium arrows. Heads
+ *     the rules miss (triangles, two separate barbs, personal styles) are
+ *     classified by the arrowhead model, which learns from Teach samples.
  *  3. Text: small strokes are clustered, split into characters and classified
  *     with the $P recognizer (atom labels, + and − charges).
  *  4. Bonds: remaining strokes are split at corners (ShortStraw), so zig-zag
@@ -19,10 +22,11 @@
 
 import type { Scene, SceneArrow, SceneAtom, SceneBond } from '../scene/types';
 import type { Match, PointCloudRecognizer } from './dollarP';
+import type { InkStyle } from './elements';
 import {
   type BBox, type Pt, type Segment,
-  angleBetween, bbox, bboxCenter, bboxDiag, bboxGap, dist, pathLength,
-  pointSegment, resampleBySpacing, robustStraightness, segLength, shortStraw, straightness, vec,
+  angleBetween, bbox, bboxCenter, bboxDiag, bboxGap, dist, endDirection, pathLength,
+  pointSegment, resampleBySpacing, robustStraightness, segLength, shortStraw, straightness, toShaftFrame, vec,
 } from './geometry';
 
 export interface InkStroke {
@@ -69,6 +73,12 @@ export interface SketchOptions {
   defaultBondPx?: number;
   /** Minimum $P score to accept a character. */
   minSymbolScore?: number;
+  /** Known bond length in px (skips the scale estimate; used by the Teach box). */
+  bondPx?: number;
+  /** Arrowhead model (shaft frame, "full" / "half"): see SymbolModel.heads. */
+  heads?: PointCloudRecognizer;
+  /** Drawing style learned in Teach mode. */
+  style?: InkStyle;
   /** Diagnostics callback (development only). */
   debug?: (what: string, data: unknown) => void;
 }
@@ -117,7 +127,7 @@ export function recognizeSketch(
     }
     return out;
   });
-  let L = estimateScale(pts, straws, lengths, boxes, opts.defaultBondPx ?? 60);
+  let L = opts.bondPx ?? estimateScale(pts, straws, lengths, boxes, opts.defaultBondPx ?? 60);
 
   // Bond-like = every piece straight and long; a zig-zag chain or a polygon ring
   // qualifies, letters (short or curved pieces) do not.
@@ -198,13 +208,15 @@ export function recognizeSketch(
   // 2. Arrows ---------------------------------------------------------------
   // Detected twice: first with the rough scale, so that long reaction arrows can
   // be excluded from the bond-length estimate, then again with the refined scale.
-  type Found = { shaft: Pt[]; barbs: number; kindHint: 'curved' | 'straight' };
+  type Found = { shaft: Pt[]; barbs: number; kindHint: 'curved' | 'straight' | 'equilibrium' };
   const detectArrows = (scale: number): Found[] => {
     for (let i = 0; i < n; i++) if (roles[i] === 'arrow' || roles[i] === 'arrowhead') roles[i] = 'ignored';
     markLetterParts(scale);
     const small = (i: number) => !bondLike(i, scale) && compact(i, scale);
     const found: Found[] = [];
     const headUsed = new Set<number>();
+    // Straight shafts with a half head: half of an equilibrium pair, if a partner exists.
+    const harpoons: { i: number; shaft: Pt[]; head: number[] }[] = [];
     // Longest strokes first, so an arrow claims its head before a nearby letter can.
     const order = [...Array(n).keys()].sort((a, b) => lengths[b] - lengths[a]);
     for (const i of order) {
@@ -217,10 +229,13 @@ export function recognizeSketch(
       if (straightness(inStroke ? inStroke.shaft : pts[i]) < 0.3) continue;
       let shaft = inStroke ? inStroke.shaft : pts[i];
       let barbs = inStroke ? inStroke.barbs : 0;
-      let head: { stroke: number; barbs: number; atStart: boolean } | null = null;
+      let head: SeparateHead | null = null;
+      // Cheap rejections first (most strokes here are bonds): a straight stroke
+      // shorter than a reaction arrow, or one with a sharp corner, is no shaft.
+      if (!inStroke && ((straightness(shaft) > 0.93 && pathLength(shaft) < 1.2 * scale) || !smooth(shaft, scale, false))) continue;
       if (!inStroke) {
-        // Separate head stroke near either end of this stroke?
-        head = findSeparateHead(i, pts, boxes, roles, headUsed, small, scale);
+        // Separate head stroke(s) near either end of this stroke?
+        head = findSeparateHead(i, pts, boxes, roles, headUsed, small, scale, opts.heads);
         if (head) {
           barbs = head.barbs;
           if (head.atStart) shaft = shaft.slice().reverse();
@@ -232,13 +247,29 @@ export function recognizeSketch(
       const kindHint = straightness(body) > 0.93 ? 'straight' : 'curved';
       // Reaction arrows are long and have a full head; a long bond with a charge
       // sign near its end is not one.
-      if (kindHint === 'straight' && (pathLength(shaft) < 1.2 * scale || barbs < 2)) continue;
+      if (kindHint === 'straight' && pathLength(shaft) < 1.2 * scale) continue;
+      if (kindHint === 'straight' && barbs < 2) {
+        harpoons.push({ i, shaft, head: head?.strokes ?? [] });
+        continue;
+      }
       if (head) {
-        headUsed.add(head.stroke);
-        roles[head.stroke] = 'arrowhead';
+        head.strokes.forEach((h) => { headUsed.add(h); roles[h] = 'arrowhead'; });
       }
       roles[i] = 'arrow';
       found.push({ shaft, barbs, kindHint });
+    }
+    // Equilibrium (⇌): two antiparallel, side-by-side straight shafts with half heads.
+    const paired = new Set<number>();
+    for (let a = 0; a < harpoons.length; a++) for (let b = a + 1; b < harpoons.length; b++) {
+      const A = harpoons[a], B = harpoons[b];
+      if (paired.has(a) || paired.has(b) || [...A.head, ...B.head].some((h) => headUsed.has(h) || roles[h] !== 'ignored')) continue;
+      const pair = equilibriumPair(A.shaft, B.shaft, scale);
+      if (!pair) continue;
+      paired.add(a);
+      paired.add(b);
+      for (const h of [...A.head, ...B.head]) { headUsed.add(h); roles[h] = 'arrowhead'; }
+      roles[A.i] = roles[B.i] = 'arrow';
+      found.push({ shaft: pair, barbs: 1, kindHint: 'equilibrium' });
     }
     return found;
   };
@@ -246,13 +277,20 @@ export function recognizeSketch(
 
   // Refine the scale without the arrows found so far.
   const notArrow = (i: number) => roles[i] === 'ignored';
-  L = estimateScale(pts, straws, lengths, boxes, L, notArrow);
+  L = opts.bondPx ?? estimateScale(pts, straws, lengths, boxes, L, notArrow);
   const recognizedArrows = detectArrows(L);
   opts.debug?.('letterParts', { scale: L, parts: [...partOfLetter] });
 
-  // Dots: tiny strokes (lone pairs, radical dots, the dot of an "i").
+  // Dots: tiny strokes (lone pairs, radical dots, the dot of an "i"). Someone who
+  // draws larger dots (Teach mode) gets a larger limit, up to a bound that keeps a
+  // small "−" a charge; such larger dots must also be roundish, not a dash.
+  const dotDiag = Math.min(0.16, Math.max(0.1, 1.25 * (opts.style?.dotDiag ?? 0))) * L;
+  const dotLen = Math.min(0.35, Math.max(0.2, 1.25 * (opts.style?.dotLength ?? 0))) * L;
   for (let i = 0; i < n; i++) {
-    if (roles[i] === 'ignored' && bboxDiag(boxes[i]) < 0.1 * L && lengths[i] < 0.2 * L) roles[i] = 'dot';
+    if (roles[i] !== 'ignored') continue;
+    const b = boxes[i], d = bboxDiag(b);
+    if (d < 0.1 * L && lengths[i] < 0.2 * L) roles[i] = 'dot';
+    else if (d < dotDiag && lengths[i] < dotLen && Math.min(b.w, b.h) > 0.4 * Math.max(b.w, b.h)) roles[i] = 'dot';
   }
 
   // Text candidates: compact strokes that are not straight bond lines.
@@ -392,7 +430,9 @@ export function recognizeSketch(
     const endPx = shaft[shaft.length - 1];
     const start = toUnit(startPx), end = toUnit(endPx);
     let arrow: SceneArrow;
-    if (kindHint === 'straight') {
+    if (kindHint === 'equilibrium') {
+      arrow = { kind: 'equilibrium', start, end, mode: 'equilibrium-open-half-angle' };
+    } else if (kindHint === 'straight') {
       arrow = { kind: 'reaction', start, end, mode: 'open-angle' };
     } else {
       const height = signedBulge(shaft.map(toUnit), start, end);
@@ -516,11 +556,20 @@ export function splitInStrokeHead(raw: Pt[], L: number): { shaft: Pt[]; barbs: n
   return { shaft, barbs: turns >= 1 ? 2 : 1 };
 }
 
-/** A small "V" (2 barbs) or a single short stroke (1 barb) at an end of stroke i. */
+type SeparateHead = { strokes: number[]; barbs: number; atStart: boolean };
+
+/** Minimum arrowhead-model score to accept a head the geometric rules missed. */
+const HEAD_MIN_SCORE = 0.82;
+
+/**
+ * A small "V" (2 barbs) or a single short stroke (1 barb) at an end of stroke i.
+ * When these rules find no head, or only one barb, the strokes touching the end
+ * are classified together, in the shaft frame, by the arrowhead model.
+ */
 function findSeparateHead(
   i: number, pts: Pt[][], boxes: BBox[], roles: StrokeRole[], used: Set<number>,
-  isSmall: (j: number) => boolean, L: number,
-): { stroke: number; barbs: number; atStart: boolean } | null {
+  isSmall: (j: number) => boolean, L: number, heads?: PointCloudRecognizer,
+): SeparateHead | null {
   const shaft = pts[i];
   const ends = [
     { p: shaft[shaft.length - 1], atStart: false, dir: vec(shaft[Math.max(0, shaft.length - 6)], shaft[shaft.length - 1]) },
@@ -555,7 +604,79 @@ function findSeparateHead(
       }
     }
   }
-  return best ? { stroke: best.stroke, barbs: best.barbs, atStart: best.atStart } : null;
+  let result: SeparateHead | null = best ? { strokes: [best.stroke], barbs: best.barbs, atStart: best.atStart } : null;
+  if (heads && heads.size > 0 && (!result || result.barbs === 1)) {
+    for (const end of ends) {
+      if (result && result.atStart !== end.atStart) continue;
+      const dir = endDirection(shaft, end.atStart, 0.3 * L);
+      const group: number[] = [];
+      for (let j = 0; j < pts.length; j++) {
+        if (j === i || used.has(j) || roles[j] !== 'ignored' || !isSmall(j) || pts[j].length < 2) continue;
+        if (bboxDiag(boxes[j]) > 0.55 * L) continue;
+        const ds = pts[j].map((p) => dist(p, end.p));
+        if (Math.min(...ds) > 0.2 * L || Math.max(...ds) > 0.6 * L) continue;
+        // A head lies behind its tip; a letter the arrow points at lies ahead.
+        const local = toShaftFrame([pts[j]], end.p, dir)[0];
+        if (local.reduce((a, p) => a + p.x, 0) / local.length < -0.02 * L) group.push(j);
+      }
+      if (group.length === 0 || group.length > 3) continue;
+      // Only replace a single barb by a head of two or more strokes read as full.
+      if (result && group.length < 2) continue;
+      const m = classifyHead(heads, group.map((j) => pts[j]), end.p, dir);
+      if (!m || m.score < HEAD_MIN_SCORE) continue;
+      const barbs = m.symbol === 'full' ? 2 : 1;
+      if (result && barbs < 2) continue;
+      result = { strokes: group, barbs, atStart: end.atStart };
+      if (barbs === 2) break;
+    }
+  }
+  return result;
+}
+
+/**
+ * Arrowhead class of strokes at a tip. The shaft direction right at a hand-drawn
+ * tip is uncertain (and heads are seldom drawn symmetric), so the frame is turned
+ * by up to ±30° and the best match kept.
+ */
+function classifyHead(heads: PointCloudRecognizer, strokes: Pt[][], tip: Pt, dir: Pt): Match | undefined {
+  const at = (deg: number): { deg: number; m?: Match } => {
+    const a = (deg * Math.PI) / 180;
+    const d = { x: dir.x * Math.cos(a) - dir.y * Math.sin(a), y: dir.x * Math.sin(a) + dir.y * Math.cos(a) };
+    return { deg, m: heads.classify(toShaftFrame(strokes, tip, d), 1)[0] };
+  };
+  type Try = { deg: number; m?: Match };
+  const better = (p: Try, q: Try): Try => ((q.m?.score ?? -1) > (p.m?.score ?? -1) ? q : p);
+  // Coarse (10°), then refine around the best angle (±5°).
+  let best = [-30, -20, -10, 0, 10, 20, 30].map(at).reduce(better);
+  best = [best, at(best.deg - 5), at(best.deg + 5)].reduce(better);
+  return best.m;
+}
+
+/**
+ * Two straight shafts that form an equilibrium sign: antiparallel, side by side
+ * and overlapping. Returns the shaft of the forward arrow (the one on the left of
+ * its own direction, i.e. the upper arrow of a left-to-right ⇌), spanning both.
+ */
+function equilibriumPair(a: Pt[], b: Pt[], L: number): Pt[] | null {
+  const ua = vec(a[0], a[a.length - 1]), ub = vec(b[0], b[b.length - 1]);
+  const la = Math.hypot(ua.x, ua.y), lb = Math.hypot(ub.x, ub.y);
+  if (la === 0 || lb === 0) return null;
+  const da = { x: ua.x / la, y: ua.y / la };
+  if ((da.x * ub.x + da.y * ub.y) / lb > -0.94) return null; // not antiparallel (±20°)
+  const mid = (s: Pt[]) => ({ x: (s[0].x + s[s.length - 1].x) / 2, y: (s[0].y + s[s.length - 1].y) / 2 });
+  const ma = mid(a), mb = mid(b);
+  const off = vec(mb, ma);
+  const side = da.x * off.y - da.y * off.x; // perpendicular offset of a from b
+  if (Math.abs(side) > 0.6 * L || Math.abs(side) < 0.04 * L) return null;
+  // Overlap of the two shafts along the common direction.
+  const proj = (p: Pt) => (p.x - a[0].x) * da.x + (p.y - a[0].y) * da.y;
+  const [b0, b1] = [proj(b[0]), proj(b[b.length - 1])].sort((p, q) => p - q);
+  const overlap = Math.min(la, b1) - Math.max(0, b0);
+  if (overlap < 0.5 * Math.min(la, lb)) return null;
+  // Forward arrow: on the left of its direction (screen y down: cross < 0).
+  const [fwd, back] = side < 0 ? [a, b] : [b, a];
+  const avg = (p: Pt, q: Pt) => ({ x: (p.x + q.x) / 2, y: (p.y + q.y) / 2 });
+  return [avg(fwd[0], back[back.length - 1]), avg(fwd[fwd.length - 1], back[0])];
 }
 
 /** The polyline without its last `len` of path length. */
@@ -645,7 +766,7 @@ function readLabel(
 }
 
 /** ⊕ / ⊖: if one closed stroke encloses all the others, classify the inside only. */
-function withoutEnclosingCircle(strokes: Pt[][]): Pt[][] {
+export function withoutEnclosingCircle(strokes: Pt[][]): Pt[][] {
   if (strokes.length < 2) return strokes;
   const k = strokes.findIndex((s) => s.length > 4 && straightness(s) < 0.25);
   if (k < 0) return strokes;

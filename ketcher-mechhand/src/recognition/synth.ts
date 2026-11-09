@@ -16,6 +16,11 @@ export interface SynthOptions {
   noise?: number;
   /** Draw arrowheads in the same stroke as the shaft instead of a separate "V". */
   inStrokeHeads?: boolean;
+  /**
+   * Shape of separate full heads: an open "V" (default), a closed triangle, or
+   * two barbs drawn as two strokes (styles the geometric rules alone miss).
+   */
+  headStyle?: 'v' | 'triangle' | 'two-barbs';
 }
 
 /**
@@ -101,9 +106,27 @@ export function synthesizeSketch(scene: Scene, opts: SynthOptions = {}): InkStro
 
   // Arrows.
   for (const a of scene.arrows) {
+    if (a.kind === 'equilibrium') {
+      // Two harpoons: the upper one forward, the lower one back (left of each direction).
+      const s0 = toPx(a.start), e0 = toPx(a.end);
+      const len = Math.hypot(e0.x - s0.x, e0.y - s0.y) || 1;
+      const off = 0.09 * L;
+      for (const [from, to] of [[s0, e0], [e0, s0]]) {
+        // Left of the direction from→to in screen coordinates (y down).
+        const dx = (to.x - from.x) / len, dy = (to.y - from.y) / len;
+        const nx = dy * off, ny = -dx * off;
+        const p = { x: from.x + nx, y: from.y + ny }, q = { x: to.x + nx, y: to.y + ny };
+        strokes.push(line(p, q));
+        const ang = (28 * Math.PI) / 180;
+        // Barb on the outer side (away from the other harpoon).
+        const bx = -dx * Math.cos(ang) + (nx / off) * Math.sin(ang), by = -dy * Math.cos(ang) + (ny / off) * Math.sin(ang);
+        strokes.push({ points: interp(q, { x: q.x + bx * 0.22 * L, y: q.y + by * 0.22 * L }, 6) });
+      }
+      continue;
+    }
     const s = toPx(a.start), e = toPx(a.end);
     let shaft: Pt[];
-    if (a.height !== undefined && a.kind !== 'reaction' && a.kind !== 'equilibrium') {
+    if (a.height !== undefined && a.kind !== 'reaction') {
       // Cubic Bézier approximating a half-ellipse; height is y-up, flip for px.
       const dx = e.x - s.x, dy = e.y - s.y, len = Math.hypot(dx, dy) || 1;
       // Left normal in the y-up frame is (-dy_up, dx_up); in px (y down) that is (dy, dx) scaled.
@@ -138,7 +161,15 @@ export function synthesizeSketch(scene: Scene, opts: SynthOptions = {}): InkStro
       strokes.push({ points: [...shaft, ...tail.flatMap((q, k) => interp(k === 0 ? p2 : tail[k - 1], q, 4))] });
     } else {
       strokes.push({ points: shaft });
-      strokes.push({ points: single ? interp(p2, barb(1), 6) : [...interp(barb(1), p2, 5), ...interp(p2, barb(-1), 5).slice(1)] });
+      if (single) strokes.push({ points: interp(p2, barb(1), 6) });
+      else if (opts.headStyle === 'triangle') {
+        strokes.push({ points: [...interp(barb(1), p2, 5), ...interp(p2, barb(-1), 5).slice(1), ...interp(barb(-1), barb(1), 4).slice(1)] });
+      } else if (opts.headStyle === 'two-barbs') {
+        strokes.push({ points: interp(p2, barb(1), 6) });
+        strokes.push({ points: interp(p2, barb(-1), 6) });
+      } else {
+        strokes.push({ points: [...interp(barb(1), p2, 5), ...interp(p2, barb(-1), 5).slice(1)] });
+      }
     }
   }
   return strokes;

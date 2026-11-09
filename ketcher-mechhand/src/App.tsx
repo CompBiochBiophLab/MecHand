@@ -8,6 +8,7 @@ import { RecognitionServer } from './recognition/serverClient';
 import { type MechanismIssue, checkMechanism } from './recognition/mechanismCheck';
 import { buildModel, loadUserSamples, saveUserSamples } from './recognition/model';
 import type { SymbolSample } from './recognition/dollarP';
+import { type ElementSample, loadElementSamples, saveElementSamples } from './recognition/elements';
 import { type SketchResult, recognizeSketch } from './recognition/sketch';
 import { sceneToKet } from './scene/sceneToKet';
 import { TEMPLATES } from './templates/catalog';
@@ -53,7 +54,8 @@ export default function App() {
   const [strokeCount, setStrokeCount] = useState(0);
   const [dialog, setDialog] = useState<Dialog>({ kind: 'none' });
   const [userSamples, setUserSamples] = useState<SymbolSample[]>(loadUserSamples);
-  const model = useMemo(() => buildModel({ userSamples }), [userSamples]);
+  const [userElements, setUserElements] = useState<ElementSample[]>(loadElementSamples);
+  const model = useMemo(() => buildModel({ userSamples, userElements }), [userSamples, userElements]);
   const [engine, setEngine] = useState<Engine>(params.get('engine') === 'server' ? 'server' : 'browser');
   const [backendUrl, setBackendUrl] = useState(params.get('server') ?? 'http://localhost:8000');
   const [backendOk, setBackendOk] = useState<boolean | null>(null);
@@ -87,7 +89,7 @@ export default function App() {
   const recognize = useCallback(async () => {
     const layer = layerRef.current;
     if (!layer || layer.strokes.length === 0) return;
-    const result = recognizeSketch(layer.strokes, model.recognizer);
+    const result = recognizeSketch(layer.strokes, model.recognizer, { heads: model.heads, style: model.style });
     layer.showRoles(result.roles);
     const issues = checkMechanism(result.scene, result.arrows);
     if (engine === 'server') {
@@ -147,6 +149,10 @@ export default function App() {
     setUserSamples(s);
     saveUserSamples(s);
   };
+  const updateElements = (e: ElementSample[]) => {
+    setUserElements(e);
+    saveElementSamples(e);
+  };
 
   return (
     <HelpProvider>
@@ -199,9 +205,11 @@ export default function App() {
       {dialog.kind === 'teach' && (
         <TeachPanel
           samples={userSamples}
+          elements={userElements}
+          model={model}
           onChange={updateSamples}
+          onElements={updateElements}
           onClose={() => setDialog({ kind: 'none' })}
-          classify={(strokes) => model.recognizer.classify(strokes, 1)[0]?.symbol ?? '?'}
         />
       )}
       {dialog.kind === 'about' && (

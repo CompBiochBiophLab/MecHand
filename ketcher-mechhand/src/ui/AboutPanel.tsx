@@ -29,6 +29,7 @@ export function AboutPanel({ model, engine, backendUrl, backendOk, backendEngine
           <tbody>
             <tr><td style={{ paddingRight: 12 }}>Symbol model</td><td><b>{model.name}</b> v{model.version}</td></tr>
             <tr><td>Templates in use</td><td>{model.templateCount} ({model.contributedCount} contributed, {model.userCount} yours)</td></tr>
+            <tr><td>Arrows, bonds, electrons</td><td>{model.contributedElementCount + model.userElementCount} samples ({model.contributedElementCount} contributed, {model.userElementCount} yours); {model.heads.size} arrowhead templates</td></tr>
             <tr><td>Classifier</td><td>$P point-cloud recognizer (Vatavu, Anthony &amp; Wobbrock, ICMI 2012)</td></tr>
             <tr><td>Corner finding</td><td>ShortStraw (Wolin, Eoff &amp; Hammond, 2008)</td></tr>
           </tbody>

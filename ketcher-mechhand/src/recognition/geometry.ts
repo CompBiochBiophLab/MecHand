@@ -196,3 +196,32 @@ export function prng(seed: number): () => number {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
+
+/**
+ * Direction in which a stroke arrives at one of its ends: from the point `back`
+ * (path length) before that end to the end itself.
+ */
+export function endDirection(pts: Pt[], atStart: boolean, back: number): Pt {
+  const s = atStart ? pts.slice().reverse() : pts;
+  const end = s[s.length - 1];
+  let acc = 0;
+  for (let i = s.length - 1; i > 0; i--) {
+    acc += dist(s[i], s[i - 1]);
+    if (acc >= back) return vec(s[i - 1], end);
+  }
+  return vec(s[0], end);
+}
+
+/**
+ * Strokes expressed in the frame of an arrow tip: the tip at the origin and the
+ * shaft arriving from the left (its direction along +x), y down. Arrowheads look
+ * the same in this frame whichever way the arrow points.
+ */
+export function toShaftFrame(strokes: Pt[][], tip: Pt, dir: Pt): Pt[][] {
+  const a = Math.atan2(dir.y, dir.x);
+  const c = Math.cos(-a), s = Math.sin(-a);
+  return strokes.map((st) => st.map((p) => {
+    const x = p.x - tip.x, y = p.y - tip.y;
+    return { x: x * c - y * s, y: x * s + y * c };
+  }));
+}

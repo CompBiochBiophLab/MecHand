@@ -66,8 +66,8 @@ export const HELP_CONTENT: Record<string, HelpEntry> = {
   'btn-teach': {
     brief: 'Teach MecHand your handwriting.',
     student:
-      'Draw a few examples of a letter or sign. They are stored in this browser and used ' +
-      'immediately; export them to contribute them to the shared model.',
+      'Draw a few examples of a letter or sign, an arrow, a bond or a lone pair. They are ' +
+      'stored in this browser and used immediately; export them to contribute them to the shared model.',
   },
   'btn-about': {
     brief: 'How recognition works, model version and browser support.',
