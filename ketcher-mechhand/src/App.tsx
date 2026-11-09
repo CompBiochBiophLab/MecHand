@@ -297,7 +297,7 @@ export default function App() {
         <StudyPanel
           ketcher={ketcher}
           getLayer={() => layerRef.current}
-          appVersion={pkg.version}
+          appVersion={`${pkg.version}+${__MECHAND_COMMIT__}`}
           modelVersion={model.version}
           teach={{ samples: userSamples, elements: userElements }}
           onOpenTeach={() => setDialog({ kind: 'teach' })}
@@ -346,6 +346,7 @@ export default function App() {
           onEngine={setEngine}
           onBackendUrl={setBackendUrl}
           serverAllowed={!STUDY}
+          version={`${pkg.version} (commit ${__MECHAND_COMMIT__})`}
           onClose={() => setDialog({ kind: 'none' })}
         />
       )}

@@ -272,7 +272,7 @@ export function StudyPanel({ ketcher, getLayer, appVersion, modelVersion, teach,
       {progress.phase === 'done' && (
         <div style={box}>
           <b>Moltes gràcies!</b>
-          <p>Descarrega el fitxer de la sessió i copia'l tu mateix/a a la memòria USB de l'estudi (la persona responsable no mira el nom del fitxer). No l'enviïs per correu.</p>
+          <p>Descarrega el fitxer de la sessió i copia'l tu mateix/a a la memòria USB de l'estudi (la persona de contacte no mira el nom del fitxer). No l'enviïs per correu.</p>
           <button style={{ ...btn('#1d4ed8', '#fff'), width: '100%' }} data-testid="study-download" onClick={() => {
             const text = fileText ?? rec.finish(teach);
             setFileText(text);
@@ -281,7 +281,7 @@ export function StudyPanel({ ketcher, getLayer, appVersion, modelVersion, teach,
           <p style={{ fontSize: 12, background: '#f3f4f6', padding: 6, borderRadius: 6 }} data-testid="study-choices">
             Les teves opcions: mostres de ✍ Teach al fitxer: <b>{session.shareTeachSamples ? 'sí' : 'no'}</b>;
             publicació de les mostres: <b>{session.publishTeachSamples ? 'sí' : 'no'}</b>. Han de coincidir amb el
-            consentiment en paper; si no, digues-ho ara a la persona responsable.
+            consentiment en paper; si no, digues-ho ara a la persona de contacte.
           </p>
           <p style={{ fontSize: 12, color: '#4b5563' }}>
             Una còpia del fitxer queda a la carpeta de baixades d'aquest dispositiu; esborra-la després de lliurar-lo.
@@ -340,7 +340,7 @@ function StartForm({ env, hasTeachSamples, onClearTeach, onStart }: {
         <b>Estudi MecHand (UVic-UCC)</b>
         <p style={{ margin: '6px 0' }}>Abans de començar has d'haver llegit el full d'informació i signat el consentiment informat.
           La participació és voluntària, no té cap efecte en cap avaluació i la pots deixar en qualsevol moment.</p>
-        <label style={label}>Grup (te'l dona la persona responsable)</label>
+        <label style={label}>Grup (te'l dona la persona de contacte)</label>
         <select style={field} value={group} onChange={(e) => setGroup(e.target.value as Group)} data-testid="study-group">
           <option value="">—</option>
           {GROUPS.map((g) => <option key={g}>{g}</option>)}
@@ -398,7 +398,7 @@ function StartForm({ env, hasTeachSamples, onClearTeach, onStart }: {
           <span>He llegit el full d'informació i he signat el consentiment informat.</span>
         </label>
         <p style={{ fontSize: 11, color: '#6b7280', margin: '8px 0' }}>
-          Del teu dispositiu només es registra: {env ? describeEnvironment(env) : '…'}; i quins tipus de punter fas servir (llapis, dit, ratolí).
+          Del teu dispositiu només es registra: {env ? describeEnvironment(env) : '…'}; quins tipus de punter fas servir (llapis, dit, ratolí) i com fas servir l'aplicació (vegeu el full d'informació).
           No es registra el teu nom, ni l'adreça IP, ni cap identificador del dispositiu.
         </p>
         {hasTeachSamples && (

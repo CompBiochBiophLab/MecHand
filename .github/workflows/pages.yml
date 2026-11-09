@@ -2,10 +2,14 @@
 # publishes both on GitHub Pages:
 #   https://compbiochbiophlab.github.io/MecHand/       website
 #   https://compbiochbiophlab.github.io/MecHand/app/   MecHand
+# Only a commit that passed CI (all tests, in the three browser engines) is
+# published, so the public app is always a tested build.
 name: Pages
 
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
   workflow_dispatch:
 
@@ -20,9 +24,13 @@ concurrency:
 
 jobs:
   build:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # The commit CI tested (not a newer one pushed meanwhile).
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - uses: actions/setup-node@v7
         with:

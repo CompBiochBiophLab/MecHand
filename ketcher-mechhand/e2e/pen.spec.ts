@@ -145,3 +145,21 @@ test('palm rejection, input modes and the pen eraser end', async ({ page }) => {
   expect(await count(page)).toBe(2);
   await expect(page.locator('[data-testid="mechand-tool-pen"]')).toHaveAttribute('aria-pressed', 'true');
 });
+
+test('the pen bar keeps its height while drawing (no canvas shift under the pen)', async ({ page }) => {
+  for (const width of [1400, 1040, 820]) {
+    await page.setViewportSize({ width, height: 900 });
+    const o = await ready(page);
+    const bar = page.locator('[data-testid="mechand-inkbar"]');
+    const before = (await bar.boundingBox())!.height;
+    const ink = (await page.locator('[data-testid="mechand-ink"]').boundingBox())!;
+    await page.selectOption('[data-testid="mechand-input-mode"]', 'trackpad');
+    await page.mouse.move(o[0], o[1]);
+    await page.mouse.down();
+    await page.mouse.up();
+    await expect(page.locator('[data-testid="mechand-open-stroke"]')).toBeVisible();
+    expect((await bar.boundingBox())!.height).toBe(before);
+    expect((await page.locator('[data-testid="mechand-ink"]').boundingBox())!.y).toBe(ink.y);
+    await page.keyboard.press('Escape');
+  }
+});

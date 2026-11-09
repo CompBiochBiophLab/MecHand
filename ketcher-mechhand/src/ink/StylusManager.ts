@@ -54,7 +54,8 @@ export interface StylusOptions {
 const DRAG_SLOP = 6;
 
 export class StylusManager {
-  private active = new Map<number, { pts: InkPoint[]; info: StrokeInfo }>();
+  /** Strokes in progress; the element's position is read once per stroke (no layout work per sample). */
+  private active = new Map<number, { pts: InkPoint[]; info: StrokeInfo; rect: DOMRect }>();
   private penSeen = false;
   private readonly palmThreshold: number;
   private mode: InputMode;
@@ -132,8 +133,7 @@ export class StylusManager {
     return false;
   }
 
-  private toPoint(e: PointerEvent): InkPoint {
-    const r = this.el.getBoundingClientRect();
+  private toPoint(e: PointerEvent, r: DOMRect = this.el.getBoundingClientRect()): InkPoint {
     return {
       x: e.clientX - r.left,
       y: e.clientY - r.top,
@@ -154,7 +154,7 @@ export class StylusManager {
     if (this.open && e.pointerType === 'mouse') {
       e.preventDefault();
       const s = this.active.get(this.open.id);
-      if (s) s.pts.push(this.toPoint(e));
+      if (s) s.pts.push(this.toPoint(e, s.rect));
       const id = this.open.id;
       this.open = null;
       this.swallowUp = true;
@@ -173,9 +173,10 @@ export class StylusManager {
     } catch {
       /* capture is best effort (old WebKit throws for synthetic events) */
     }
-    const p = this.toPoint(e);
+    const rect = this.el.getBoundingClientRect();
+    const p = this.toPoint(e, rect);
     const info: StrokeInfo = { pointerType: e.pointerType, eraser: this.isEraser(e) };
-    this.active.set(e.pointerId, { pts: [p], info });
+    this.active.set(e.pointerId, { pts: [p], info, rect });
     if (this.mode === 'trackpad' && e.pointerType === 'mouse') this.open = { id: e.pointerId, start: p, pressed: true, dragged: false };
     this.cb.onStart?.(e.pointerId, p, info);
   };
@@ -189,7 +190,7 @@ export class StylusManager {
       return;
     }
     const samples = typeof e.getCoalescedEvents === 'function' ? e.getCoalescedEvents() : [];
-    for (const ce of samples.length ? samples : [e]) s.pts.push(this.toPoint(ce));
+    for (const ce of samples.length ? samples : [e]) s.pts.push(this.toPoint(ce, s.rect));
     if (this.open?.pressed && !this.open.dragged) {
       const last = s.pts[s.pts.length - 1];
       if (Math.hypot(last.x - this.open.start.x, last.y - this.open.start.y) > DRAG_SLOP) this.open.dragged = true;
@@ -212,7 +213,7 @@ export class StylusManager {
       }
       this.open = null;
     }
-    if (e.type === 'pointerup') s.pts.push(this.toPoint(e));
+    if (e.type === 'pointerup') s.pts.push(this.toPoint(e, s.rect));
     this.end(e.pointerId);
   };
 }

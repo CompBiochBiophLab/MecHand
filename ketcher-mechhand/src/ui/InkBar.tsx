@@ -27,7 +27,6 @@ const DEVICE: Record<string, { icon: typeof AutoIcon; name: string }> = {
 };
 
 const group = { display: 'inline-flex', alignItems: 'center', gap: 3 } as const;
-const caption = { fontSize: 11, color: '#6b7280', marginRight: 2 } as const;
 const divider = <span style={{ width: 1, height: 22, background: '#e5e7eb', margin: '0 5px' }} />;
 
 /** A little SVG showing what a pen draws (uses the real ink renderer). */
@@ -60,7 +59,9 @@ export function InkBar({ pen, tool, lastInput, openStroke, onPen, onTool }: {
   const device = lastInput ? DEVICE[lastInput.type] ?? { icon: PenIcon, name: lastInput.type } : null;
 
   return (
-    <div style={{ ...barStyle, background: '#ffffff', padding: '4px 10px', gap: 3 }} data-testid="mechand-inkbar" role="toolbar" aria-label="Pen">
+    // Nothing in this bar changes size while drawing (the device chip has a fixed width and the
+    // trackpad hint floats over the canvas): a reflow mid-stroke would move the canvas under the pen.
+    <div style={{ ...barStyle, background: '#ffffff', padding: '4px 10px', gap: 3, position: 'relative' }} data-testid="mechand-inkbar" role="toolbar" aria-label="Pen">
       <div style={group} role="radiogroup" aria-label="Tool">
         <HelpTip id="tool-pen">
           <ToolButton icon={<PenIcon />} label="Pen" name="Pen" active={tool === 'pen'} pressed={tool === 'pen'} onClick={() => onTool('pen')} testId="mechand-tool-pen" />
@@ -134,29 +135,33 @@ export function InkBar({ pen, tool, lastInput, openStroke, onPen, onTool }: {
           </select>
         </label>
       </HelpTip>
-      {device && lastInput && (
-        <HelpTip id="pen-device">
-          <span
-            key={lastInput.n} data-testid="mechand-input-device" data-type={lastInput.type} data-accepted={lastInput.accepted}
-            style={{
-              ...group, marginLeft: 6, padding: '3px 8px', borderRadius: 12, fontSize: 12,
-              background: lastInput.accepted ? '#ecfdf5' : '#fffbeb', color: lastInput.accepted ? '#047857' : '#b45309',
-              border: `1px solid ${lastInput.accepted ? '#a7f3d0' : '#fde68a'}`,
-              animation: 'mechand-flash 0.6s ease-out',
-            }}
-          >
-            <device.icon size={15} />
-            {device.name}{lastInput.accepted ? '' : ' ignored'}
-          </span>
-        </HelpTip>
-      )}
+      <HelpTip id="pen-device">
+        <span
+          key={lastInput?.n ?? 0} data-testid="mechand-input-device" data-type={lastInput?.type ?? ''} data-accepted={lastInput?.accepted ?? ''}
+          style={{
+            ...group, marginLeft: 6, padding: '3px 8px', borderRadius: 12, fontSize: 12, width: 150, boxSizing: 'border-box',
+            whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+            background: !lastInput ? '#f9fafb' : lastInput.accepted ? '#ecfdf5' : '#fffbeb',
+            color: !lastInput ? '#6b7280' : lastInput.accepted ? '#047857' : '#b45309',
+            border: `1px solid ${!lastInput ? '#e5e7eb' : lastInput.accepted ? '#a7f3d0' : '#fde68a'}`,
+            animation: lastInput ? 'mechand-flash 0.6s ease-out' : undefined,
+          }}
+        >
+          {device && lastInput ? (<><device.icon size={15} />{device.name}{lastInput.accepted ? '' : ' ignored'}</>) : 'Input: —'}
+        </span>
+      </HelpTip>
       {openStroke && (
-        <span style={{ fontSize: 12, color: '#1d4ed8', marginLeft: 6 }} data-testid="mechand-open-stroke">
+        <span
+          data-testid="mechand-open-stroke"
+          style={{
+            position: 'absolute', top: '100%', left: '50%', transform: 'translate(-50%, 6px)', zIndex: 60, pointerEvents: 'none',
+            fontSize: 12, color: '#fff', background: '#1d4ed8', padding: '4px 10px', borderRadius: 12, whiteSpace: 'nowrap',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+          }}
+        >
           Click to end the stroke (Esc cancels)
         </span>
       )}
-      <span style={{ flex: 1 }} />
-      <span style={caption}>Appearance never affects recognition</span>
       <style>{'@keyframes mechand-flash { from { box-shadow: 0 0 0 3px rgba(16,185,129,0.35); } to { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }'}</style>
     </div>
   );
