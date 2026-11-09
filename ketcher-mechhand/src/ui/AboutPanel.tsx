@@ -5,8 +5,10 @@ import { Modal } from './Modal';
 
 export type Engine = 'browser' | 'server';
 
-export function AboutPanel({ model, engine, backendUrl, backendOk, backendEngine, onEngine, onBackendUrl, onClose }: {
+export function AboutPanel({ model, engine, backendUrl, backendOk, backendEngine, onEngine, onBackendUrl, onClose, serverAllowed = true }: {
   model: SymbolModel;
+  /** False in study mode: the in-browser engine only, so that nothing leaves the browser. */
+  serverAllowed?: boolean;
   engine: Engine;
   backendUrl: string;
   backendOk: boolean | null;
@@ -35,19 +37,23 @@ export function AboutPanel({ model, engine, backendUrl, backendOk, backendEngine
           </tbody>
         </table>
         <h3 style={{ fontSize: 14, marginBottom: 4 }}>Structure engine</h3>
-        <label style={{ display: 'block' }}>
-          <input type="radio" checked={engine === 'browser'} onChange={() => onEngine('browser')} /> In-browser (default, works offline)
-        </label>
-        <label style={{ display: 'block' }}>
-          <input type="radio" checked={engine === 'server'} onChange={() => onEngine('server')} /> DECIMER server (optional,
-          image-based, runs on your computer; arrows and charges still come from the in-browser recognizer)
-        </label>
-        {engine === 'server' && (
-          <div style={{ marginTop: 4 }}>
-            <input value={backendUrl} onChange={(e) => onBackendUrl(e.target.value)} style={{ width: 260 }} />{' '}
-            {backendOk === null ? 'checking…' : backendOk ? `● connected — ${backendEngine ?? 'server'}` : '○ not reachable (see README, "Optional recognition server")'}
-          </div>
-        )}
+        {!serverAllowed ? (
+          <p style={{ margin: 0 }} data-testid="mechand-engine-locked">In-browser only (study mode: nothing leaves this browser).</p>
+        ) : (<>
+          <label style={{ display: 'block' }}>
+            <input type="radio" checked={engine === 'browser'} onChange={() => onEngine('browser')} /> In-browser (default, works offline)
+          </label>
+          <label style={{ display: 'block' }}>
+            <input type="radio" checked={engine === 'server'} onChange={() => onEngine('server')} /> DECIMER server (optional,
+            image-based, runs on your computer; arrows and charges still come from the in-browser recognizer)
+          </label>
+          {engine === 'server' && (
+            <div style={{ marginTop: 4 }}>
+              <input value={backendUrl} onChange={(e) => onBackendUrl(e.target.value)} style={{ width: 260 }} />{' '}
+              {backendOk === null ? 'checking…' : backendOk ? `● connected — ${backendEngine ?? 'server'}` : '○ not reachable (see README, "Optional recognition server")'}
+            </div>
+          )}
+        </>)}
         <h3 style={{ fontSize: 14, marginBottom: 4 }}>Browsers</h3>
         <p style={{ margin: 0 }}>
           Works in current Chrome, Edge, Firefox and Safari (desktop and iPad). Known differences are listed in

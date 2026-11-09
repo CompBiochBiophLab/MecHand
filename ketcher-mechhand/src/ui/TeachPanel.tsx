@@ -16,6 +16,7 @@ import type { Pt } from '../recognition/geometry';
 import { MODEL_SYMBOLS, type SymbolModel, cleanSymbolSamples } from '../recognition/model';
 import { recognizeSketch, withoutEnclosingCircle } from '../recognition/sketch';
 import { StylusManager } from '../ink/StylusManager';
+import { loadPenSettings } from '../ink/pen';
 import { Modal, btn } from './Modal';
 
 const LABEL: Record<string, string> = { '-': '− (minus)', '+': '+ (plus)', I: 'I / l', r: 'r', i: 'i', t: 't', a: 'a' };
@@ -43,6 +44,8 @@ export function TeachPanel({ samples, elements, model, onChange, onElements, onC
   const [symbol, setSymbol] = useState('O');
   const [element, setElement] = useState<ElementId>('arrow-pair');
   const [strokes, setStrokes] = useState<Pt[][]>([]);
+  /** The stroke being drawn (shown live, also for click – move – click trackpad strokes). */
+  const [live, setLive] = useState<Pt[] | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const isLetters = tab === 'letters';
   const info = ELEMENTS.find((e) => e.id === element)!;
@@ -51,8 +54,16 @@ export function TeachPanel({ samples, elements, model, onChange, onElements, onC
   useEffect(() => {
     const svg = svgRef.current!;
     const sm = new StylusManager(svg, {
-      onEnd: (_id, pts) => setStrokes((s) => [...s, pts.map(({ x, y }) => ({ x, y }))]),
-    });
+      onStart: (_id, p) => setLive([{ x: p.x, y: p.y }]),
+      onMove: (_id, pts) => setLive(pts.map(({ x, y }) => ({ x, y }))),
+      onCancel: () => setLive(null),
+      onEnd: (_id, pts, info) => {
+        setLive(null);
+        // The pen's eraser end removes the last stroke instead of drawing.
+        if (info.eraser) setStrokes((s) => s.slice(0, -1));
+        else setStrokes((s) => [...s, pts.map(({ x, y }) => ({ x, y }))]);
+      },
+    }, { mode: loadPenSettings().input });
     sm.attach();
     return () => sm.detach();
   }, [tab]);
@@ -145,11 +156,13 @@ export function TeachPanel({ samples, elements, model, onChange, onElements, onC
               <text x={size.w / 2 - 12} y={size.h / 2 + 10} fontSize={Math.round(0.5 * TEACH_BOND_PX)} fill="#d1d5db" pointerEvents="none"
                 style={{ userSelect: 'none' }}>O</text>
             )}
-            {strokes.map((s, i) => (
-              <polyline key={i} points={s.map((p) => `${p.x},${p.y}`).join(' ')} fill="none" stroke="#111827" strokeWidth={3} strokeLinecap="round" />
+            {[...strokes, ...(live ? [live] : [])].map((s, i) => (
+              <polyline key={i} points={(s.length > 1 ? s : [s[0], { x: s[0].x + 0.5, y: s[0].y }]).map((p) => `${p.x},${p.y}`).join(' ')}
+                fill="none" stroke="#111827" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
             ))}
           </svg>
           <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+            <button style={btn('#f3f4f6', '#374151')} onClick={() => setStrokes((s) => s.slice(0, -1))} disabled={!strokes.length}>Undo stroke</button>
             <button style={btn('#f3f4f6', '#374151')} onClick={() => setStrokes([])}>Clear</button>
             <button style={btn('#16a34a', '#fff')} onClick={save} disabled={!strokes.length}>Save sample</button>
           </div>

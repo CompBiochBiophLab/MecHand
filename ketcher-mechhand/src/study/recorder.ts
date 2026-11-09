@@ -10,8 +10,10 @@
  *    read and write, handedness, experience), a coarse description of the browser
  *    and device (environment.ts), and for each task the times, the ink (x, y points
  *    of each stroke and when it was drawn), what MecHand recognized, what the
- *    participant decided and the final drawing. No name, no e-mail, no IP address,
- *    no raw user-agent string, no pressure or tilt.
+ *    participant decided, the use of the pen controls (eraser, undo/redo, colour,
+ *    line, width, input mode), how many contacts palm rejection ignored, and the
+ *    final drawing. No name, no e-mail, no IP address, no raw user-agent string,
+ *    no pressure or tilt.
  */
 
 import type { ElementSample } from '../recognition/elements';
@@ -20,8 +22,8 @@ import type { SketchResult } from '../recognition/sketch';
 import type { StudyEnvironment } from './environment';
 import type { Condition, Group, StudyTask } from './tasks';
 
-export const SESSION_SCHEMA = 'mechand-study-session/2';
-const STORAGE_KEY = 'mechand.study.session.v2';
+export const SESSION_SCHEMA = 'mechand-study-session/3';
+const STORAGE_KEY = 'mechand.study.session.v3';
 
 export type Device =
   | 'tauleta-llapis' | 'tauleta-dit' | 'ordinador-llapis' | 'ordinador-tactil'
@@ -108,6 +110,18 @@ export function inkForStudy(
   }));
 }
 
+const r1 = (v: number) => Math.round(v * 10) / 10;
+
+/** Teach samples as kept in the session file: symbol or element and x, y rounded to 0.1 px, nothing else. */
+export function roundTeach(teach: { samples: SymbolSample[]; elements: ElementSample[] }) {
+  return {
+    samples: teach.samples.map((s) => ({ symbol: s.symbol, strokes: s.strokes.map((st) => st.map((p) => ({ x: r1(p.x), y: r1(p.y) }))) })),
+    elements: teach.elements.map((e) => ({
+      element: e.element, bondPx: e.bondPx, strokes: e.strokes.map((st) => st.map((p) => ({ x: r1(p.x), y: r1(p.y) }))),
+    })),
+  };
+}
+
 export class StudyRecorder {
   session: StudySession;
   /** performance.now() at the session start (shifted on restore so that times continue). */
@@ -136,7 +150,11 @@ export class StudyRecorder {
     try {
       const raw = globalThis.localStorage?.getItem(STORAGE_KEY);
       const s = raw ? (JSON.parse(raw) as StudySession) : null;
-      return s?.schema === SESSION_SCHEMA ? new StudyRecorder(s) : null;
+      if (s?.schema !== SESSION_SCHEMA) return null;
+      const r = new StudyRecorder(s);
+      // A reload: a task that was running is started again (the analysis flags it).
+      if (s.progress.phase !== 'done') r.log('session-restore');
+      return r;
     } catch {
       return null;
     }
@@ -187,7 +205,7 @@ export class StudyRecorder {
   finish(teach: { samples: SymbolSample[]; elements: ElementSample[] }): string {
     this.log('session-end');
     const out: StudySession = { ...this.session };
-    if (this.session.shareTeachSamples) out.teachSamples = teach;
+    if (this.session.shareTeachSamples) out.teachSamples = roundTeach(teach);
     return JSON.stringify(out, null, 1);
   }
 

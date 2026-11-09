@@ -35,7 +35,8 @@ test('runs a study session locally and produces a minimal session file', async (
   const requests: string[] = [];
   context.on('request', (r) => requests.push(r.url()));
   page.on('dialog', (d) => d.accept());
-  await page.goto('/?study=1&group=A1');
+  // ?engine=server must be ignored in study mode: nothing may leave the browser.
+  await page.goto('/?study=1&group=A1&engine=server&server=http://127.0.0.1:9/');
   await page.waitForFunction(() => Boolean((window as any).mechand), null, { timeout: 60_000 });
   await page.locator('[data-testid="mechand-study"]').waitFor();
   const afterLoad = requests.length;
@@ -63,6 +64,17 @@ test('runs a study session locally and produces a minimal session file', async (
   const o: P = [box.x + box.width / 2 - 100, box.y + box.height / 2];
   await draw(page, o, [[0, 30], [52, 0], [92, 23]]);
   await draw(page, o, circle(118, 38, 11, 14));
+  // A stray stroke, erased with the eraser; then undo and redo the erasure.
+  await draw(page, o, [[0, 120], [80, 125]]);
+  await page.click('[data-testid="mechand-tool-eraser"]');
+  await draw(page, o, [[40, 100], [40, 145]]);
+  await expect(page.locator('[data-testid="mechand-recognize"]')).toContainText('(2)');
+  await page.click('[data-testid="mechand-undo-ink"]');
+  await expect(page.locator('[data-testid="mechand-recognize"]')).toContainText('(3)');
+  await page.click('[data-testid="mechand-redo-ink"]');
+  await expect(page.locator('[data-testid="mechand-recognize"]')).toContainText('(2)');
+  await page.keyboard.press('KeyP');
+  await expect(page.locator('[data-testid="mechand-tool-pen"]')).toHaveAttribute('aria-pressed', 'true');
   await page.click('[data-testid="mechand-recognize"]');
   await page.click('[data-testid="mechand-confirm"]');
   await expect.poll(() => page.evaluate(() => (window as any).ketcher.getSmiles())).toMatch(/^(CCO|OCC)$/);
@@ -86,7 +98,12 @@ test('runs a study session locally and produces a minimal session file', async (
     await page.click('[data-testid="study-finish-task"]');
   }
   await sus(page);
+  // The structure engine cannot be switched to a server in study mode.
+  await page.locator('button', { hasText: 'About' }).click();
+  await expect(page.locator('[data-testid="mechand-engine-locked"]')).toBeVisible();
+  await page.keyboard.press('Escape');
   await page.click('[data-testid="study-final-done"]');
+  await expect(page.locator('[data-testid="study-choices"]')).toContainText('no');
 
   // Download and inspect the session file.
   const [download] = await Promise.all([page.waitForEvent('download'), page.click('[data-testid="study-download"]')]);
@@ -99,7 +116,7 @@ test('runs a study session locally and produces a minimal session file', async (
     mkdirSync(save, { recursive: true });
     writeFileSync(join(save, `${test.info().project.name}-${download.suggestedFilename()}`), text);
   }
-  expect(s.schema).toBe('mechand-study-session/2');
+  expect(s.schema).toBe('mechand-study-session/3');
   expect(s.code).toMatch(/^MH-[A-Z2-9]{5}$/);
   expect(s.group).toBe('A1');
   expect(s.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
@@ -118,6 +135,12 @@ test('runs a study session locally and produces a minimal session file', async (
   expect(recog.data.result.scene.atoms).toHaveLength(3);
   expect(s.events.filter((e: any) => e.type === 'task-end')).toHaveLength(10);
   expect(s.events.find((e: any) => e.type === 'task-end').data.ket).toContain('"root"');
+  expect(typeof s.events.find((e: any) => e.type === 'task-end').data.ignoredContacts).toBe('number');
+  // Use of the pen controls.
+  const types = s.events.filter((e: any) => e.task === 'B1T0').map((e: any) => e.type);
+  for (const t of ['pen', 'tool', 'erase', 'undo-ink', 'redo-ink']) expect(types).toContain(t);
+  expect(s.events.find((e: any) => e.type === 'erase').data).toEqual({ strokes: 1, source: 'tool' });
+  expect(s.events.find((e: any) => e.type === 'undo-ink').data).toEqual({ op: 'erase' });
   expect(s.teachSamples).toBeUndefined(); // not shared unless the participant opts in
   expect(s.shareTeachSamples).toBe(false);
   expect(s.publishTeachSamples).toBe(false);

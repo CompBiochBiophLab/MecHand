@@ -28,11 +28,12 @@ export interface HelpEntry {
 
 export const HELP_CONTENT: Record<string, HelpEntry> = {
   'btn-freehand': {
-    brief: 'Freehand mode: draw on top of Ketcher with pen, trackpad or mouse.',
+    brief: 'Freehand mode: draw on top of Ketcher with a pen, finger, trackpad or mouse.',
     student:
       'Turn this on and draw the mechanism as on paper: bonds as lines (zig-zag chains ' +
       'and rings can be one stroke), atom labels as letters, charges as + or −, and ' +
-      'curved arrows with a head. Turn it off to use Ketcher\'s own tools again.',
+      'curved arrows with a head. The pen bar below sets colour, line and input. ' +
+      'Turn it off to use Ketcher\'s own tools again.',
     shortcut: 'Alt+F',
   },
   'btn-recognize': {
@@ -43,16 +44,67 @@ export const HELP_CONTENT: Record<string, HelpEntry> = {
     shortcut: 'Space',
   },
   'btn-undo-ink': {
-    brief: 'Remove the last stroke.',
-    student: 'Removes only the last freehand stroke; Ketcher\'s structure is not touched.',
-    shortcut: 'Ctrl/⌘+Z (in freehand mode)',
+    brief: 'Undo the last change to the ink (stroke, erasure or clear).',
+    student: 'Undoes the last stroke, erasure or clear. Ketcher\'s structure is not touched.',
+    shortcut: 'Ctrl/⌘+Z',
+  },
+  'btn-redo-ink': {
+    brief: 'Redo what Undo ink undid.',
+    student: 'Puts back the last change that Undo ink removed.',
+    shortcut: 'Ctrl/⌘+Shift+Z',
   },
   'btn-clear-ink': {
-    brief: 'Remove all ink.',
-    student: 'Deletes all freehand strokes that have not been inserted yet.',
+    brief: 'Remove all ink (can be undone).',
+    student: 'Deletes all freehand strokes that have not been inserted yet. Undo ink brings them back.',
+  },
+  'tool-pen': {
+    brief: 'Draw ink.',
+    student: 'The pen draws strokes. Choose its colour, kind of line and width on this bar.',
+    shortcut: 'P',
+  },
+  'tool-eraser': {
+    brief: 'Erase whole strokes by touching them.',
+    student:
+      'Drag over the strokes you want to remove (they fade) and lift: they are erased. ' +
+      'The eraser end of a pen (Surface, Wacom) erases too, whatever tool is selected.',
+    shortcut: 'E',
+  },
+  'pen-colour': {
+    brief: 'Ink colour.',
+    student: 'Colours help you organise a drawing (e.g. arrows in red). Recognition ignores colour.',
+  },
+  'pen-style': {
+    brief: 'Kind of line: ballpoint, fountain pen, marker or dashed.',
+    student:
+      'Ballpoint draws an even line; the fountain pen follows pen pressure (or speed with a mouse); ' +
+      'the marker is broad and translucent; dashed is only a look. All are recognized the same way.',
+  },
+  'pen-width': {
+    brief: 'Line width.',
+    student: 'From fine to extra bold. Only the look changes; recognition uses the shape of the stroke.',
+  },
+  'pen-input': {
+    brief: 'Which inputs draw: auto, pen only, pen and finger, or trackpad.',
+    student:
+      'Auto: once you use a pen, fingers and palms are ignored. Pen only: fingers never draw. ' +
+      'Pen and finger: both draw. Trackpad: click to start a stroke, move without pressing, ' +
+      'click to end it (no click-and-drag needed).',
+  },
+  'pen-device': {
+    brief: 'The device of the last contact, and whether it could draw.',
+    student:
+      'Shows whether the browser saw a pen, a finger or a mouse/trackpad. "Ignored" means palm ' +
+      'rejection discarded the contact; change the input mode if your finger should draw.',
+  },
+  'btn-library': {
+    brief: 'Template library: rings, functional groups, biomolecules, reagents and mechanisms.',
+    student:
+      'Search by name or formula, keep favourites, and add a structure to the canvas or open a ' +
+      'complete mechanism.',
+    shortcut: 'Ctrl/⌘+K',
   },
   'menu-templates': {
-    brief: 'Open a standard mechanism (organic, inorganic, biochemistry).',
+    brief: 'Open a complete textbook mechanism (organic, inorganic, biochemistry).',
     student:
       'Loads a textbook mechanism into Ketcher. Use it to see how arrows are drawn, to ' +
       'practise redrawing it by hand, or to try the LaTeX export.',

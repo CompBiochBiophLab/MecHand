@@ -1,7 +1,7 @@
 """
 Anàlisi dels fitxers de sessió de l'estudi «Avaluació de MecHand» (estudi/01-disseny-experimental.md).
 
-Entrada : una carpeta amb fitxers mechand-estudi-MH-XXXXX.json (esquema mechand-study-session/2).
+Entrada : una carpeta amb fitxers mechand-estudi-MH-XXXXX.json (esquema mechand-study-session/3).
 Sortida : taules CSV i un resum (--out), una taula publicable amb k-anonimat (--public),
           les mostres Teach publicables (--export-teach) i la validació creuada del model
           compartit (--cross-validate, requereix Node.js i el repositori).
@@ -30,7 +30,7 @@ from rdkit import Chem, RDLogger
 
 RDLogger.DisableLog("rdApp.*")
 
-SCHEMA = "mechand-study-session/2"
+SCHEMA = "mechand-study-session/3"
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent.parent
 STIMULI = {s["id"]: s for s in json.loads((REPO / "estudi" / "estimuls" / "estimuls.json").read_text())}
@@ -188,7 +188,14 @@ def task_rows(s: dict) -> list[dict]:
             "arrows_ok": curved == st["reference"]["curvedArrows"],
             "recognitions": decisions["recognize"], "inserts": decisions["insert"],
             "keep_drawing": decisions["keep-drawing"], "discards": decisions["discard"],
-            "undo_strokes": decisions["undo-stroke"], "clear_ink": decisions["clear-ink"],
+            "undo_ink": decisions["undo-ink"], "redo_ink": decisions["redo-ink"], "clear_ink": decisions["clear-ink"],
+            "erasures": decisions["erase"],
+            "erased_strokes": sum(x["data"]["strokes"] for x in ev if x["type"] == "erase"),
+            "pen_eraser_used": any(x["type"] == "erase" and x["data"].get("source") == "pen-eraser" for x in ev),
+            "pen_changes": max(decisions["pen"] - 1, 0), "input_mode_changes": decisions["input-mode"],
+            "ignored_contacts": (end["data"].get("ignoredContacts") if end else None),
+            # Started more than once (a reload during the task): the time counts from the last start.
+            "restarted": decisions["task-start"] > 1,
         })
     for r in rows:
         r["correct"] = bool(r["done"] and not r["skipped"] and r["structure_ok"] and r["arrows_ok"])

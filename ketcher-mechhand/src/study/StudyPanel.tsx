@@ -83,6 +83,7 @@ export function StudyPanel({ ketcher, getLayer, appVersion, modelVersion, teach,
   const [zoom, setZoom] = useState(false);
   const [tick, setTick] = useState(0);
   const [fileText, setFileText] = useState<string | null>(null);
+  const [showCode, setShowCode] = useState(false);
 
   useEffect(() => {
     detectEnvironment().then(setEnv);
@@ -126,6 +127,8 @@ export function StudyPanel({ ketcher, getLayer, appVersion, modelVersion, teach,
     return <StartForm env={env} hasTeachSamples={teach.samples.length + teach.elements.length > 0} onClearTeach={onClearTeach}
       onStart={(group, participant, share, publish) => {
         if (!env) return;
+        // Samples already in this browser may be someone else's: each session starts from the shared model.
+        onClearTeach();
         const r = StudyRecorder.create({
           appVersion, modelVersion, code: newParticipantCode(), group, participant,
           environment: { ...env, pointerTypes: [] }, tasks: tasksFor(group),
@@ -150,7 +153,10 @@ export function StudyPanel({ ketcher, getLayer, appVersion, modelVersion, teach,
       ket = null;
     }
     const layer = getLayer();
-    rec.log(skipped ? 'task-skip' : 'task-end', task.id, { seconds: rec.elapsed(task.id), ket, pendingInkStrokes: layer?.strokes.length ?? 0 });
+    rec.log(skipped ? 'task-skip' : 'task-end', task.id, {
+      seconds: rec.elapsed(task.id), ket, pendingInkStrokes: layer?.strokes.length ?? 0,
+      ignoredContacts: layer?.takeRejectedCount() ?? 0,
+    });
     setRunning(false);
     studyState.task = null;
     await clearCanvas();
@@ -164,7 +170,14 @@ export function StudyPanel({ ketcher, getLayer, appVersion, modelVersion, teach,
     <aside data-testid="mechand-study" style={{ width: 360, flexShrink: 0, overflowY: 'auto', background: '#f9fafb', borderLeft: '1px solid #e5e7eb', padding: 10, fontSize: 13, fontFamily: 'system-ui, sans-serif' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
         <b>Estudi MecHand</b>
-        <span style={{ fontFamily: 'monospace', fontSize: 14 }} title="El teu codi anònim">{session.code}</span>
+        {progress.phase === 'done' ? (
+          <span style={{ fontFamily: 'monospace', fontSize: 14 }} title="El teu codi anònim">{session.code}</span>
+        ) : (
+          <button type="button" onClick={() => setShowCode((v) => !v)} title="El teu codi anònim (es mostra al final)"
+            style={{ fontFamily: 'monospace', fontSize: 13, border: '1px solid #e5e7eb', background: '#fff', borderRadius: 6, cursor: 'pointer', padding: '1px 6px' }}>
+            {showCode ? session.code : 'MH-•••••'}
+          </button>
+        )}
       </div>
 
       {progress.phase === 'teach' && (
@@ -204,7 +217,7 @@ export function StudyPanel({ ketcher, getLayer, appVersion, modelVersion, teach,
             <img src={`${import.meta.env.BASE_URL}study/${s.file}`} alt={s.source.title}
               onClick={() => setZoom(true)} style={{ width: '100%', cursor: 'zoom-in', border: '1px solid #e5e7eb', borderRadius: 4, background: '#fff' }} />
             <div style={{ fontSize: 10, color: '#6b7280', marginTop: 2 }}>
-              <a href={s.source.url} target="_blank" rel="noreferrer">{s.source.title.replace(/^File:/, '')}</a> · {s.source.author} · {s.source.license}
+              {s.source.title.replace(/^File:/, '')} · {s.source.author} · {s.source.license}
               {s.source.license.startsWith('CC') ? ' · convertida a PNG' : ''}
             </div>
             {!running ? (
@@ -253,12 +266,20 @@ export function StudyPanel({ ketcher, getLayer, appVersion, modelVersion, teach,
       {progress.phase === 'done' && (
         <div style={box}>
           <b>Moltes gràcies!</b>
-          <p>Descarrega el fitxer de la sessió i lliura'l a la persona responsable de l'estudi (en mà, per exemple en un llapis USB). No l'enviïs per correu.</p>
+          <p>Descarrega el fitxer de la sessió i copia'l tu mateix/a a la memòria USB de l'estudi (la persona responsable no mira el nom del fitxer). No l'enviïs per correu.</p>
           <button style={{ ...btn('#1d4ed8', '#fff'), width: '100%' }} data-testid="study-download" onClick={() => {
             const text = fileText ?? rec.finish(teach);
             setFileText(text);
             download(`mechand-estudi-${session.code}.json`, text);
           }}>Descarrega {`mechand-estudi-${session.code}.json`}</button>
+          <p style={{ fontSize: 12, background: '#f3f4f6', padding: 6, borderRadius: 6 }} data-testid="study-choices">
+            Les teves opcions: mostres de ✍ Teach al fitxer: <b>{session.shareTeachSamples ? 'sí' : 'no'}</b>;
+            publicació de les mostres: <b>{session.publishTeachSamples ? 'sí' : 'no'}</b>. Han de coincidir amb el
+            consentiment en paper; si no, digues-ho ara a la persona responsable.
+          </p>
+          <p style={{ fontSize: 12, color: '#4b5563' }}>
+            Una còpia del fitxer queda a la carpeta de baixades d'aquest dispositiu; esborra-la després de lliurar-lo.
+          </p>
           <p style={{ fontSize: 12, color: '#4b5563' }}>
             Guarda el teu codi <b>{session.code}</b>: si més endavant vols retirar les teves dades, només cal que l'enviïs
             a l'equip investigador.
@@ -278,7 +299,9 @@ export function StudyPanel({ ketcher, getLayer, appVersion, modelVersion, teach,
         <summary>Què es registra</summary>
         <p>Codi anònim, grup, les teves respostes, {describeEnvironment(session.environment)}; tipus de punter usats:
           {' '}{session.environment.pointerTypes.join(', ') || '—'}. Per a cada tasca: temps, traços (punts x, y i moment
-          de cada traç), el que MecHand ha reconegut, les teves decisions i el dibuix final. Res no surt d'aquest navegador.</p>
+          de cada traç), el que MecHand ha reconegut, les teves decisions, l'ús dels controls del llapis (goma, desfer,
+          color, gruix, mode d'entrada), els contactes ignorats pel rebuig de palmell i el dibuix final. Res no surt
+          d'aquest navegador.</p>
       </details>
     </aside>
   );
@@ -310,7 +333,7 @@ function StartForm({ env, hasTeachSamples, onClearTeach, onStart }: {
       <div ref={ref} style={box}>
         <b>Estudi MecHand (UVic-UCC)</b>
         <p style={{ margin: '6px 0' }}>Abans de començar has d'haver llegit el full d'informació i signat el consentiment informat.
-          Les respostes són voluntàries i no tenen cap efecte en cap avaluació.</p>
+          La participació és voluntària, no té cap efecte en cap avaluació i la pots deixar en qualsevol moment.</p>
         <label style={label}>Grup (te'l dona la persona responsable)</label>
         <select style={field} value={group} onChange={(e) => setGroup(e.target.value as Group)} data-testid="study-group">
           <option value="">—</option>
@@ -373,9 +396,9 @@ function StartForm({ env, hasTeachSamples, onClearTeach, onStart }: {
           No es registra el teu nom, ni l'adreça IP, ni cap identificador del dispositiu.
         </p>
         {hasTeachSamples && (
-          <p style={{ fontSize: 12, background: '#fef3c7', padding: 6, borderRadius: 6 }}>
-            Aquest navegador ja té mostres d'entrenament (potser d'una altra persona).{' '}
-            <button style={{ ...btn('#fff', '#92400e'), padding: '2px 8px' }} onClick={() => confirm("Esborrar les mostres d'entrenament existents?") && onClearTeach()}>Esborra-les</button>
+          <p style={{ fontSize: 12, background: '#fef3c7', padding: 6, borderRadius: 6 }} data-testid="study-teach-warning">
+            Aquest navegador ja té mostres d'entrenament (potser d'una altra persona): s'esborraran en començar,
+            perquè cada sessió parteixi del model compartit.
           </p>
         )}
         <button style={{ ...btn(ready ? '#1d4ed8' : '#9ca3af', '#fff'), width: '100%', marginTop: 4 }} disabled={!ready} data-testid="study-begin"

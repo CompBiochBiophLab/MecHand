@@ -4,6 +4,7 @@ import { StandaloneStructServiceProvider } from 'ketcher-standalone';
 import 'ketcher-react/dist/index.css';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FreehandLayer } from './ink/FreehandLayer';
+import { type InkTool, type PenSettings, loadPenSettings, savePenSettings } from './ink/pen';
 import { RecognitionServer } from './recognition/serverClient';
 import { type MechanismIssue, checkMechanism } from './recognition/mechanismCheck';
 import { buildModel, loadUserSamples, saveUserSamples } from './recognition/model';
@@ -16,6 +17,7 @@ import { AboutPanel, type Engine } from './ui/AboutPanel';
 import { ConsolidateDialog } from './ui/ConsolidateDialog';
 import { ExportDialog } from './ui/ExportDialog';
 import { HelpProvider } from './ui/HelpSystem';
+import { InkBar, type LastInput } from './ui/InkBar';
 import { MecHandBar } from './ui/MecHandBar';
 import { TeachPanel } from './ui/TeachPanel';
 import { StudyPanel, type StudyStatus } from './study/StudyPanel';
@@ -56,12 +58,18 @@ export default function App() {
   const [ketcher, setKetcher] = useState<Ketcher | null>(null);
   const layerRef = useRef<FreehandLayer | null>(null);
   const [freehand, setFreehand] = useState(false);
-  const [strokeCount, setStrokeCount] = useState(0);
+  const [ink, setInk] = useState({ count: 0, canUndo: false, canRedo: false });
+  const strokeCount = ink.count;
+  const [pen, setPen] = useState<PenSettings>(loadPenSettings);
+  const [tool, setTool] = useState<InkTool>('pen');
+  const [lastInput, setLastInput] = useState<LastInput | null>(null);
+  const [openStroke, setOpenStroke] = useState(false);
   const [dialog, setDialog] = useState<Dialog>({ kind: 'none' });
   const [userSamples, setUserSamples] = useState<SymbolSample[]>(loadUserSamples);
   const [userElements, setUserElements] = useState<ElementSample[]>(loadElementSamples);
   const model = useMemo(() => buildModel({ userSamples, userElements }), [userSamples, userElements]);
-  const [engine, setEngine] = useState<Engine>(params.get('engine') === 'server' ? 'server' : 'browser');
+  // Study mode never uses the optional recognition server: nothing may leave the browser.
+  const [engine, setEngine] = useState<Engine>(!STUDY && params.get('engine') === 'server' ? 'server' : 'browser');
   const [backendUrl, setBackendUrl] = useState(params.get('server') ?? 'http://localhost:8000');
   const [backendOk, setBackendOk] = useState<boolean | null>(null);
   const [backendEngine, setBackendEngine] = useState<string | undefined>();
@@ -75,6 +83,29 @@ export default function App() {
     if (!freehandAllowed) setFreehand(false);
   }, [freehandAllowed]);
   useEffect(() => studyLog('freehand', { on: freehand }), [freehand]);
+  // Pen settings: kept in this browser, applied to the ink layer, and logged in study tasks.
+  const penRef = useRef(pen);
+  const toolRef = useRef(tool);
+  useEffect(() => {
+    penRef.current = pen;
+    savePenSettings(pen);
+    layerRef.current?.setPen(pen);
+  }, [pen]);
+  useEffect(() => {
+    toolRef.current = tool;
+    layerRef.current?.setTool(tool);
+    studyLog('tool', { tool });
+  }, [tool]);
+  useEffect(() => studyLog('pen', { colour: pen.colour, style: pen.style, width: pen.width }), [pen.colour, pen.style, pen.width]);
+  useEffect(() => studyLog('input-mode', { mode: pen.input }), [pen.input]);
+  // At the start of each freehand task, record the pen in use.
+  useEffect(() => {
+    if (study.condition === 'freehand') {
+      const p = penRef.current;
+      studyLog('pen', { colour: p.colour, style: p.style, width: p.width, input: p.input, tool: toolRef.current });
+      layerRef.current?.takeRejectedCount();
+    }
+  }, [study.condition]);
 
   // Mount the ink layer once, when Ketcher first becomes ready (Ketcher may call
   // onInit again; recreating the layer would drop the ink and race with input).
@@ -83,7 +114,17 @@ export default function App() {
     if (!ketcherReady) return;
     let layer: FreehandLayer | null = null;
     waitForCanvasHost().then((host) => {
-      layer = new FreehandLayer(host, (l) => setStrokeCount(l.strokes.length));
+      layer = new FreehandLayer(
+        host,
+        (l) => setInk({ count: l.strokes.length, canUndo: l.canUndo, canRedo: l.canRedo }),
+        {
+          onErase: (strokes, source) => studyLog('erase', { strokes, source }),
+          onInput: (type, accepted) => setLastInput((p) => ({ type, accepted, n: (p?.n ?? 0) + 1 })),
+          onOpenStroke: setOpenStroke,
+        },
+      );
+      layer.setPen(penRef.current);
+      layer.setTool(toolRef.current);
       layerRef.current = layer;
       (window as unknown as { mechand: unknown }).mechand = { layer };
     });
@@ -91,6 +132,20 @@ export default function App() {
   }, [ketcherReady]);
 
   useEffect(() => layerRef.current?.setEnabled(freehand), [freehand, strokeCount]);
+
+  const undoInk = useCallback(() => {
+    const op = layerRef.current?.undo();
+    if (op) studyLog('undo-ink', { op });
+  }, []);
+  const redoInk = useCallback(() => {
+    const op = layerRef.current?.redo();
+    if (op) studyLog('redo-ink', { op });
+  }, []);
+  const clearInk = useCallback(() => {
+    if (!layerRef.current?.strokes.length) return;
+    studyLog('clear-ink');
+    layerRef.current.clearInk();
+  }, []);
 
   useEffect(() => {
     if (engine !== 'server') return;
@@ -142,28 +197,44 @@ export default function App() {
     setDialog({ kind: 'none' });
   }, [dialog, ketcher]);
 
-  // Keyboard: Alt+F toggles freehand; in freehand mode Space recognizes and
-  // Ctrl/⌘+Z removes the last stroke (instead of Ketcher's undo).
+  // Keyboard. Alt+F toggles freehand. In freehand mode: Space recognizes, P/E pick
+  // the pen or the eraser, Ctrl/⌘+Z and Ctrl/⌘+Shift+Z (or Ctrl+Y) undo and redo ink
+  // (instead of Ketcher's undo), Esc drops an open trackpad stroke.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (dialog.kind !== 'none' || isEditable(e.target)) return;
+      const mod = e.ctrlKey || e.metaKey;
+      const take = () => {
+        e.preventDefault();
+        e.stopPropagation();
+      };
       if (e.altKey && e.code === 'KeyF') {
         e.preventDefault();
         if (freehandAllowed) setFreehand((f) => !f);
-      } else if (freehand && e.code === 'Space') {
-        e.preventDefault();
-        e.stopPropagation();
+        return;
+      }
+      if (!freehand) return;
+      const layer = layerRef.current;
+      if (e.code === 'Space' && !mod) {
+        take();
         recognize();
-      } else if (freehand && (e.ctrlKey || e.metaKey) && e.code === 'KeyZ' && (layerRef.current?.strokes.length ?? 0) > 0) {
-        e.preventDefault();
-        e.stopPropagation();
-        studyLog('undo-stroke');
-        layerRef.current?.undo();
+      } else if (e.code === 'Escape' && layer?.hasOpenStroke) {
+        take();
+        layer.cancelInput();
+      } else if (!mod && !e.altKey && (e.code === 'KeyP' || e.code === 'KeyE')) {
+        take();
+        setTool(e.code === 'KeyE' ? 'eraser' : 'pen');
+      } else if (mod && ((e.code === 'KeyZ' && e.shiftKey) || e.code === 'KeyY') && layer?.canRedo) {
+        take();
+        redoInk();
+      } else if (mod && e.code === 'KeyZ' && !e.shiftKey && layer?.canUndo) {
+        take();
+        undoInk();
       }
     };
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
-  }, [dialog, freehand, recognize, freehandAllowed]);
+  }, [dialog, freehand, recognize, freehandAllowed, undoInk, redoInk]);
 
   const updateSamples = (s: SymbolSample[]) => {
     setUserSamples(s);
@@ -181,10 +252,13 @@ export default function App() {
         <MecHandBar
           freehand={freehand}
           strokeCount={strokeCount}
+          canUndo={ink.canUndo}
+          canRedo={ink.canRedo}
           onFreehand={() => setFreehand((f) => !f)}
           onRecognize={recognize}
-          onUndo={() => { studyLog('undo-stroke'); layerRef.current?.undo(); }}
-          onClear={() => { studyLog('clear-ink'); layerRef.current?.clear(); }}
+          onUndo={undoInk}
+          onRedo={redoInk}
+          onClear={clearInk}
           disabled={STUDY ? { freehand: !freehandAllowed, templates: true, teach: !study.teachAllowed } : undefined}
           onTemplate={(id) => {
             const t = TEMPLATES.find((x) => x.id === id);
@@ -194,6 +268,9 @@ export default function App() {
           onTeach={() => setDialog({ kind: 'teach' })}
           onAbout={() => setDialog({ kind: 'about' })}
         />
+        {freehand && (
+          <InkBar pen={pen} tool={tool} lastInput={lastInput} openStroke={openStroke} onPen={setPen} onTool={setTool} />
+        )}
         <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
           <Editor
             staticResourcesUrl={import.meta.env.BASE_URL}
@@ -233,7 +310,8 @@ export default function App() {
           }}
           onDiscard={() => {
             studyLog('discard');
-            layerRef.current?.clear();
+            layerRef.current?.resetColours();
+            layerRef.current?.clearInk();
             setDialog({ kind: 'none' });
           }}
         />
@@ -258,6 +336,7 @@ export default function App() {
           backendEngine={backendEngine}
           onEngine={setEngine}
           onBackendUrl={setBackendUrl}
+          serverAllowed={!STUDY}
           onClose={() => setDialog({ kind: 'none' })}
         />
       )}

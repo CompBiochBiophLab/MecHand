@@ -32,7 +32,7 @@ describe.skipIf(!DIR)('leave-one-participant-out evaluation of the shared model'
   it('re-recognizes the accepted drawings', { timeout: 3_600_000 }, () => {
     const sessions: Session[] = readdirSync(DIR!).filter((f) => f.endsWith('.json'))
       .map((f) => JSON.parse(readFileSync(join(DIR!, f), 'utf8')))
-      .filter((s) => s.schema === 'mechand-study-session/2');
+      .filter((s) => s.schema === 'mechand-study-session/3');
     const rows: Record<string, unknown>[] = [];
     for (const p of sessions) {
       const others = sessions.filter((q) => q !== p && q.teachSamples);
