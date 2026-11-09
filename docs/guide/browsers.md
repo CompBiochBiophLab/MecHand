@@ -14,15 +14,21 @@ molecule with the pointer, recognize it, insert it into Ketcher and export it.
 | Firefox (desktop) | ✅ Supported | |
 | Safari 18.2+ (macOS) | ✅ Supported | |
 | Safari 16.4–18.1 (macOS) | ⚠️ Works | No `getCoalescedEvents()`: fewer points per stroke when you move fast, so ink looks more angular. Recognition still works. |
-| Safari on iPad (iPadOS 18.2+) with Apple Pencil | ✅ Supported | Pencil pressure is used; palm rejection ignores the hand once the Pencil has been used. |
+| Safari on iPad (iPadOS 18.2+) with Apple Pencil | ✅ Supported | Pencil pressure drives the fountain-pen line; palm rejection ignores the hand once the Pencil has been used (or is hovering, on iPads with Pencil hover). |
 | Safari on iPad, iPadOS < 18.2 | ⚠️ Works | As Safari < 18.2 above. |
-| Chrome on Android with a stylus (S Pen…) | ✅ Supported | |
+| Chrome on Android with a stylus (S Pen…) | ✅ Supported | A few styluses are reported as a finger: the pen bar's device chip shows it; use the *Pen and finger* input mode. |
 | Firefox on Android | ⚠️ Works | `getCoalescedEvents()` is only partly implemented; slightly coarser ink. |
 | Internet Explorer, old Edge (EdgeHTML) | ❌ Not supported | No WebAssembly/modern JavaScript. |
 
 Feature data from MDN's browser-compat-data (version 8.1.8, November 2026).
 
 ## Known issues and how to avoid them
+
+- **Trackpads.** Drawing with a trackpad needs click-and-drag. Use the **Trackpad** input mode
+  (click – move – click) or, on a Mac, three-finger drag; see [Drawing with a
+  trackpad](./drawing#drawing-with-a-trackpad).
+- **Pen eraser end.** Reported by Chromium and Firefox on Windows (Surface Pen, Wacom); Safari and
+  iPadOS have no eraser end (Apple Pencil has none).
 
 - **Pan and zoom while drawing.** With freehand mode on, touch and pen gestures on the canvas draw
   instead of scrolling or zooming (`touch-action: none`). Turn freehand off (Alt/⌥+F) to pan and zoom

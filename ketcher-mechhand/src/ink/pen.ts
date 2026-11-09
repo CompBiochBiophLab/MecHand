@@ -121,8 +121,22 @@ export function strokeLength(pts: { x: number; y: number }[]): number {
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
-function pathOf(pts: { x: number; y: number }[]): string {
-  return pts.map((p, i) => `${i ? 'L' : 'M'}${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+const f1 = (v: number) => v.toFixed(1);
+
+/**
+ * SVG path through the points, smoothed with quadratic Bézier curves between the midpoints of
+ * successive segments (the sampled points are control points). Only the drawing is smoothed:
+ * recognition uses the raw points.
+ */
+export function pathOf(pts: { x: number; y: number }[]): string {
+  if (pts.length < 3) return pts.map((p, i) => `${i ? 'L' : 'M'}${f1(p.x)} ${f1(p.y)}`).join(' ');
+  let d = `M${f1(pts[0].x)} ${f1(pts[0].y)}`;
+  for (let i = 1; i < pts.length - 1; i++) {
+    const p = pts[i], q = pts[i + 1];
+    d += ` Q${f1(p.x)} ${f1(p.y)} ${f1((p.x + q.x) / 2)} ${f1((p.y + q.y) / 2)}`;
+  }
+  const last = pts[pts.length - 1];
+  return `${d} L${f1(last.x)} ${f1(last.y)}`;
 }
 
 /** Line width of the whole stroke as drawn (the marker is broader). */

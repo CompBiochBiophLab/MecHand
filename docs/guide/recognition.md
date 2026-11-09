@@ -41,7 +41,7 @@ The "model" of the $P recognizer is data, versioned with the code:
 | --- | --- |
 | [`model/symbols-model.json`](https://github.com/CompBiochBiophLab/MecHand/blob/main/ketcher-mechhand/src/recognition/model/symbols-model.json) | Glyph skeletons for each symbol (letters, digits, + and −) and arrowhead skeletons (open and closed heads, heads of two strokes, single barbs), with a `version`. At start-up each skeleton is expanded into slanted, scaled, rotated and jittered copies. |
 | [`model/contrib/*.json`](https://github.com/CompBiochBiophLab/MecHand/tree/main/ketcher-mechhand/src/recognition/model/contrib) | Real handwriting samples contributed by users: letters (`samples`) and arrows, bonds and electrons (`elements`). |
-| Your browser | The samples you record with **✍ Teach**. |
+| Your browser | The samples you record with **Teach**. |
 
 ### Arrows, bonds and electrons
 
@@ -67,7 +67,7 @@ The model in use, its version and the number of templates are shown in **About**
 
 ### Updating the model
 
-- **For yourself:** use ✍ Teach. Samples are applied immediately and kept in this browser.
+- **For yourself:** use **Teach**. Samples are applied immediately and kept in this browser.
 - **For everyone:** export your samples (Teach → Export samples), save the file as
   `ketcher-mechhand/src/recognition/model/contrib/<name>.json`, bump `version` in
   `symbols-model.json`, and open a pull request. The next deployment uses them.

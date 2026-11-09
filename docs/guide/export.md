@@ -1,6 +1,6 @@
 # Export to LaTeX and other editors
 
-**⇩ Export** converts what is on the Ketcher canvas — your recognized sketches, templates, and
+**Export** converts what is on the Ketcher canvas — your recognized sketches, templates, and
 anything drawn with Ketcher's tools, including curved arrows — into:
 
 | Format | Use |

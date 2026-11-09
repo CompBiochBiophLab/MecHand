@@ -4,7 +4,7 @@ layout: home
 hero:
   name: MecHand
   text: Draw reaction mechanisms by hand
-  tagline: Sketch structures and curved arrows with a pen, trackpad or mouse. MecHand recognizes them in your browser, checks the electron flow, and exports to LaTeX, ChemDraw and Marvin.
+  tagline: Sketch structures and curved arrows with a pen, finger, trackpad or mouse. MecHand recognizes them in your browser, checks the electron flow, and exports to LaTeX, ChemDraw and Marvin.
   image:
     src: /img/recognize-dialog.png
     alt: MecHand recognizing a hand-drawn SN2 mechanism
@@ -24,6 +24,8 @@ hero:
 features:
   - title: Handwriting recognition in the browser
     details: Bonds, rings, atom labels, charges and curved arrows are read from your strokes as you draw them. Nothing to install and nothing leaves your computer.
+  - title: A real pen toolbar
+    details: Pen and stroke eraser (also the pen's eraser end), six ink colours, ballpoint, fountain pen, marker and dashed lines in four widths, undo and redo, palm rejection, and a click–move–click mode for trackpads.
   - title: Electron-flow checks
     details: Each curved arrow is anchored to an atom or a bond. MecHand warns when an arrow starts without electrons or overfills an octet, as Marvin's electron-flow arrows do.
   - title: Built on Ketcher

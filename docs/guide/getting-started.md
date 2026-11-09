@@ -13,13 +13,14 @@ The MecHand bar sits above the Ketcher editor:
 
 | Button | What it does |
 | --- | --- |
-| **✎ Freehand** (Alt/⌥+F) | Turns the pen layer on and off. When it is off, Ketcher's own tools work as usual. |
-| **✓ Recognize** (Space) | Reads your ink and shows what MecHand understood. |
-| **↶ Undo ink** (Ctrl/⌘+Z in freehand mode) / **Clear ink** | Removes the last stroke / all strokes that have not been inserted yet. |
-| **Templates…** | Opens a standard mechanism (organic, inorganic, biochemistry). |
-| **⇩ Export** | TikZ, chemfig, ChemDraw (CDXML), MOL/RXN, KET, SMILES. |
-| **✍ Teach** | Teaches MecHand your handwriting. |
-| **About** | Recognition model, structure engine and browser notes. |
+| **Freehand** (pen icon; Alt/⌥+F) | Turns the pen layer on and off. When it is off, Ketcher's own tools work as usual. When it is on, the [pen bar](./drawing#the-pen-bar) appears below: pen or eraser, ink colour, kind of line, width and input mode. |
+| **Recognize** (Space) | Reads your ink and shows what MecHand understood. |
+| **Undo / Redo ink** (Ctrl/⌘+Z, Ctrl/⌘+Shift+Z in freehand mode) | Undoes or redoes the last change to the ink: a stroke, an erasure or a clear. |
+| **Clear ink** (bin icon) | Removes all strokes that have not been inserted yet (Undo brings them back). |
+| **Mechanisms…** | Opens a complete standard mechanism (organic, inorganic, biochemistry). |
+| **Export** | TikZ, chemfig, ChemDraw (CDXML), MOL/RXN, KET, SMILES. |
+| **Teach** | Teaches MecHand your handwriting. |
+| **About** | Version, recognition model, structure engine and browser notes. |
 | **?** | Shows short help labels on every button (Expert or Student level). |
 
 Continue with [Drawing mechanisms](./drawing), or follow the [tutorial (PDF)](/tutorial.pdf).

@@ -1,9 +1,36 @@
 # Drawing mechanisms
 
-Turn on **✎ Freehand** and draw as you would on paper. Strokes stay as ink until you press
-**✓ Recognize** (or Space).
+Turn on **Freehand** (the pen button, or Alt/⌥+F) and draw as you would on paper, with a pen, a
+finger, a trackpad or a mouse. Strokes stay as ink until you press **Recognize** (or Space).
 
 ![Hand-drawn SN2 reactants](/img/freehand-ink.png)
+
+## The pen bar
+
+In freehand mode a second toolbar sits under the MecHand bar:
+
+| Control | What it does |
+| --- | --- |
+| **Pen** / **Eraser** (P / E) | Draw, or erase whole strokes: drag the eraser over the strokes you want to remove (they fade) and lift. The eraser end of a pen (Surface Pen, Wacom and others) erases whatever tool is selected. |
+| **Colours** | Black, blue, red, green, purple, orange — for instance arrows in red. |
+| **Kind of line** | *Ballpoint* (even line), *fountain pen* (width follows pen pressure, or speed with a mouse or trackpad), *marker* (broad and translucent), *dashed*. |
+| **Width** | Fine, medium, bold, extra bold. |
+| **Input mode** | *Auto*: pen, finger and mouse draw; once a pen is used, fingers and palms are ignored. *Pen only*: fingers never draw (rest your hand on the screen). *Pen and finger*: both always draw. *Trackpad*: click to start a stroke, move without pressing, click again to end it. |
+| **Device chip** | Which device the browser saw for the last contact (pen, finger, mouse/trackpad) and whether palm rejection ignored it. |
+
+Colour, kind of line and width only change how the ink looks: recognition uses the shape of each
+stroke, so a red marker arrow is read exactly like a black ballpoint one. The settings are remembered
+in this browser.
+
+### Drawing with a trackpad
+
+Drawing on a laptop trackpad normally means pressing the pad and moving another finger at the same
+time. Two easier ways:
+
+- choose the **Trackpad** input mode: a click (or tap) starts a stroke, the stroke follows the pointer
+  without pressing, and the next click ends it (Esc drops it); or
+- on a Mac, turn on *three-finger drag* (System Settings → Accessibility → Pointer Control → Trackpad
+  Options → Use trackpad for dragging → Three-finger drag) and draw with three fingers.
 
 ## What MecHand understands
 
@@ -29,12 +56,12 @@ Tips:
 
 ## Is this what you meant?
 
-**✓ Recognize** colours your ink by how it was read (blue bonds, green labels, red arrows, grey not understood) and shows the result:
+**Recognize** colours your ink by how it was read (blue bonds, green labels, red arrows, grey not understood) and shows the result:
 
 ![Recognition dialog](/img/recognize-dialog.png)
 
 - **✓ Insert into Ketcher** adds the structure and arrows to the canvas, where you can edit them with Ketcher's tools.
-- **✎ Keep drawing** closes the dialog and keeps the ink, so you can add or fix strokes (Undo ink removes the last one).
+- **✎ Keep drawing** closes the dialog and keeps the ink, so you can add or fix strokes (the eraser removes a stroke; Undo ink undoes the last change).
 - **✗ Discard ink** deletes the strokes.
 
 ### Electron-flow check
@@ -48,7 +75,7 @@ electron-flow arrows are. The dialog warns when:
 
 ## Teach MecHand your handwriting
 
-Open **✍ Teach** when something you draw is often misread. The panel has four tabs:
+Open **Teach** when something you draw is often misread. The panel has four tabs:
 
 | Tab | What you draw | What it changes |
 | --- | --- | --- |
@@ -70,7 +97,9 @@ be added to the shared model (see [Handwriting recognition](./recognition#updati
 | --- | --- |
 | Alt+F (⌥F on a Mac) | Freehand on/off |
 | Space | Recognize (freehand mode) |
-| Ctrl+Z / ⌘Z | Remove the last stroke (freehand mode; otherwise Ketcher's undo) |
-| Esc | Close a dialog |
+| P / E | Pen / eraser (freehand mode) |
+| Ctrl+Z / ⌘Z | Undo the last change to the ink (freehand mode; otherwise Ketcher's undo) |
+| Ctrl+Shift+Z / ⌘⇧Z (or Ctrl+Y) | Redo ink (freehand mode) |
+| Esc | Drop an open trackpad stroke; close a dialog |
 
 All of Ketcher's own shortcuts keep working when freehand mode is off.

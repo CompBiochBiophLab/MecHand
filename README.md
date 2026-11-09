@@ -91,8 +91,9 @@ make server      # optional DECIMER server at http://localhost:8000 (Python 3.10
 
 ![The MecHand bar above Ketcher](docs/public/img/app-template.png)
 
-1. Press **✎ Freehand** (Alt/⌥+F) and draw on the canvas as on paper.
-2. Press **✓ Recognize** (Space). Your ink is coloured by how it was read — blue bonds, green labels,
+1. Press **Freehand** (the pen button, Alt/⌥+F) and draw on the canvas as on paper, with a pen, a
+   finger, a trackpad or a mouse.
+2. Press **Recognize** (Space). Your ink is coloured by how it was read — blue bonds, green labels,
    red arrows, grey not understood — and a clean drawing of the result is shown with its confidence
    and any electron-flow warnings.
 3. **✓ Insert into Ketcher**, **✎ Keep drawing** (to fix strokes), or **✗ Discard ink**.
@@ -117,12 +118,22 @@ the atom or bond that receives them.
 when an electron-pair arrow starts at an atom without a lone pair, when an arrow starts or ends on
 nothing, or when it would give C, N, O or F more than an octet while no bond to that atom breaks.
 
-| Keys                 | Action                                                           |
-| -------------------- | ---------------------------------------------------------------- |
-| Alt+F (⌥F on a Mac) | Freehand on/off                                                  |
-| Space                | Recognize (freehand mode)                                        |
-| Ctrl+Z / ⌘Z         | Remove the last stroke (freehand mode; otherwise Ketcher's undo) |
-| Esc                  | Close a dialog                                                   |
+**Pen bar.** In freehand mode a second toolbar offers the pen and a stroke eraser (the eraser end of
+a Surface or Wacom pen erases too), six ink colours, four kinds of line (ballpoint, fountain pen
+following pressure or speed, marker, dashed) in four widths, and the input mode: *Auto* (palm
+rejection once a pen is used, also when it hovers), *Pen only*, *Pen and finger*, or *Trackpad*
+(click to start a stroke, move without pressing, click to end it). A chip shows which device the
+browser saw. Appearance never changes recognition. Strokes, erasures and clears can be undone and
+redone.
+
+| Keys                            | Action                                                                  |
+| ------------------------------- | ----------------------------------------------------------------------- |
+| Alt+F (⌥F on a Mac)            | Freehand on/off                                                         |
+| Space                           | Recognize (freehand mode)                                               |
+| P / E                           | Pen / eraser (freehand mode)                                            |
+| Ctrl+Z / ⌘Z                    | Undo the last change to the ink (freehand mode; otherwise Ketcher's undo) |
+| Ctrl+Shift+Z / ⌘⇧Z, Ctrl+Y    | Redo ink (freehand mode)                                                |
+| Esc                             | Drop an open trackpad stroke; close a dialog                            |
 
 More in the [guide](https://compbiochbiophlab.github.io/MecHand/guide/drawing) and the
 [tutorial](https://compbiochbiophlab.github.io/MecHand/tutorial.pdf).
@@ -160,15 +171,15 @@ light-weight, transparent recognizer possible that runs entirely in the browser.
 | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | [`src/recognition/model/symbols-model.json`](ketcher-mechhand/src/recognition/model/symbols-model.json) | Versioned glyph skeletons (letters, digits, + and −) and arrowhead skeletons, expanded at start-up into slanted, scaled, rotated and jittered variants. |
 | [`src/recognition/model/contrib/`](ketcher-mechhand/src/recognition/model/contrib/)                     | Real handwriting samples contributed by users (letters, and arrows, bonds and electrons).                                         |
-| Your browser                                                                                             | Samples recorded with **✍ Teach** (applied immediately).                                                                  |
+| Your browser                                                                                             | Samples recorded with **Teach** (applied immediately).                                                                    |
 
-**✍ Teach** has four tabs. *Letters & signs* adds examples to the letter classifier. *Arrows*
+**Teach** has four tabs. *Letters & signs* adds examples to the letter classifier. *Arrows*
 (curved 2 e⁻ and 1 e⁻, reaction, equilibrium) adds the heads you draw to the arrowhead model.
 *Electrons* (lone pairs, radicals) sets how large your dots may be. *Bonds* (single, double, triple,
 benzene ring) are recognized by geometry and are only checked. For every sample the panel shows at
 once what MecHand reads ([details](https://compbiochbiophlab.github.io/MecHand/guide/drawing#teach-mechand-your-handwriting)).
 
-To improve the model for everyone: record samples with ✍ Teach → **Export samples**, put the JSON
+To improve the model for everyone: record samples with **Teach** → **Export samples**, put the JSON
 file in `model/contrib/`, bump `version` in `symbols-model.json`, and open a pull request. The model
 version in use is shown in **About**. The recognizer has no runtime dependencies and is updated,
 tested and deployed with the rest of the app.
@@ -215,7 +226,7 @@ References (Clayden; Housecroft & Sharpe; Berg/Tymoczko/Gatto/Stryer; Fersht) ar
 
 ## Export
 
-**⇩ Export** converts the whole canvas, curved arrows included:
+**Export** converts the whole canvas, curved arrows included:
 
 | Format    | Use                                                                                                                                                                       |
 | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -254,7 +265,7 @@ Feature support from MDN browser-compat-data 8.1.8 (November 2026). Known issues
 - **Pan/zoom while drawing.** In freehand mode touch and pen gestures draw (`touch-action: none`);
   turn freehand off (Alt/⌥+F) to pan or zoom with Ketcher.
 - **Clipboard** copy needs https or localhost; otherwise use *Download* in the Export dialog.
-- **Private windows** (especially Safari) may not keep ✍ Teach samples; use *Export samples*.
+- **Private windows** (especially Safari) may not keep Teach samples; use *Export samples*.
 - **Optional server from the public site:** an https page calling `http://localhost:8000` is a
   local-network request. Chrome/Edge ask for permission once (allow it); Firefox allows it; Safari
   may block it as mixed content — then run MecHand locally (`npm run dev`) or serve the server over https.

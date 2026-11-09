@@ -44,3 +44,11 @@ describe('stroke eraser', () => {
     expect(eraserTouches({ x: 0, y: 0 }, { x: 10, y: 0 }, 4, [{ x: 5, y: 2 }])).toBe(true);
   });
 });
+
+describe('ink rendering', () => {
+  it('smooths strokes with quadratic curves through the segment midpoints', async () => {
+    const { pathOf } = await import('./pen');
+    expect(pathOf([{ x: 0, y: 0 }, { x: 10, y: 0 }])).toBe('M0.0 0.0 L10.0 0.0');
+    expect(pathOf([{ x: 0, y: 0 }, { x: 10, y: 0 }, { x: 10, y: 10 }])).toBe('M0.0 0.0 Q10.0 0.0 10.0 5.0 L10.0 10.0');
+  });
+});
