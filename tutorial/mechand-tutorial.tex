@@ -66,10 +66,10 @@ The MecHand bar (Figure~\ref{fig:app}) has these controls:
   \toprule
   Control & Purpose \\
   \midrule
-  \btn{Freehand} \key{Alt/Option F} & Turns the pen layer on and off. When it is off, Ketcher's tools work as usual. \\
+  \btn{Freehand} \key{Alt/Option F} & Turns the pen layer on and off. When it is off, Ketcher's tools work as usual. When it is on, the pen bar appears (Section~\ref{sec:penbar}). \\
   \btn{Recognize} \key{Space} & Reads your ink and shows what MecHand understood. \\
-  \btn{Undo ink}, \btn{Clear ink} & Remove the last stroke, or all strokes not yet inserted. \\
-  \btn{Templates\ldots} & Opens one of 13 standard mechanisms. \\
+  Undo, redo, clear ink & Undo or redo the last change to the ink (a stroke, an erasure or a clear), or remove all ink not yet inserted. \\
+  \btn{Mechanisms\ldots} & Opens one of 13 standard mechanisms. \\
   \btn{Export} & TikZ, chemfig, ChemDraw (CDXML), MOL/RXN, KET or SMILES. \\
   \btn{Teach} & Teaches MecHand your handwriting. \\
   \btn{About}, \btn{?} & Recognition details and browser notes; help labels on every button. \\
@@ -112,6 +112,19 @@ with its two curved arrows:
 
 Now press \btn{Recognize} (or \key{Space}).
 
+\subsection{The pen bar}
+\label{sec:penbar}
+
+In freehand mode a second toolbar appears under the MecHand bar. \btn{Pen} and \btn{Eraser}
+(\key{P}, \key{E}) switch between drawing and erasing whole strokes: drag the eraser over the
+strokes you want to remove and lift it. The eraser end of a Surface or Wacom pen erases too. Six
+colours, four kinds of line (ballpoint, fountain pen, marker, dashed) and four widths change only how
+the ink looks --- recognition uses the shape of the strokes alone. The \emph{input mode} decides
+what draws: \emph{Auto} ignores fingers and palms once a pen has been used, \emph{Pen only} never
+lets a finger draw, \emph{Pen and finger} lets both draw, and \emph{Trackpad} draws by click, move
+without pressing, click --- the easiest way to draw on a laptop trackpad. A small chip shows which
+device the browser saw for the last contact.
+
 %% ─────────────────────────────────────────────────────────────────────────────
 \section{Is this what you meant?}
 
@@ -123,7 +136,7 @@ MecHand colours your ink by how it read each stroke --- \textcolor{blue!70!black
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.9\linewidth]{recognize-dialog.png}
-  \caption{The recognition dialog: 6 atoms, 4 bonds and 2 arrows, with 87\,\% confidence.}
+  \caption{The recognition dialog: 6 atoms, 4 bonds and 2 arrows, with 86\,\% confidence.}
   \label{fig:dialog}
 \end{figure}
 
@@ -230,8 +243,12 @@ recognizer improves for everybody (see the website, ``Handwriting recognition'')
   \item \textbf{An arrow is not recognized?} Make the head clearly visible: a V whose arms point back
     along the shaft. A single barb means a one-electron (fishhook) arrow.
   \item \textbf{Panning and zooming} the canvas with touch or pen only works with freehand mode off.
-  \item \textbf{Undo:} in freehand mode \key{Ctrl/Cmd Z} removes the last stroke; otherwise it is
-    Ketcher's undo.
+  \item \textbf{Undo and redo:} in freehand mode \key{Ctrl/Cmd Z} undoes the last change to the ink
+    and \key{Ctrl/Cmd Shift Z} redoes it; otherwise they are Ketcher's undo and redo.
+  \item \textbf{Drawing with a trackpad?} Choose the \emph{Trackpad} input mode in the pen bar
+    (click, move, click), or turn on three-finger drag on a Mac.
+  \item \textbf{A finger or palm draws by mistake?} Choose \emph{Pen only}. If the pen does not
+    draw, check the device chip: a few styluses are reported as a finger; choose \emph{Pen and finger}.
   \item \textbf{Browsers:} current Chrome, Edge, Firefox and Safari, on computers and tablets (with
     Apple Pencil, S Pen and other styluses). Safari and iPadOS before 18.2 record fewer points per
     stroke, which makes fast ink look more angular but does not stop recognition.

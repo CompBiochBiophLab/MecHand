@@ -16,7 +16,8 @@
     "test": "vitest run",
     "e2e": "playwright test",
     "test:latex": "MECHAND_LATEX=1 vitest run src/export/latex.compile.test.ts",
-    "export:figures": "vitest run src/export/figures.export.test.ts"
+    "export:figures": "vitest run src/export/figures.export.test.ts",
+    "screenshots": "MECHAND_SCREENSHOTS=1 playwright test e2e/screenshots.spec.ts --project=chromium"
   },
   "dependencies": {
     "events": "3.3.0",
