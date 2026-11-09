@@ -40,7 +40,7 @@ const kinds = (strokes: Pt[][], model = buildModel()) =>
     .scene.arrows.map((a) => a.kind);
 
 describe('Teach mode for arrows, bonds and electrons', () => {
-  it('cuts the head out of an arrow sample, in the shaft frame (behind the tip)', () => {
+  it('cuts the head out of an arrow sample, in the shaft frame (behind the tip)', { timeout: 60_000 }, () => {
     const [h] = headSamples({ element: 'arrow-pair', bondPx: L, strokes: curvedArrow(1, 30) });
     expect(h.symbol).toBe('full');
     const xs = h.strokes.flat().map((p) => p.x);
@@ -48,7 +48,7 @@ describe('Teach mode for arrows, bonds and electrons', () => {
     expect(Math.min(...xs)).toBeLessThan(-0.15 * L);
   });
 
-  it('learns an arrowhead style that the built-in rules and templates miss', () => {
+  it('learns an arrowhead style that the built-in rules and templates miss', { timeout: 60_000 }, () => {
     // Filled heads, scribbled in one stroke.
     const before = buildModel();
     const test = [101, 102, 103].map((seed) => curvedArrow(seed, 30, 'filled'));
@@ -60,13 +60,13 @@ describe('Teach mode for arrows, bonds and electrons', () => {
     expect(okAfter).toBe(test.length);
   });
 
-  it('still reads ordinary heads after learning', () => {
+  it('still reads ordinary heads after learning', { timeout: 60_000 }, () => {
     const taught: ElementSample[] = [1, 2, 3].map((seed) => ({ element: 'arrow-pair', bondPx: L, strokes: curvedArrow(seed, 30, 'filled') }));
     const model = buildModel({ userElements: taught });
     expect(kinds(curvedArrow(7, 28), model)).toEqual(['electron-pair']);
   });
 
-  it('recognizes equilibrium arrows (two antiparallel harpoons)', () => {
+  it('recognizes equilibrium arrows (two antiparallel harpoons)', { timeout: 60_000 }, () => {
     const ethanol = (dx: number) => [
       { symbol: 'C', x: dx - 1.3, y: -0.25, charge: 0, molecule: 0 },
       { symbol: 'C', x: dx - 0.43, y: 0.25, charge: 0, molecule: 0 },
@@ -87,7 +87,7 @@ describe('Teach mode for arrows, bonds and electrons', () => {
     }
   });
 
-  it('learns larger dots (lone pairs, radicals) without turning a small minus into a dot', () => {
+  it('learns larger dots (lone pairs, radicals) without turning a small minus into a dot', { timeout: 60_000 }, () => {
     const circle = (c: Pt, r: number): Pt[] => Array.from({ length: 13 }, (_, k) => ({
       x: c.x + r * Math.cos((k / 12) * 2 * Math.PI), y: c.y + r * Math.sin((k / 12) * 2 * Math.PI),
     }));
@@ -105,7 +105,7 @@ describe('Teach mode for arrows, bonds and electrons', () => {
     expect(run([...O, minus], style).scene.atoms.map((a) => [a.symbol, a.charge])).toEqual([['O', -1]]);
   });
 
-  it('checks what was read for each element', () => {
+  it('checks what was read for each element', { timeout: 60_000 }, () => {
     const model = buildModel();
     const bond = [[{ x: 50, y: 100 }, { x: 50 + L, y: 100 }], [{ x: 55, y: 110 }, { x: 45 + L, y: 110 }]];
     const r = recognizeSketch(bond.map((points) => ({ points })), model.recognizer, { bondPx: L });

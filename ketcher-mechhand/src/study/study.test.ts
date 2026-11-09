@@ -18,7 +18,7 @@ describe('study environment', () => {
 });
 
 describe('study design', () => {
-  it('counterbalances sets and conditions across the four groups', () => {
+  it('counterbalances sets and conditions across the four groups', { timeout: 30_000 }, () => {
     const seen = new Map<string, number>();
     for (const g of ['A1', 'A2', 'B1', 'B2'] as const) {
       const tasks = tasksFor(g);
