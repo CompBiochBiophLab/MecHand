@@ -26,7 +26,7 @@ que van aprendre a escriure en països diferents i que dibuixen amb dispositius 
 2. Comparar la correcció dels dibuixos resultants en les dues condicions.
 3. Mesurar la usabilitat percebuda de cada condició amb l'escala SUS (*System Usability Scale*).
 4. Mesurar la precisió del reconeixement amb escriptura real, i com varia segons el dispositiu
-   (llapis, dit, ratolí, trackpad) i el país on cada persona va aprendre a llegir i escriure (com a
+   (llapis, dit, ratolí, ratolí tàctil o *trackpad*) i el país on cada persona va aprendre a llegir i escriure (com a
    indicador de l'estil de cal·ligrafia).
 5. Explorar la relació entre l'entrenament personal del model (mode *Teach*) i la precisió.
 6. Obtenir, amb consentiment explícit, mostres d'escriptura per millorar el model obert de MecHand.

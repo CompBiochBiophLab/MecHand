@@ -99,7 +99,7 @@ L'aplicació (en «mode estudi») genera un **codi aleatori** (per exemple, `MH-
 | Valoracions (10 preguntes per condició), la manera de treballar que prefereixes i respostes obertes | — | Usabilitat |
 | Mostres d'entrenament (*Teach*) — **només si hi dones permís** a sota | — | Millorar el model de reconeixement |
 
-**No es recull:** el teu nom, el correu, el número d'estudiant, l'adreça IP, la ubicació, la data
+**No es recull:** el teu nom, la teva adreça electrònica, el número d'estudiant, l'adreça IP, la ubicació, la data
 exacta, cap identificador del dispositiu ni del navegador (no es desa la cadena *user-agent* completa),
 cap galeta (*cookie*), ni la pressió o la inclinació del llapis. A les respostes obertes no hi
 escriguis cap dada personal.
