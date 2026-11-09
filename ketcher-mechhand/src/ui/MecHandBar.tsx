@@ -24,13 +24,16 @@ export function MecHandBar(props: {
   onExport: () => void;
   onTeach: () => void;
   onAbout: () => void;
+  /** Study mode: features switched off for the current task or phase. */
+  disabled?: { freehand?: boolean; templates?: boolean; teach?: boolean };
 }) {
+  const off = props.disabled ?? {};
   const categories = [...new Set(TEMPLATES.map((t) => t.category))];
   return (
     <div style={bar} data-testid="mechand-bar">
       <b style={{ marginRight: 6 }}>MecHand</b>
       <HelpTip id="btn-freehand">
-        <button style={button(props.freehand)} onClick={props.onFreehand} data-testid="mechand-freehand" aria-pressed={props.freehand}>
+        <button style={button(props.freehand)} onClick={props.onFreehand} data-testid="mechand-freehand" aria-pressed={props.freehand} disabled={off.freehand}>
           ✎ Freehand {props.freehand ? 'on' : 'off'}
         </button>
       </HelpTip>
@@ -52,6 +55,7 @@ export function MecHandBar(props: {
           value=""
           onChange={(e) => e.target.value && props.onTemplate(e.target.value)}
           style={{ ...button(), padding: '5px 6px' }}
+          disabled={off.templates}
           aria-label="Open a mechanism template"
         >
           <option value="">Templates…</option>
@@ -68,7 +72,7 @@ export function MecHandBar(props: {
         <button style={button()} onClick={props.onExport} data-testid="mechand-export-btn">⇩ Export</button>
       </HelpTip>
       <HelpTip id="btn-teach">
-        <button style={button()} onClick={props.onTeach}>✍ Teach</button>
+        <button style={button()} onClick={props.onTeach} disabled={off.teach}>✍ Teach</button>
       </HelpTip>
       <span style={{ flex: 1 }} />
       <HelpTip id="btn-about" placement="left">

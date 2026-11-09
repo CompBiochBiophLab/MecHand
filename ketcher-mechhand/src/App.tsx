@@ -18,9 +18,14 @@ import { ExportDialog } from './ui/ExportDialog';
 import { HelpProvider } from './ui/HelpSystem';
 import { MecHandBar } from './ui/MecHandBar';
 import { TeachPanel } from './ui/TeachPanel';
+import { StudyPanel, type StudyStatus } from './study/StudyPanel';
+import { inkForStudy, resultForStudy, studyLog, studyState } from './study/recorder';
+import pkg from '../package.json';
 
 const structServiceProvider = new StandaloneStructServiceProvider();
 const params = new URLSearchParams(location.search);
+/** User-study mode (estudi/ in the repository): ?study=1[&group=A1]. */
+const STUDY = params.get('study') === '1';
 
 type Dialog =
   | { kind: 'none' }
@@ -60,6 +65,16 @@ export default function App() {
   const [backendUrl, setBackendUrl] = useState(params.get('server') ?? 'http://localhost:8000');
   const [backendOk, setBackendOk] = useState<boolean | null>(null);
   const [backendEngine, setBackendEngine] = useState<string | undefined>();
+  const [study, setStudy] = useState<StudyStatus>({ condition: null, teachAllowed: false });
+  const onStudyStatus = useCallback((s: StudyStatus) => {
+    setStudy((p) => (p.condition === s.condition && p.teachAllowed === s.teachAllowed ? p : s));
+  }, []);
+  // Study mode: freehand only in the freehand condition (and never outside a task).
+  const freehandAllowed = !STUDY || study.condition === 'freehand';
+  useEffect(() => {
+    if (!freehandAllowed) setFreehand(false);
+  }, [freehandAllowed]);
+  useEffect(() => studyLog('freehand', { on: freehand }), [freehand]);
 
   // Mount the ink layer once, when Ketcher first becomes ready (Ketcher may call
   // onInit again; recreating the layer would drop the ink and race with input).
@@ -91,6 +106,9 @@ export default function App() {
     if (!layer || layer.strokes.length === 0) return;
     const result = recognizeSketch(layer.strokes, model.recognizer, { heads: model.heads, style: model.style });
     layer.showRoles(result.roles);
+    if (studyState.recorder) {
+      studyLog('recognize', { ink: inkForStudy(layer.strokes, layer.strokeTimes, studyState.recorder.t0), result: resultForStudy(result) });
+    }
     const issues = checkMechanism(result.scene, result.arrows);
     if (engine === 'server') {
       try {
@@ -119,6 +137,7 @@ export default function App() {
     } else {
       await ketcher.addFragment(sceneToKet(result.scene));
     }
+    studyLog('insert', { engine: smiles ? 'server' : 'browser' });
     layerRef.current?.clear();
     setDialog({ kind: 'none' });
   }, [dialog, ketcher]);
@@ -130,7 +149,7 @@ export default function App() {
       if (dialog.kind !== 'none' || isEditable(e.target)) return;
       if (e.altKey && e.code === 'KeyF') {
         e.preventDefault();
-        setFreehand((f) => !f);
+        if (freehandAllowed) setFreehand((f) => !f);
       } else if (freehand && e.code === 'Space') {
         e.preventDefault();
         e.stopPropagation();
@@ -138,12 +157,13 @@ export default function App() {
       } else if (freehand && (e.ctrlKey || e.metaKey) && e.code === 'KeyZ' && (layerRef.current?.strokes.length ?? 0) > 0) {
         e.preventDefault();
         e.stopPropagation();
+        studyLog('undo-stroke');
         layerRef.current?.undo();
       }
     };
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
-  }, [dialog, freehand, recognize]);
+  }, [dialog, freehand, recognize, freehandAllowed]);
 
   const updateSamples = (s: SymbolSample[]) => {
     setUserSamples(s);
@@ -156,14 +176,16 @@ export default function App() {
 
   return (
     <HelpProvider>
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div style={{ display: 'flex', height: '100%' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', flex: 1, minWidth: 0 }}>
         <MecHandBar
           freehand={freehand}
           strokeCount={strokeCount}
           onFreehand={() => setFreehand((f) => !f)}
           onRecognize={recognize}
-          onUndo={() => layerRef.current?.undo()}
-          onClear={() => layerRef.current?.clear()}
+          onUndo={() => { studyLog('undo-stroke'); layerRef.current?.undo(); }}
+          onClear={() => { studyLog('clear-ink'); layerRef.current?.clear(); }}
+          disabled={STUDY ? { freehand: !freehandAllowed, templates: true, teach: !study.teachAllowed } : undefined}
           onTemplate={(id) => {
             const t = TEMPLATES.find((x) => x.id === id);
             if (t && ketcher) ketcher.setMolecule(t.ket);
@@ -185,6 +207,19 @@ export default function App() {
           />
         </div>
       </div>
+      {STUDY && (
+        <StudyPanel
+          ketcher={ketcher}
+          getLayer={() => layerRef.current}
+          appVersion={pkg.version}
+          modelVersion={model.version}
+          teach={{ samples: userSamples, elements: userElements }}
+          onOpenTeach={() => setDialog({ kind: 'teach' })}
+          onClearTeach={() => { updateSamples([]); updateElements([]); }}
+          onStatus={onStudyStatus}
+        />
+      )}
+      </div>
       {dialog.kind === 'consolidate' && (
         <ConsolidateDialog
           result={dialog.result}
@@ -192,10 +227,12 @@ export default function App() {
           engineNote={dialog.note}
           onConfirm={confirm}
           onEdit={() => {
+            studyLog('keep-drawing');
             layerRef.current?.resetColours();
             setDialog({ kind: 'none' });
           }}
           onDiscard={() => {
+            studyLog('discard');
             layerRef.current?.clear();
             setDialog({ kind: 'none' });
           }}

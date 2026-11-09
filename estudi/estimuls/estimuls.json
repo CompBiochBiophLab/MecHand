@@ -14,7 +14,7 @@
   "source": {
    "title": "File:Aspirin-skeletal.svg",
    "url": "https://commons.wikimedia.org/wiki/File:Aspirin-skeletal.svg",
-   "author": "Originally User:Benjah-bmm27",
+   "author": "Benjah-bmm27",
    "license": "Public domain",
    "licenseUrl": null
   }
@@ -68,10 +68,10 @@
   "reference": {
    "smiles": [
     "[OH-]",
+    "[Na+]",
     "CC(F)Br",
     "CC(O)F",
-    "[Na+]",
-    "[Br-]"
+    "[Na+].[Br-]"
    ],
    "curvedArrows": 2
   },
@@ -88,15 +88,14 @@
   "set": "A",
   "kind": "mecanisme",
   "file": "A4-aldol-basic.png",
-  "task": "Dibuixa només la primera línia del mecanisme (fins a l'alcòxid), amb totes les fletxes corbes.",
+  "task": "Dibuixa només el primer pas (a dalt a l'esquerra): l'aldehid i l'ió hidròxid amb les tres fletxes corbes, la fletxa d'equilibri i l'enolat que es forma.",
   "reference": {
    "smiles": [
     "O=CC[*]",
     "[OH-]",
-    "[O-]C=C[*]",
-    "O=CC([*])C([O-])C[*]"
+    "[O-]C=C[*]"
    ],
-   "curvedArrows": 4
+   "curvedArrows": 3
   },
   "source": {
    "title": "File:Base-catalysed aldol condensation.svg",
@@ -121,7 +120,7 @@
   "source": {
    "title": "File:Dopamine.svg",
    "url": "https://commons.wikimedia.org/wiki/File:Dopamine.svg",
-   "author": "No machine-readable author provided. Sunridin assumed (based on copyright claims).",
+   "author": "Sunridin (attribution assumed by Wikimedia Commons)",
    "license": "Public domain",
    "licenseUrl": null
   }
@@ -155,6 +154,7 @@
   "reference": {
    "smiles": [
     "CC(Cl)c1ccccc1",
+    "[Na+]",
     "[C-]#N",
     "CC(C#N)c1ccccc1",
     "[Na+]",
@@ -165,7 +165,7 @@
   "source": {
    "title": "File:Mechanism of sn2 reaction between (1-chloroethyl)benzene and sodium cyanide.svg",
    "url": "https://commons.wikimedia.org/wiki/File:Mechanism_of_sn2_reaction_between_(1-chloroethyl)benzene_and_sodium_cyanide.svg",
-   "author": "Unknown authorUnknown author",
+   "author": "Unknown author",
    "license": "CC BY 4.0",
    "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
   }
@@ -175,15 +175,14 @@
   "set": "B",
   "kind": "mecanisme",
   "file": "B4-aldol-acid.png",
-  "task": "Dibuixa només la primera línia del mecanisme, amb totes les fletxes corbes.",
+  "task": "Dibuixa només el segon pas (a dalt, el segon i el tercer compost): l'aldehid protonat i l'aigua amb les tres fletxes corbes, la fletxa d'equilibri i l'enol que es forma.",
   "reference": {
    "smiles": [
-    "O=CC[*]",
-    "[H+]",
     "[OH+]=CC[*]",
+    "O",
     "OC=C[*]"
    ],
-   "curvedArrows": 4
+   "curvedArrows": 3
   },
   "source": {
    "title": "File:Acid-catalysed aldol condensation.svg",
