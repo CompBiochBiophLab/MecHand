@@ -5,7 +5,7 @@ with curved electron-flow arrows, so you can study them, redraw them by hand to 
 them to LaTeX. They are also the test set of the recognizer and of the LaTeX export.
 
 The templates are generated reproducibly with RDKit by
-[`ketcher-mechhand/templates/build_templates.py`](https://github.com/JordiVillaFreixa/MecHand/blob/main/ketcher-mechhand/templates/build_templates.py),
+[`ketcher-mechhand/templates/build_templates.py`](https://github.com/CompBiochBiophLab/MecHand/blob/main/ketcher-mechhand/templates/build_templates.py),
 which also checks that charges and atoms balance across each reaction arrow. To add one, declare it
 in that script (SMILES, arrows, metadata) and run it.
 

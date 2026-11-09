@@ -3,9 +3,9 @@
 > Draw reaction mechanisms by hand. MecHand recognizes them in your browser, checks the electron
 > flow, and exports them to LaTeX, ChemDraw and Marvin.
 
-**▶ Open MecHand: <https://jordivillafreixa.github.io/MecHand/app/>** ·
-[Website and documentation](https://jordivillafreixa.github.io/MecHand/) ·
-[Tutorial (PDF)](https://jordivillafreixa.github.io/MecHand/tutorial.pdf)
+**▶ Open MecHand: <https://compbiochbiophlab.github.io/MecHand/app/>** ·
+[Website and documentation](https://compbiochbiophlab.github.io/MecHand/) ·
+[Tutorial (PDF)](https://compbiochbiophlab.github.io/MecHand/tutorial.pdf)
 
 ![MecHand recognizing a hand-drawn SN2 mechanism](docs/public/img/recognize-dialog.png)
 
@@ -48,7 +48,7 @@ electron-flow arrows into Ketcher.
 
 ### Online
 
-Open **<https://jordivillafreixa.github.io/MecHand/app/>**. The first visit downloads about 9 MB
+Open **<https://compbiochbiophlab.github.io/MecHand/app/>**. The first visit downloads about 9 MB
 (mostly Ketcher's WebAssembly chemistry engine), which the browser then caches.
 
 ### On your own computer
@@ -63,7 +63,7 @@ winget install OpenJS.NodeJS.LTS     # Windows
 sudo apt install nodejs npm          # Debian/Ubuntu (or use the installers at nodejs.org)
 
 # Get and run MecHand
-git clone https://github.com/JordiVillaFreixa/MecHand.git
+git clone https://github.com/CompBiochBiophLab/MecHand.git
 cd MecHand/ketcher-mechhand
 npm ci                               # exact versions from package-lock.json
 npm run dev                          # → http://localhost:5173
@@ -121,8 +121,8 @@ nothing, or when it would give C, N, O or F more than an octet while no bond to 
 | Ctrl+Z / ⌘Z | Remove the last stroke (freehand mode; otherwise Ketcher's undo) |
 | Esc | Close a dialog |
 
-More in the [guide](https://jordivillafreixa.github.io/MecHand/guide/drawing) and the
-[tutorial](https://jordivillafreixa.github.io/MecHand/tutorial.pdf).
+More in the [guide](https://compbiochbiophlab.github.io/MecHand/guide/drawing) and the
+[tutorial](https://compbiochbiophlab.github.io/MecHand/tutorial.pdf).
 
 ---
 
@@ -196,7 +196,7 @@ which also checks that charges and atoms balance across each arrow.
 | Cl₂ homolysis (fishhook arrows) | | |
 
 References (Clayden; Housecroft & Sharpe; Berg/Tymoczko/Gatto/Stryer; Fersht) are listed on the
-[templates page](https://jordivillafreixa.github.io/MecHand/guide/templates).
+[templates page](https://compbiochbiophlab.github.io/MecHand/guide/templates).
 
 ---
 

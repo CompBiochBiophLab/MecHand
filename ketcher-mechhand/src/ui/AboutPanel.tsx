@@ -53,8 +53,8 @@ export function AboutPanel({ model, engine, backendUrl, backendOk, backendEngine
           the README under “Browser support”.
         </p>
         <p>
-          <a href="https://github.com/JordiVillaFreixa/MecHand#readme" target="_blank" rel="noreferrer">Documentation</a> ·{' '}
-          <a href="https://github.com/JordiVillaFreixa/MecHand/tree/main/ketcher-mechhand/src/recognition" target="_blank" rel="noreferrer">Recognizer source</a>
+          <a href="https://github.com/CompBiochBiophLab/MecHand#readme" target="_blank" rel="noreferrer">Documentation</a> ·{' '}
+          <a href="https://github.com/CompBiochBiophLab/MecHand/tree/main/ketcher-mechhand/src/recognition" target="_blank" rel="noreferrer">Recognizer source</a>
         </p>
       </div>
     </Modal>

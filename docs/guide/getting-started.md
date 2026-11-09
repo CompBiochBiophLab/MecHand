@@ -2,7 +2,7 @@
 
 ## Use it online
 
-Open **<https://jordivillafreixa.github.io/MecHand/app/>** in Chrome, Edge, Firefox or Safari
+Open **<https://compbiochbiophlab.github.io/MecHand/app/>** in Chrome, Edge, Firefox or Safari
 (desktop, iPad or Android tablet). There is nothing to install: the editor, the chemistry
 engine and the handwriting recognizer all run in your browser. The first visit downloads
 about 9 MB; after that the browser keeps it in its cache.
@@ -47,7 +47,7 @@ sudo apt install nodejs npm   # or use the installers at nodejs.org
 Then:
 
 ```sh
-git clone https://github.com/JordiVillaFreixa/MecHand.git
+git clone https://github.com/CompBiochBiophLab/MecHand.git
 cd MecHand/ketcher-mechhand
 npm ci          # installs the exact versions in package-lock.json (Ketcher 3.18.0, React 19, Vite 8)
 npm run dev     # → http://localhost:5173

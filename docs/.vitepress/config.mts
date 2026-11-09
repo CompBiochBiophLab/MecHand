@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitepress';
 
-const APP = 'https://jordivillafreixa.github.io/MecHand/app/';
+const APP = 'https://compbiochbiophlab.github.io/MecHand/app/';
 
 export default defineConfig({
   title: 'MecHand',
@@ -37,14 +37,14 @@ export default defineConfig({
         ],
       },
     ],
-    socialLinks: [{ icon: 'github', link: 'https://github.com/JordiVillaFreixa/MecHand' }],
+    socialLinks: [{ icon: 'github', link: 'https://github.com/CompBiochBiophLab/MecHand' }],
     search: { provider: 'local' },
     footer: {
       message: 'MIT licence (MecHand) · Apache 2.0 (Ketcher)',
       copyright: 'Jordi Villà-Freixa · Universitat de Vic – Universitat Central de Catalunya',
     },
     editLink: {
-      pattern: 'https://github.com/JordiVillaFreixa/MecHand/edit/main/docs/:path',
+      pattern: 'https://github.com/CompBiochBiophLab/MecHand/edit/main/docs/:path',
       text: 'Edit this page on GitHub',
     },
   },

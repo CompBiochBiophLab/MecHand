@@ -1,7 +1,7 @@
 # Builds the MecHand web app and the documentation website (VitePress) and
 # publishes both on GitHub Pages:
-#   https://jordivillafreixa.github.io/MecHand/       website
-#   https://jordivillafreixa.github.io/MecHand/app/   MecHand
+#   https://compbiochbiophlab.github.io/MecHand/       website
+#   https://compbiochbiophlab.github.io/MecHand/app/   MecHand
 name: Pages
 
 on:

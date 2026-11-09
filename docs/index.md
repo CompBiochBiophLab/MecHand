@@ -11,7 +11,7 @@ hero:
   actions:
     - theme: brand
       text: Open MecHand
-      link: https://jordivillafreixa.github.io/MecHand/app/
+      link: https://compbiochbiophlab.github.io/MecHand/app/
       target: _self
     - theme: alt
       text: Getting started

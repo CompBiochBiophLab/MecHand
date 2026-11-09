@@ -7,7 +7,7 @@ MolScribe or DECIMER work from pixels; on hand-drawn structures they are much le
 they need Python and large models. DECIMER can still be used as an optional engine, see
 [Optional DECIMER server](./server).)
 
-The source is in [`ketcher-mechhand/src/recognition/`](https://github.com/JordiVillaFreixa/MecHand/tree/main/ketcher-mechhand/src/recognition).
+The source is in [`ketcher-mechhand/src/recognition/`](https://github.com/CompBiochBiophLab/MecHand/tree/main/ketcher-mechhand/src/recognition).
 
 ## Pipeline
 
@@ -39,8 +39,8 @@ The "model" of the $P recognizer is data, versioned with the code:
 
 | File | Content |
 | --- | --- |
-| [`model/symbols-model.json`](https://github.com/JordiVillaFreixa/MecHand/blob/main/ketcher-mechhand/src/recognition/model/symbols-model.json) | Glyph skeletons for each symbol (letters, digits, + and −), with a `version`. At start-up each skeleton is expanded into slanted, scaled, rotated and jittered copies. |
-| [`model/contrib/*.json`](https://github.com/JordiVillaFreixa/MecHand/tree/main/ketcher-mechhand/src/recognition/model/contrib) | Real handwriting samples contributed by users. |
+| [`model/symbols-model.json`](https://github.com/CompBiochBiophLab/MecHand/blob/main/ketcher-mechhand/src/recognition/model/symbols-model.json) | Glyph skeletons for each symbol (letters, digits, + and −), with a `version`. At start-up each skeleton is expanded into slanted, scaled, rotated and jittered copies. |
+| [`model/contrib/*.json`](https://github.com/CompBiochBiophLab/MecHand/tree/main/ketcher-mechhand/src/recognition/model/contrib) | Real handwriting samples contributed by users. |
 | Your browser | The samples you record with **✍ Teach**. |
 
 The model in use, its version and the number of templates are shown in **About**.

@@ -65,7 +65,7 @@ def test_rejects_non_images(client):
 
 def test_private_network_preflight(client):
     r = client.options("/recognize", headers={
-        "Origin": "https://jordivillafreixa.github.io",
+        "Origin": "https://compbiochbiophlab.github.io",
         "Access-Control-Request-Method": "POST",
         "Access-Control-Request-Private-Network": "true",
     })

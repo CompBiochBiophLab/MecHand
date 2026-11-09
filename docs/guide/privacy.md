@@ -4,7 +4,7 @@
 never sent anywhere.**
 
 This is not only a design intention: an automated test
-([`e2e/privacy.spec.ts`](https://github.com/JordiVillaFreixa/MecHand/blob/main/ketcher-mechhand/e2e/privacy.spec.ts))
+([`e2e/privacy.spec.ts`](https://github.com/CompBiochBiophLab/MecHand/blob/main/ketcher-mechhand/e2e/privacy.spec.ts))
 runs on every change in Chromium, Firefox and WebKit. It uses every feature — templates, freehand
 drawing, recognition, insertion, Teach, export — and fails if MecHand makes any network request
 after the page has loaded, contacts any server other than the one that served the page, sends any
