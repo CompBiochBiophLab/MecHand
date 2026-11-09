@@ -1,6 +1,7 @@
 {
   "name": "ketcher-mechhand",
   "version": "0.1.0",
+  "license": "MIT",
   "private": true,
   "description": "MecHand: freehand mechanism drawing on top of Ketcher",
   "type": "module",

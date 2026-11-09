@@ -124,11 +124,12 @@ export function StudyPanel({ ketcher, getLayer, appVersion, modelVersion, teach,
 
   if (!rec || !session || !progress) {
     return <StartForm env={env} hasTeachSamples={teach.samples.length + teach.elements.length > 0} onClearTeach={onClearTeach}
-      onStart={(group, participant, share) => {
+      onStart={(group, participant, share, publish) => {
         if (!env) return;
         const r = StudyRecorder.create({
           appVersion, modelVersion, code: newParticipantCode(), group, participant,
-          environment: { ...env, pointerTypes: [] }, tasks: tasksFor(group), shareTeachSamples: share,
+          environment: { ...env, pointerTypes: [] }, tasks: tasksFor(group),
+          shareTeachSamples: share, publishTeachSamples: share && publish,
         });
         r.log('session-start');
         setRec(r);
@@ -160,7 +161,7 @@ export function StudyPanel({ ketcher, getLayer, appVersion, modelVersion, teach,
   };
 
   return (
-    <aside data-testid="mechand-study" style={{ width: 360, flexShrink: 0, overflowY: 'auto', background: '#f9fafb', borderLeft: '1px solid #e5e7eb', padding: 10, fontSize: 13 }}>
+    <aside data-testid="mechand-study" style={{ width: 360, flexShrink: 0, overflowY: 'auto', background: '#f9fafb', borderLeft: '1px solid #e5e7eb', padding: 10, fontSize: 13, fontFamily: 'system-ui, sans-serif' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
         <b>Estudi MecHand</b>
         <span style={{ fontFamily: 'monospace', fontSize: 14 }} title="El teu codi anònim">{session.code}</span>
@@ -287,7 +288,7 @@ function StartForm({ env, hasTeachSamples, onClearTeach, onStart }: {
   env: StudyEnvironment | null;
   hasTeachSamples: boolean;
   onClearTeach: () => void;
-  onStart: (group: Group, participant: Participant, shareTeach: boolean) => void;
+  onStart: (group: Group, participant: Participant, shareTeach: boolean, publishTeach: boolean) => void;
 }) {
   const fromUrl = params.get('group') as Group | null;
   const [group, setGroup] = useState<Group | ''>(fromUrl && GROUPS.includes(fromUrl) ? fromUrl : '');
@@ -298,13 +299,14 @@ function StartForm({ env, hasTeachSamples, onClearTeach, onStart }: {
   const [hand, setHand] = useState('');
   const [experience, setExperience] = useState('');
   const [share, setShare] = useState(false);
+  const [publish, setPublish] = useState(false);
   const [consent, setConsent] = useState(false);
   const countries = useMemo(() => countryOptions(), []);
   const ready = group && role && (role === 'professorat' || course) && device && country !== null && experience && consent && env;
   const ref = useRef<HTMLDivElement>(null);
 
   return (
-    <aside data-testid="mechand-study" style={{ width: 360, flexShrink: 0, overflowY: 'auto', background: '#f9fafb', borderLeft: '1px solid #e5e7eb', padding: 10, fontSize: 13 }}>
+    <aside data-testid="mechand-study" style={{ width: 360, flexShrink: 0, overflowY: 'auto', background: '#f9fafb', borderLeft: '1px solid #e5e7eb', padding: 10, fontSize: 13, fontFamily: 'system-ui, sans-serif' }}>
       <div ref={ref} style={box}>
         <b>Estudi MecHand (UVic-UCC)</b>
         <p style={{ margin: '6px 0' }}>Abans de començar has d'haver llegit el full d'informació i signat el consentiment informat.
@@ -355,8 +357,12 @@ function StartForm({ env, hasTeachSamples, onClearTeach, onStart }: {
           <option value="molta">Molta (sovint)</option>
         </select>
         <label style={{ display: 'flex', gap: 6, marginTop: 10, alignItems: 'flex-start' }}>
-          <input type="checkbox" checked={share} onChange={(e) => setShare(e.target.checked)} />
-          <span>Accepto que les mostres que dibuixi a ✍ Teach s'incloguin al fitxer i, si ho autoritzo al consentiment, es puguin publicar de manera anònima per millorar el model (opcional).</span>
+          <input type="checkbox" checked={share} onChange={(e) => { setShare(e.target.checked); if (!e.target.checked) setPublish(false); }} data-testid="study-share" />
+          <span>Accepto que les mostres que dibuixi a ✍ Teach s'incloguin al fitxer de la sessió (opcional).</span>
+        </label>
+        <label style={{ display: 'flex', gap: 6, marginTop: 6, alignItems: 'flex-start', opacity: share ? 1 : 0.5 }}>
+          <input type="checkbox" checked={publish} disabled={!share} onChange={(e) => setPublish(e.target.checked)} data-testid="study-publish" />
+          <span>Accepto que aquestes mostres es publiquin al repositori obert de MecHand, només amb el símbol i les coordenades x, y (opcional; ha de coincidir amb el que he marcat al consentiment).</span>
         </label>
         <label style={{ display: 'flex', gap: 6, marginTop: 6, alignItems: 'flex-start' }}>
           <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} data-testid="study-consent" />
@@ -380,7 +386,7 @@ function StartForm({ env, hasTeachSamples, onClearTeach, onStart }: {
             literacyCountry: country ?? '',
             handedness: (hand || null) as Participant['handedness'],
             experience: experience as Participant['experience'],
-          }, share)}>Comença</button>
+          }, share, publish)}>Comença</button>
       </div>
     </aside>
   );

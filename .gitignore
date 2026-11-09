@@ -70,3 +70,6 @@ kk.txt
 
 # Local copy of the GitHub Pages site (make site)
 .site/
+
+# Study documents built with make -C estudi
+estudi/pdf/

@@ -1,5 +1,6 @@
 import { type Page, expect, test } from '@playwright/test';
-import { readFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 /**
  * A whole session of the user study (?study=1): questionnaire, training, two
@@ -92,6 +93,12 @@ test('runs a study session locally and produces a minimal session file', async (
   expect(download.suggestedFilename()).toMatch(/^mechand-estudi-MH-[A-Z2-9]{5}\.json$/);
   const text = readFileSync((await download.path())!, 'utf8');
   const s = JSON.parse(text);
+  // MECHAND_STUDY_SAVE=<folder>: keep the file (to try estudi/analisi/analitza_sessions.py on it).
+  const save = process.env.MECHAND_STUDY_SAVE;
+  if (save) {
+    mkdirSync(save, { recursive: true });
+    writeFileSync(join(save, `${test.info().project.name}-${download.suggestedFilename()}`), text);
+  }
   expect(s.schema).toBe('mechand-study-session/2');
   expect(s.code).toMatch(/^MH-[A-Z2-9]{5}$/);
   expect(s.group).toBe('A1');
@@ -112,6 +119,8 @@ test('runs a study session locally and produces a minimal session file', async (
   expect(s.events.filter((e: any) => e.type === 'task-end')).toHaveLength(10);
   expect(s.events.find((e: any) => e.type === 'task-end').data.ket).toContain('"root"');
   expect(s.teachSamples).toBeUndefined(); // not shared unless the participant opts in
+  expect(s.shareTeachSamples).toBe(false);
+  expect(s.publishTeachSamples).toBe(false);
   // Nothing that identifies the browser or the person.
   const ua = await page.evaluate(() => navigator.userAgent);
   expect(text).not.toContain(ua);

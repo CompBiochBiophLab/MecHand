@@ -35,6 +35,7 @@ electron-flow arrows into Ketcher.
 - [Export](#export)
 - [Browser support](#browser-support)
 - [Privacy](#privacy)
+- [User study](#user-study)
 - [Optional recognition server (DECIMER)](#optional-recognition-server-decimer)
 - [Ideas taken from ChemDraw and Marvin](#ideas-taken-from-chemdraw-and-marvin)
 - [Repository layout](#repository-layout)
@@ -278,6 +279,24 @@ makes **no network request**, no data is sent, and no cookie is set.
 
 ---
 
+## User study
+
+[`estudi/`](estudi/) holds the materials (in Catalan) of a user study with Biotechnology students and
+chemistry teachers at UVic-UCC: experimental design (crossover, freehand vs Ketcher tools), participant
+instructions, researcher guide, model-training protocol, information sheet and informed consent,
+application to the UVic-UCC Research Ethics Committee, data-protection analysis, questionnaires,
+openly licensed image stimuli and an analysis script. `make -C estudi` builds the PDFs.
+
+The app has a **study mode** (`…/app/?study=1&group=A1`): a side panel with the questionnaire, Teach
+training, the tasks in two counterbalanced blocks, the SUS, and the download of a session file. Like
+the rest of MecHand it works entirely in the browser; the session file holds an anonymous random
+code, the answers (including the country where the participant learned to read and write), a coarse
+description of the browser and device (never the user-agent string), and the ink and recognition of
+each task. [`e2e/study.spec.ts`](ketcher-mechhand/e2e/study.spec.ts) runs a whole session in three
+browsers and checks the file and that nothing is sent.
+
+---
+
 ## Optional recognition server (DECIMER)
 
 Not needed for normal use. To compare with an image-based deep-learning model, MecHand can send a
@@ -335,12 +354,14 @@ MecHand/
 │   ├── src/export/          TikZ and chemfig exporters
 │   ├── src/templates/       mechanism templates (KET) and index
 │   ├── src/ui/              toolbar and dialogs
+│   ├── src/study/           study mode (user study): panel, recorder, tasks, stimuli
 │   ├── templates/           build_templates.py (RDKit)
 │   └── e2e/                 Playwright tests (Chromium, Firefox, WebKit)
 ├── backend/                 optional DECIMER server (FastAPI, Python 3.10–3.13)
 ├── docs/                    website (VitePress) — screenshots, tutorial PDF
 ├── tutorial/                user tutorial (LaTeX + Makefile)
 ├── manuscript/              Journal of Cheminformatics manuscript (LaTeX + Makefile)
+├── estudi/                  user study: design, consent, ethics application, stimuli, analysis
 └── .github/workflows/       CI (tests in three browsers) and GitHub Pages deployment
 ```
 

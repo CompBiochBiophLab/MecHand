@@ -71,6 +71,8 @@ export interface StudySession {
   comments: { liked: string; disliked: string; other: string };
   /** Teach samples are included only if the participant agreed to share them. */
   shareTeachSamples: boolean;
+  /** …and may be published (without any other data) only if the participant also agreed to that. */
+  publishTeachSamples: boolean;
   teachSamples?: { samples: SymbolSample[]; elements: ElementSample[] };
 }
 
