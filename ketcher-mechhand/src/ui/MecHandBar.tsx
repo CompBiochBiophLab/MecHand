@@ -3,6 +3,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { CATEGORY_LABEL, TEMPLATES } from '../templates/catalog';
 import { HelpTip, HelpToggleButton } from './HelpSystem';
+import { useCompact } from './useCompact';
 import {
   ExportIcon, InfoIcon, LibraryIcon, MecHandLogo, PenIcon, RecognizeIcon, RedoIcon, TeachIcon, TrashIcon, UndoIcon,
 } from './icons';
@@ -69,6 +70,7 @@ export function MecHandBar(props: {
   disabled?: { freehand?: boolean; templates?: boolean; teach?: boolean };
 }) {
   const off = props.disabled ?? {};
+  const compact = useCompact();
   const categories = [...new Set(TEMPLATES.map((t) => t.category))];
   return (
     <div style={barStyle} data-testid="mechand-bar" role="toolbar" aria-label="MecHand">
@@ -101,7 +103,7 @@ export function MecHandBar(props: {
       {divider}
       {props.onLibrary && (
         <HelpTip id="btn-library">
-          <ToolButton icon={<LibraryIcon />} label="Library" name="Template library" disabled={off.templates} onClick={props.onLibrary} testId="mechand-library-btn" />
+          <ToolButton icon={<LibraryIcon />} label="Library" name="Template library" showLabel={!compact} disabled={off.templates} onClick={props.onLibrary} testId="mechand-library-btn" />
         </HelpTip>
       )}
       <HelpTip id="menu-templates">
@@ -109,7 +111,7 @@ export function MecHandBar(props: {
           data-testid="mechand-templates"
           value=""
           onChange={(e) => e.target.value && props.onTemplate(e.target.value)}
-          style={{ ...toolButtonStyle(false, off.templates), display: 'inline-block', width: 150, padding: '4px 6px' }}
+          style={{ ...toolButtonStyle(false, off.templates), display: 'inline-block', width: compact ? 118 : 150, padding: '4px 6px' }}
           disabled={off.templates}
           aria-label="Open a mechanism template"
         >
@@ -124,14 +126,14 @@ export function MecHandBar(props: {
         </select>
       </HelpTip>
       <HelpTip id="btn-export">
-        <ToolButton icon={<ExportIcon />} label="Export" name="Export" onClick={props.onExport} testId="mechand-export-btn" />
+        <ToolButton icon={<ExportIcon />} label="Export" name="Export" showLabel={!compact} onClick={props.onExport} testId="mechand-export-btn" />
       </HelpTip>
       <HelpTip id="btn-teach">
-        <ToolButton icon={<TeachIcon />} label="Teach" name="Teach" disabled={off.teach} onClick={props.onTeach} testId="mechand-teach-btn" />
+        <ToolButton icon={<TeachIcon />} label="Teach" name="Teach" showLabel={!compact} disabled={off.teach} onClick={props.onTeach} testId="mechand-teach-btn" />
       </HelpTip>
       <span style={{ flex: 1 }} />
       <HelpTip id="btn-about" placement="left">
-        <ToolButton icon={<InfoIcon />} label="About" name="About" onClick={props.onAbout} />
+        <ToolButton icon={<InfoIcon />} label="About" name="About" showLabel={!compact} onClick={props.onAbout} testId="mechand-about-btn" />
       </HelpTip>
       <HelpToggleButton />
     </div>

@@ -232,8 +232,10 @@ export const HelpTip: React.FC<HelpTipProps> = ({ id, children, placement = 'bot
     <div
       ref={ref}
       style={{ position: 'relative', display: 'inline-flex' }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      // Hover help for mouse and trackpad only: on touch screens a tap would leave it open.
+      onPointerEnter={(e) => e.pointerType === 'mouse' && setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+      onPointerDown={() => setHovered(false)}
     >
       {children}
 
@@ -249,7 +251,8 @@ export const HelpTip: React.FC<HelpTipProps> = ({ id, children, placement = 'bot
             padding: '7px 11px',
             fontSize: 12,
             lineHeight: 1.5,
-            maxWidth: 240,
+            width: 'max-content',
+            maxWidth: 260,
             whiteSpace: 'normal',
             pointerEvents: 'none',
             boxShadow: '0 4px 16px rgba(0,0,0,0.25)',

@@ -11,6 +11,7 @@ import {
 import { HelpTip } from './HelpSystem';
 import { AutoIcon, EraserIcon, MouseIcon, PalmOffIcon, PenIcon, TouchIcon, TrackpadIcon } from './icons';
 import { ToolButton, barStyle, toolButtonStyle } from './MecHandBar';
+import { useCompact } from './useCompact';
 
 export interface LastInput {
   type: string;
@@ -55,6 +56,7 @@ export function InkBar({ pen, tool, lastInput, openStroke, onPen, onTool }: {
     onPen({ ...pen, ...patch });
     if (tool !== 'pen' && !('input' in patch)) onTool('pen');
   };
+  const compact = useCompact();
   const InputIcon = INPUT_ICON[pen.input];
   const device = lastInput ? DEVICE[lastInput.type] ?? { icon: PenIcon, name: lastInput.type } : null;
 
@@ -64,10 +66,10 @@ export function InkBar({ pen, tool, lastInput, openStroke, onPen, onTool }: {
     <div style={{ ...barStyle, background: '#ffffff', padding: '4px 10px', gap: 3, position: 'relative' }} data-testid="mechand-inkbar" role="toolbar" aria-label="Pen">
       <div style={group} role="radiogroup" aria-label="Tool">
         <HelpTip id="tool-pen">
-          <ToolButton icon={<PenIcon />} label="Pen" name="Pen" active={tool === 'pen'} pressed={tool === 'pen'} onClick={() => onTool('pen')} testId="mechand-tool-pen" />
+          <ToolButton icon={<PenIcon />} label="Pen" name="Pen" showLabel={!compact} active={tool === 'pen'} pressed={tool === 'pen'} onClick={() => onTool('pen')} testId="mechand-tool-pen" />
         </HelpTip>
         <HelpTip id="tool-eraser">
-          <ToolButton icon={<EraserIcon />} label="Eraser" name="Eraser" active={tool === 'eraser'} pressed={tool === 'eraser'} onClick={() => onTool('eraser')} testId="mechand-tool-eraser" />
+          <ToolButton icon={<EraserIcon />} label="Eraser" name="Eraser" showLabel={!compact} active={tool === 'eraser'} pressed={tool === 'eraser'} onClick={() => onTool('eraser')} testId="mechand-tool-eraser" />
         </HelpTip>
       </div>
       {divider}
@@ -80,9 +82,9 @@ export function InkBar({ pen, tool, lastInput, openStroke, onPen, onTool }: {
                 key={c.value} type="button" role="radio" aria-checked={on} aria-label={c.name} data-testid={`mechand-colour-${c.name.toLowerCase()}`}
                 onClick={() => choose({ colour: c.value })}
                 style={{
-                  width: 24, height: 24, borderRadius: 12, padding: 0, cursor: 'pointer', background: c.value,
+                  width: compact ? 22 : 24, height: compact ? 22 : 24, borderRadius: 12, padding: 0, cursor: 'pointer', background: c.value,
                   border: '2px solid #fff', boxShadow: on ? `0 0 0 2px ${c.value}, 0 0 0 3px #fff` : '0 0 0 1px #d1d5db',
-                  margin: '0 2px',
+                  margin: compact ? '0 1px' : '0 2px',
                 }}
               />
             );
@@ -97,9 +99,9 @@ export function InkBar({ pen, tool, lastInput, openStroke, onPen, onTool }: {
             return (
               <button
                 key={s.value} type="button" role="radio" aria-checked={on} aria-label={`${s.name}: ${s.hint}`} data-testid={`mechand-style-${s.value}`}
-                onClick={() => choose({ style: s.value })} style={{ ...toolButtonStyle(on), padding: '3px 5px' }}
+                onClick={() => choose({ style: s.value })} style={{ ...toolButtonStyle(on), padding: compact ? '3px 3px' : '3px 5px' }}
               >
-                <PenPreview pen={{ ...pen, style: s.value }} />
+                <PenPreview pen={{ ...pen, style: s.value }} width={compact ? 26 : 36} />
               </button>
             );
           })}
@@ -114,7 +116,7 @@ export function InkBar({ pen, tool, lastInput, openStroke, onPen, onTool }: {
             return (
               <button
                 key={w.value} type="button" role="radio" aria-checked={on} aria-label={`${w.name} line`} data-testid={`mechand-width-${w.value}`}
-                onClick={() => choose({ width: w.value })} style={{ ...toolButtonStyle(on), width: 32, padding: 0 }}
+                onClick={() => choose({ width: w.value })} style={{ ...toolButtonStyle(on), width: compact ? 28 : 32, minWidth: 28, padding: 0 }}
               >
                 <span style={{ width: d, height: d, borderRadius: d / 2, background: pen.colour, opacity: pen.style === 'marker' ? 0.5 : 1 }} />
               </button>
@@ -138,8 +140,10 @@ export function InkBar({ pen, tool, lastInput, openStroke, onPen, onTool }: {
       <HelpTip id="pen-device">
         <span
           key={lastInput?.n ?? 0} data-testid="mechand-input-device" data-type={lastInput?.type ?? ''} data-accepted={lastInput?.accepted ?? ''}
+          role="status" aria-label={device && lastInput ? `Last input: ${device.name}${lastInput.accepted ? '' : ' (ignored)'}` : 'No input yet'}
           style={{
-            ...group, marginLeft: 6, padding: '3px 8px', borderRadius: 12, fontSize: 12, width: 150, boxSizing: 'border-box',
+            ...group, marginLeft: 6, padding: '3px 8px', borderRadius: 12, fontSize: 12, width: compact ? 40 : 150, boxSizing: 'border-box',
+            justifyContent: compact ? 'center' : undefined,
             whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
             background: !lastInput ? '#f9fafb' : lastInput.accepted ? '#ecfdf5' : '#fffbeb',
             color: !lastInput ? '#6b7280' : lastInput.accepted ? '#047857' : '#b45309',
@@ -147,7 +151,9 @@ export function InkBar({ pen, tool, lastInput, openStroke, onPen, onTool }: {
             animation: lastInput ? 'mechand-flash 0.6s ease-out' : undefined,
           }}
         >
-          {device && lastInput ? (<><device.icon size={15} />{device.name}{lastInput.accepted ? '' : ' ignored'}</>) : 'Input: —'}
+          {device && lastInput
+            ? (<><device.icon size={15} />{!compact && <>{device.name}{lastInput.accepted ? '' : ' ignored'}</>}</>)
+            : compact ? '—' : 'Input: —'}
         </span>
       </HelpTip>
       {openStroke && (
