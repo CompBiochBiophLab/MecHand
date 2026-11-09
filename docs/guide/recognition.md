@@ -39,9 +39,27 @@ The "model" of the $P recognizer is data, versioned with the code:
 
 | File | Content |
 | --- | --- |
-| [`model/symbols-model.json`](https://github.com/CompBiochBiophLab/MecHand/blob/main/ketcher-mechhand/src/recognition/model/symbols-model.json) | Glyph skeletons for each symbol (letters, digits, + and −), with a `version`. At start-up each skeleton is expanded into slanted, scaled, rotated and jittered copies. |
-| [`model/contrib/*.json`](https://github.com/CompBiochBiophLab/MecHand/tree/main/ketcher-mechhand/src/recognition/model/contrib) | Real handwriting samples contributed by users. |
+| [`model/symbols-model.json`](https://github.com/CompBiochBiophLab/MecHand/blob/main/ketcher-mechhand/src/recognition/model/symbols-model.json) | Glyph skeletons for each symbol (letters, digits, + and −) and arrowhead skeletons (open and closed heads, heads of two strokes, single barbs), with a `version`. At start-up each skeleton is expanded into slanted, scaled, rotated and jittered copies. |
+| [`model/contrib/*.json`](https://github.com/CompBiochBiophLab/MecHand/tree/main/ketcher-mechhand/src/recognition/model/contrib) | Real handwriting samples contributed by users: letters (`samples`) and arrows, bonds and electrons (`elements`). |
 | Your browser | The samples you record with **✍ Teach**. |
+
+### Arrows, bonds and electrons
+
+Letters are classified from examples, so a Teach sample of a letter is simply one more example.
+Arrows, bonds and dots are found by geometric rules (see the pipeline above), and their samples act on
+those rules:
+
+- **Arrowheads.** Heads the rules miss (a closed triangle, a head of two separate barbs, a filled head)
+  are read by a second $P recognizer: the small strokes that touch the end of a shaft and lie behind it
+  are turned into the frame of the shaft (tip at the origin, shaft along *x*) and classified as a full
+  head, a half head or neither. Every arrow you teach with a separate head stroke adds its head, in that
+  frame, to this model.
+- **Dots.** Lone pairs and radicals you teach set how large a roundish mark may be and still count as a
+  dot (up to a bound, so that a small minus sign stays a charge).
+- **Bonds.** Recognized by geometry only; the samples check your style and, when shared, are data to
+  improve the rules.
+- **Equilibrium arrows.** Two antiparallel straight shafts side by side, each with a half head, are read
+  as ⇌ (exported as an equilibrium arrow).
 
 The model in use, its version and the number of templates are shown in **About**.
 

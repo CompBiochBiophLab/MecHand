@@ -48,7 +48,17 @@ electron-flow arrows are. The dialog warns when:
 
 ## Teach MecHand your handwriting
 
-If a letter is often misread, open **✍ Teach**, choose the symbol, write it a few times and save each sample.
+Open **✍ Teach** when something you draw is often misread. The panel has four tabs:
+
+| Tab | What you draw | What it changes |
+| --- | --- | --- |
+| **Letters & signs** | Element letters, the digits 2–4, + and −, ⊕ and ⊖ | Each sample is one more example for the letter classifier. |
+| **Arrows** | Curved arrows (2 e⁻ and 1 e⁻), reaction arrows, equilibrium arrows ⇌ | The head of every arrow drawn with a separate head stroke is added to the arrowhead model: a triangle, filled or otherwise personal head is recognized from then on. |
+| **Bonds** | Single, double and triple bonds, a benzene ring | Bonds are recognized by geometry; this checks that your style is read correctly. |
+| **Electrons** | Lone pairs (two dots) and radicals (one dot), beside a grey O | The size of your dots sets how large a mark may be and still count as a dot. |
+
+In the Arrows, Bonds and Electrons tabs a grey line shows the length of one bond: draw at that scale.
+Under the box, **Currently read as** shows at once what MecHand reads (✓ when it is what was asked for).
 Samples are stored in your browser and used immediately. **Export samples** downloads them as JSON so they can
 be added to the shared model (see [Handwriting recognition](./recognition#updating-the-model)).
 

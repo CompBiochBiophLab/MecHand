@@ -96,7 +96,7 @@ const HEAD_OF: Partial<Record<ElementId, 'full' | 'half'>> = {
 };
 
 /**
- * Arrowhead samples (shaft frame) cut out of an arrow sample. Shafts are the long
+ * Arrowhead samples (shaft frame) cut out of an arrow sample. Shafts are the large
  * strokes; every other stroke belongs to the head at the nearest shaft end. A
  * head drawn without lifting the pen gives nothing to cut out (and the geometric
  * rules handle that case).
@@ -107,9 +107,10 @@ export function headSamples(sample: ElementSample): SymbolSample[] {
   const L = sample.bondPx;
   const strokes = sample.strokes.filter((s) => s.length > 1);
   if (strokes.length < 2) return [];
-  const lens = strokes.map(pathLength);
-  const longest = Math.max(...lens);
-  const shafts = strokes.map((_, i) => i).filter((i) => lens[i] >= 0.5 * longest && lens[i] > 0.6 * L);
+  // By extent, not path length: a scribbled head can have a long path.
+  const sizes = strokes.map((s) => bboxDiag(bbox(s)));
+  const largest = Math.max(...sizes);
+  const shafts = strokes.map((_, i) => i).filter((i) => sizes[i] >= 0.5 * largest && sizes[i] > 0.6 * L);
   const heads = strokes.map((_, i) => i).filter((i) => !shafts.includes(i));
   const ends = shafts.flatMap((i) => [true, false].map((atStart) => ({
     i, atStart, p: atStart ? strokes[i][0] : strokes[i][strokes[i].length - 1],

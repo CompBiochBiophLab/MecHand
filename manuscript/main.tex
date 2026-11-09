@@ -66,8 +66,8 @@ gesture recogniser, anchors every curved arrow to an atom or a bond, checks the
 electron bookkeeping, and inserts the result into Ketcher after the user confirms
 it. Mechanisms are exported to TikZ and \texttt{chemfig} for \LaTeX{} and to CDXML
 and MDL formats. On synthetic handwriting of thirteen textbook mechanisms from
-organic, inorganic and biological chemistry, drawn in three hand styles, MecHand
-recovers 87\,\% of the atoms, 85\,\% of the bonds and all curved and reaction arrows.
+organic, inorganic and biological chemistry, drawn in five hand styles, MecHand
+recovers 86\,\% of the atoms, 84\,\% of the bonds and all curved and reaction arrows.
 On the 126 drawings of the individual molecules it returns the exact structure for
 65\,\% of them, against 40\,\% for DECIMER's model for hand-drawn images, with a
 median recognition time of 0.1\,s. The application is tested automatically in the
@@ -221,8 +221,21 @@ point back along the shaft. The shaft must be at least $0.75\,L$ long and
 \emph{smooth}: letters such as N or Z, or a zig-zag chain with a stroke next to its
 end, have sharp corners that a curved arrow does not. Curved shafts become
 electron-flow arrows --- a full head for an electron pair, a single barb for one
-electron --- and long straight ones with a full head become reaction arrows. The
-bulge of a curved arrow is the signed maximum distance of the shaft from its chord.
+electron --- and long straight ones with a full head become reaction arrows. Two
+antiparallel straight shafts side by side, each with a single barb, form an
+equilibrium sign. The bulge of a curved arrow is the signed maximum distance of the
+shaft from its chord.
+
+Heads that these rules miss --- a closed triangle, a head drawn as two separate
+barbs, a filled head --- are read by an \emph{arrowhead model}: the small strokes
+that touch the end of a candidate shaft and lie behind it are turned into the frame
+of the shaft, with the tip at the origin and the shaft along the $x$ axis, and
+classified by a second \$P recogniser into a full head, a half head, or neither.
+Because the shaft direction at a hand-drawn tip is uncertain, the frame is turned by
+up to $\pm 30^\circ$ and the best match is kept; a match is accepted above a score
+of 0.78. A full head read this way also replaces a single barb found by the rules,
+which is often a stray mark (the stroke of a nearby charge sign) rather than the
+head.
 
 \paragraph{Letters and bonds.} The remaining strokes are split at their corners with
 ShortStraw \cite{Wolin2008}, so that chains and rings may be drawn in one stroke.
@@ -268,6 +281,7 @@ Label attached to a bond end & within $0.6\,L$ \\
 Charge attached to an atom & within $0.85\,L$ \\
 Curved-arrow shaft & $\geq 0.75\,L$, no corner $>65^\circ$ \\
 Reaction arrow & $\geq 1.2\,L$, straight, full head \\
+Arrowhead model & score $\geq 0.78$, frame turned by $\leq 30^\circ$ \\
 \$P cloud size; augmented copies per glyph & 32 points; 6 \\
 Character acceptance & score $\geq 0.6$ ($\geq 0.5$ with a margin of $0.1$) \\
 \bottomrule
@@ -283,11 +297,27 @@ each skeleton is expanded into copies with random slant, aspect ratio, rotation
 and jitter, which gives about 600 templates and takes a fraction of a second. Two
 further sources are added: samples contributed by users and kept in the
 repository, and samples that each user records in the application's
-\emph{Teach} mode. Teach samples are stored only in the browser's local storage and
-contain just the symbol and the $(x,y)$ points of its strokes. A user can export
-them and propose them for the shared model through a pull request; the model
-version in use is shown in the application. Updating the model therefore requires
-no retraining infrastructure: it is edited, tested and released like the code.
+\emph{Teach} mode. The model file also holds arrowhead skeletons (open and closed
+heads of several angles, heads of two strokes, single barbs) for the arrowhead model.
+
+Teach mode covers the other elements of a mechanism as well: curved arrows for one
+and two electrons, reaction and equilibrium arrows, single, double and triple bonds,
+a benzene ring, lone pairs and radical dots. These are drawn in a box with a grey
+reference bond that fixes the scale, and the application shows at once what it
+reads. The samples then adapt the geometric rules where these have a free
+parameter: the head of every arrow drawn with a separate head stroke is cut out,
+turned into the shaft frame and added to the arrowhead model, so that a personal
+style of head is recognised from then on; and the size of the dots drawn for lone
+pairs and radicals raises the size up to which a mark counts as a dot (within a
+bound, and only for roundish marks, so that a small minus sign stays a charge).
+Bonds have no such parameter; their samples serve as a check of the writer's style
+and, when shared, as data to improve the rules.
+
+Teach samples are stored only in the browser's local storage and contain just the
+symbol or element and the $(x,y)$ points of its strokes. A user can export them and
+propose them for the shared model through a pull request; the model version in use
+is shown in the application. Updating the model therefore requires no retraining
+infrastructure: it is edited, tested and released like the code.
 
 \subsection{Consolidation}
 
@@ -380,9 +410,10 @@ its documentation are deployed as static files to GitHub Pages.
 \subsection{Recognition of hand-drawn mechanisms}
 
 To measure recognition without a user study, each template was rendered as
-synthetic handwriting in three hand styles, which differ in slant, jitter, letter
-shapes and in whether arrowheads are drawn with the shaft or as separate strokes
-(Figure~\ref{fig:handwriting}). Capital letters were drawn $0.32$ bond lengths tall
+synthetic handwriting in five hand styles, which differ in slant, jitter, letter
+shapes and in how arrowheads are drawn: with the shaft without lifting the pen, as
+a separate open ``V'', as a closed triangle, or as two separate barbs
+(Figure~\ref{fig:handwriting}). The last two are read by the arrowhead model. Capital letters were drawn $0.32$ bond lengths tall
 and bonds stopped $0.2$ bond lengths short of each label. Each drawing was
 recognised and compared with the template after aligning the two by scale and
 translation: an atom is correct if its element and charge match, a bond if it joins
@@ -397,15 +428,18 @@ the right atoms with the right order, and the arrows if their number and kinds
 \label{fig:handwriting}
 \end{figure}
 
-Over the 39 drawings, MecHand recovered 87\,\% of the atoms, 85\,\% of the bonds and
-all of the curved and reaction arrows (Table~\ref{tab:benchmark}); 31\,\% of the
-mechanisms were recognised without a single error. The Diels--Alder reaction, the
+Over the 65 drawings, MecHand recovered 86\,\% of the atoms, 84\,\% of the bonds and
+all of the curved and reaction arrows (Table~\ref{tab:benchmark}); 29\,\% of the
+mechanisms were recognised without a single error. Without the arrowhead model, no
+mechanism drawn with triangle or two-stroke heads had its arrows read correctly (the
+former were missed, the latter read as single-electron arrows); on the three styles
+that the rules alone handle, the results with and without it are identical. The Diels--Alder reaction, the
 homolysis of Cl$_2$ and the hydrolysis of SiCl$_4$ were recognised completely. The
 main sources of error were crowded metal complexes, where several labels and charge
 signs lie close to a metal centre, and labels with many explicit hydrogens.
 
 \begin{table}[t]
-\caption{Recognition of synthetic handwriting of the mechanism templates (three hand
+\caption{Recognition of synthetic handwriting of the mechanism templates (five hand
   styles per template; percentages of atoms, bonds and arrow sets recognised, and of
   drawings recognised without error).}
 \label{tab:benchmark}

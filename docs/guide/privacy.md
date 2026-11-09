@@ -13,7 +13,7 @@ data, or sets a cookie.
 | What | Where it goes |
 | --- | --- |
 | Your ink and recognized structures | Stay in the page (memory). Nothing is uploaded. |
-| Teach samples | Your browser's local storage only (`mechand.symbols.user.v1`). Each sample holds the symbol and the *x, y* points of its strokes — no timestamps, pressure, device or identity. Delete them with **Teach → Delete all**, or by clearing the site's data. |
+| Teach samples | Your browser's local storage only (`mechand.symbols.user.v1` for letters, `mechand.elements.user.v1` for arrows, bonds and electrons). Each sample holds the symbol or element (plus, for elements, the scale of the Teach box) and the *x, y* points of its strokes — no timestamps, pressure, device or identity. Imported files are reduced to the same fields. Delete them with **Teach → Delete all**, or by clearing the site's data. |
 | Ketcher settings | Your browser's local storage (Ketcher's own keys). |
 | Cookies, analytics, trackers | None. |
 | Exported files | Only where you save or paste them. |

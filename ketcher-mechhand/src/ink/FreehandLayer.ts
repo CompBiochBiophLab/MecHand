@@ -19,6 +19,9 @@ const ROLE_COLOURS: Record<StrokeRole, string> = {
 export class FreehandLayer {
   readonly svg: SVGSVGElement;
   strokes: InkStroke[] = [];
+  /** When each stroke started and ended (performance.now(), ms), parallel to strokes. */
+  strokeTimes: { start: number; end: number }[] = [];
+  private starts = new Map<number, number>();
   private paths: SVGPathElement[] = [];
   private live = new Map<number, SVGPathElement>();
   private stylus: StylusManager;
@@ -42,6 +45,7 @@ export class FreehandLayer {
 
     this.stylus = new StylusManager(this.svg, {
       onStart: (id) => {
+        this.starts.set(id, performance.now());
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         Object.entries({ fill: 'none', stroke: '#111827', 'stroke-width': '2.2', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' })
           .forEach(([k, v]) => path.setAttribute(k, v));
@@ -60,6 +64,8 @@ export class FreehandLayer {
         path.setAttribute('d', toPath(pts));
         this.paths.push(path);
         this.strokes.push({ points: pts.map(({ x, y }) => ({ x, y })) });
+        this.strokeTimes.push({ start: this.starts.get(id) ?? performance.now(), end: performance.now() });
+        this.starts.delete(id);
         this.onChange(this);
       },
     });
@@ -78,12 +84,14 @@ export class FreehandLayer {
 
   undo(): void {
     this.strokes.pop();
+    this.strokeTimes.pop();
     this.paths.pop()?.remove();
     this.onChange(this);
   }
 
   clear(): void {
     this.strokes = [];
+    this.strokeTimes = [];
     this.paths.forEach((p) => p.remove());
     this.paths = [];
     this.onChange(this);

@@ -137,7 +137,10 @@ light-weight, transparent recognizer possible that runs entirely in the browser.
 1. **Scale** — the drawn bond length *L* is estimated from straight strokes and from letter height;
    all later decisions are relative to *L*.
 2. **Arrows** — strokes with an arrowhead (a sharp turn back at the end, or a separate small V or barb).
-   Curved → electron-flow arrow (full head 2 e⁻, single barb 1 e⁻); long and straight → reaction arrow.
+   Curved → electron-flow arrow (full head 2 e⁻, single barb 1 e⁻); long and straight → reaction arrow;
+   two antiparallel straight half-headed shafts → equilibrium arrow ⇌. Heads the rules miss (triangles,
+   two separate barbs, filled heads, personal styles) are read by an **arrowhead model**: a second $P
+   recognizer working in the frame of the shaft, which learns from the arrows drawn in Teach mode.
 3. **Letters vs bonds** — short strokes that cross (+, H), meet in a T (H, F), meet at an acute angle
    (N, M, Z; bonds never meet below 60°) or stand beside a letter (the l of Cl) are letters; long
    straight strokes, zig-zags and polygons are bonds, split at their corners with **ShortStraw**
@@ -154,9 +157,15 @@ light-weight, transparent recognizer possible that runs entirely in the browser.
 
 | Where                                                                                                    | What                                                                                                                             |
 | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| [`src/recognition/model/symbols-model.json`](ketcher-mechhand/src/recognition/model/symbols-model.json) | Versioned glyph skeletons (letters, digits, + and −), expanded at start-up into slanted, scaled, rotated and jittered variants. |
-| [`src/recognition/model/contrib/`](ketcher-mechhand/src/recognition/model/contrib/)                     | Real handwriting samples contributed by users.                                                                                   |
+| [`src/recognition/model/symbols-model.json`](ketcher-mechhand/src/recognition/model/symbols-model.json) | Versioned glyph skeletons (letters, digits, + and −) and arrowhead skeletons, expanded at start-up into slanted, scaled, rotated and jittered variants. |
+| [`src/recognition/model/contrib/`](ketcher-mechhand/src/recognition/model/contrib/)                     | Real handwriting samples contributed by users (letters, and arrows, bonds and electrons).                                         |
 | Your browser                                                                                             | Samples recorded with **✍ Teach** (applied immediately).                                                                  |
+
+**✍ Teach** has four tabs. *Letters & signs* adds examples to the letter classifier. *Arrows*
+(curved 2 e⁻ and 1 e⁻, reaction, equilibrium) adds the heads you draw to the arrowhead model.
+*Electrons* (lone pairs, radicals) sets how large your dots may be. *Bonds* (single, double, triple,
+benzene ring) are recognized by geometry and are only checked. For every sample the panel shows at
+once what MecHand reads ([details](https://compbiochbiophlab.github.io/MecHand/guide/drawing#teach-mechand-your-handwriting)).
 
 To improve the model for everyone: record samples with ✍ Teach → **Export samples**, put the JSON
 file in `model/contrib/`, bump `version` in `symbols-model.json`, and open a pull request. The model
@@ -165,15 +174,16 @@ tested and deployed with the rest of the app.
 
 ### Accuracy
 
-Each template is rendered as synthetic handwriting in three styles (different slant, jitter, letter
-shapes, and arrowheads drawn with the shaft or separately), recognized, and compared with the original:
+Each template is rendered as synthetic handwriting in five styles (different slant, jitter, letter
+shapes, and arrowheads drawn with the shaft, as a separate V, as a closed triangle or as two separate
+barbs), recognized, and compared with the original:
 
-| 13 templates × 3 styles (9 November 2026) |                 |
+| 13 templates × 5 styles (9 November 2026) |                 |
 | ------------------------------------------ | --------------- |
-| Atoms (element and charge)                 | **87 %**  |
-| Bonds (connectivity and order)             | **85 %**  |
+| Atoms (element and charge)                 | **86 %**  |
+| Bonds (connectivity and order)             | **84 %**  |
 | Arrows (number and kind)                   | **100 %** |
-| Whole mechanism exactly right              | 31 %            |
+| Whole mechanism exactly right              | 29 %            |
 
 This benchmark runs with `npm test` and fails if accuracy drops. It is not a user study: real
 handwriting varies more, which is why recognition always ends in a confirmation dialog. The weakest
@@ -257,8 +267,8 @@ anywhere. An automated test ([`e2e/privacy.spec.ts`](ketcher-mechhand/e2e/privac
 this in Chromium, Firefox and WebKit on every change: after the page has loaded, using every feature
 makes **no network request**, no data is sent, and no cookie is set.
 
-- **Teach samples** are kept only in your browser's local storage and contain just the symbol and
-  the *x, y* points of the strokes (no timestamps, pressure, device or identity). *Teach → Delete
+- **Teach samples** are kept only in your browser's local storage and contain just the symbol or
+  element and the *x, y* points of the strokes (no timestamps, pressure, device or identity). *Teach → Delete
   all* removes them.
 - **Only what you choose leaves your computer:** samples you contribute by pull request (they then
   become public — use a file name without personal information), and, if you enable it, the ink

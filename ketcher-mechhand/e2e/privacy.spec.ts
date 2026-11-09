@@ -28,7 +28,7 @@ test('uses no network after loading and stores Teach samples only locally', asyn
   await page.click('[data-testid="mechand-freehand"]');
 
   await page.locator('button', { hasText: 'Teach' }).click();
-  const teachBox = page.locator('[data-testid="mechand-teach"] svg');
+  const teachBox = page.locator('[data-testid="mechand-teach-box"]');
   await teachBox.waitFor({ state: 'visible' });
   const tb = (await teachBox.boundingBox())!;
   await page.mouse.move(tb.x + 110, tb.y + 50);
@@ -38,6 +38,24 @@ test('uses no network after loading and stores Teach samples only locally', asyn
     await page.mouse.move(tb.x + 110 + 40 * Math.cos(t), tb.y + 110 - 60 * Math.sin(t));
   }
   await page.mouse.up();
+  await page.getByRole('button', { name: 'Save sample' }).click();
+  // An arrow (curved shaft, then a separate head) in the Arrows tab.
+  await page.getByRole('tab', { name: 'Arrows' }).click();
+  const ab = (await teachBox.boundingBox())!;
+  const curve = Array.from({ length: 16 }, (_, k) => {
+    const t = (k / 15) * Math.PI * 0.6;
+    return [ab.x + 60 + 90 * (1 - Math.cos(t)), ab.y + 200 - 80 * Math.sin(t)];
+  });
+  const draw = async (pts: number[][]) => {
+    await page.mouse.move(pts[0][0], pts[0][1]);
+    await page.mouse.down();
+    for (const [x, y] of pts.slice(1)) await page.mouse.move(x, y, { steps: 2 });
+    await page.mouse.up();
+  };
+  await draw(curve);
+  const [tx, ty] = curve[curve.length - 1];
+  await draw([[tx - 14, ty - 10], [tx, ty], [tx - 16, ty + 8]]);
+  await expect(page.locator('[data-testid="mechand-teach-reading"]')).toBeVisible();
   await page.getByRole('button', { name: 'Save sample' }).click();
   await page.keyboard.press('Escape');
   await page.click('[data-testid="mechand-export-btn"]');
@@ -52,4 +70,8 @@ test('uses no network after loading and stores Teach samples only locally', asyn
   const sample = await page.evaluate(() => JSON.parse(localStorage.getItem('mechand.symbols.user.v1')!).samples[0]);
   expect(Object.keys(sample).sort()).toEqual(['strokes', 'symbol']);
   expect(Object.keys(sample.strokes[0][0]).sort()).toEqual(['x', 'y']);
+  const element = await page.evaluate(() => JSON.parse(localStorage.getItem('mechand.elements.user.v1')!).samples[0]);
+  expect(Object.keys(element).sort()).toEqual(['bondPx', 'element', 'strokes']);
+  expect(element.element).toBe('arrow-pair');
+  expect(new Set(element.strokes.flat().flatMap((p: object) => Object.keys(p)))).toEqual(new Set(['x', 'y']));
 });

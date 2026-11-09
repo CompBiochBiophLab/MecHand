@@ -79,6 +79,8 @@ export interface SketchOptions {
   heads?: PointCloudRecognizer;
   /** Drawing style learned in Teach mode. */
   style?: InkStyle;
+  /** Minimum arrowhead-model score (tuning). */
+  headMinScore?: number;
   /** Diagnostics callback (development only). */
   debug?: (what: string, data: unknown) => void;
 }
@@ -235,7 +237,7 @@ export function recognizeSketch(
       if (!inStroke && ((straightness(shaft) > 0.93 && pathLength(shaft) < 1.2 * scale) || !smooth(shaft, scale, false))) continue;
       if (!inStroke) {
         // Separate head stroke(s) near either end of this stroke?
-        head = findSeparateHead(i, pts, boxes, roles, headUsed, small, scale, opts.heads);
+        head = findSeparateHead(i, pts, boxes, roles, headUsed, small, scale, opts.heads, opts.headMinScore ?? HEAD_MIN_SCORE, opts.debug);
         if (head) {
           barbs = head.barbs;
           if (head.atStart) shaft = shaft.slice().reverse();
@@ -256,6 +258,7 @@ export function recognizeSketch(
         head.strokes.forEach((h) => { headUsed.add(h); roles[h] = 'arrowhead'; });
       }
       roles[i] = 'arrow';
+      opts.debug?.('arrow', { stroke: i, barbs, kindHint, head: head?.strokes ?? 'in-stroke' });
       found.push({ shaft, barbs, kindHint });
     }
     // Equilibrium (⇌): two antiparallel, side-by-side straight shafts with half heads.
@@ -285,7 +288,7 @@ export function recognizeSketch(
   // draws larger dots (Teach mode) gets a larger limit, up to a bound that keeps a
   // small "−" a charge; such larger dots must also be roundish, not a dash.
   const dotDiag = Math.min(0.16, Math.max(0.1, 1.25 * (opts.style?.dotDiag ?? 0))) * L;
-  const dotLen = Math.min(0.35, Math.max(0.2, 1.25 * (opts.style?.dotLength ?? 0))) * L;
+  const dotLen = Math.min(0.45, Math.max(0.2, 1.25 * (opts.style?.dotLength ?? 0))) * L;
   for (let i = 0; i < n; i++) {
     if (roles[i] !== 'ignored') continue;
     const b = boxes[i], d = bboxDiag(b);
@@ -302,9 +305,16 @@ export function recognizeSketch(
   const clusters = clusterBoxes(textIdx, boxes, 0.22 * L);
   const labelGuesses = clusters.map((cluster) => {
     cluster.forEach((i) => (roles[i] = 'text'));
-    // Attach "i" dots that sit just above a character of this cluster.
+    // Attach to this cluster the tiny marks in its upper half that belong to the
+    // text: the dot of an "i" (above a narrow stem) and a dash-like "−" written
+    // very small. A round dot beside a letter is a radical or a lone pair.
     const cb = unionBox(cluster.map((i) => boxes[i]));
-    const dots = dotIdx.filter((d) => bboxGap(boxes[d], cb) < 0.15 * L && boxes[d].y + boxes[d].h <= cb.y + cb.h * 0.5);
+    const stems = cluster.map((i) => boxes[i]).filter((b) => b.w < 0.45 * b.h);
+    const dots = dotIdx.filter((d) => {
+      const b = boxes[d], c = bboxCenter(b);
+      if (bboxGap(b, cb) >= 0.15 * L || b.y + b.h > cb.y + cb.h * 0.5) return false;
+      return b.w > 2.5 * b.h || stems.some((s) => c.x > s.x - 0.1 * L && c.x < s.x + s.w + 0.1 * L);
+    });
     dots.forEach((d) => (roles[d] = 'text'));
     return readLabel([...cluster, ...dots], pts, boxes, L, symbols, minScore);
   });
@@ -559,7 +569,7 @@ export function splitInStrokeHead(raw: Pt[], L: number): { shaft: Pt[]; barbs: n
 type SeparateHead = { strokes: number[]; barbs: number; atStart: boolean };
 
 /** Minimum arrowhead-model score to accept a head the geometric rules missed. */
-const HEAD_MIN_SCORE = 0.82;
+const HEAD_MIN_SCORE = 0.78;
 
 /**
  * A small "V" (2 barbs) or a single short stroke (1 barb) at an end of stroke i.
@@ -568,7 +578,8 @@ const HEAD_MIN_SCORE = 0.82;
  */
 function findSeparateHead(
   i: number, pts: Pt[][], boxes: BBox[], roles: StrokeRole[], used: Set<number>,
-  isSmall: (j: number) => boolean, L: number, heads?: PointCloudRecognizer,
+  isSmall: (j: number) => boolean, L: number, heads: PointCloudRecognizer | undefined, minScore: number,
+  debug?: SketchOptions['debug'],
 ): SeparateHead | null {
   const shaft = pts[i];
   const ends = [
@@ -606,27 +617,42 @@ function findSeparateHead(
   }
   let result: SeparateHead | null = best ? { strokes: [best.stroke], barbs: best.barbs, atStart: best.atStart } : null;
   if (heads && heads.size > 0 && (!result || result.barbs === 1)) {
+    // Both ends: a single "barb" found by the rules can be a stray mark at the
+    // tail while the real (full) head sits at the other end.
     for (const end of ends) {
-      if (result && result.atStart !== end.atStart) continue;
       const dir = endDirection(shaft, end.atStart, 0.3 * L);
-      const group: number[] = [];
+      const near: { j: number; d: number }[] = [];
       for (let j = 0; j < pts.length; j++) {
         if (j === i || used.has(j) || roles[j] !== 'ignored' || !isSmall(j) || pts[j].length < 2) continue;
         if (bboxDiag(boxes[j]) > 0.55 * L) continue;
         const ds = pts[j].map((p) => dist(p, end.p));
-        if (Math.min(...ds) > 0.2 * L || Math.max(...ds) > 0.6 * L) continue;
+        const d = Math.min(...ds);
+        if (d > 0.2 * L || Math.max(...ds) > 0.6 * L) continue;
         // A head lies behind its tip; a letter the arrow points at lies ahead.
         const local = toShaftFrame([pts[j]], end.p, dir)[0];
-        if (local.reduce((a, p) => a + p.x, 0) / local.length < -0.02 * L) group.push(j);
+        if (local.reduce((a, p) => a + p.x, 0) / local.length < -0.02 * L) near.push({ j, d });
       }
-      if (group.length === 0 || group.length > 3) continue;
-      // Only replace a single barb by a head of two or more strokes read as full.
-      if (result && group.length < 2) continue;
-      const m = classifyHead(heads, group.map((j) => pts[j]), end.p, dir);
-      if (!m || m.score < HEAD_MIN_SCORE) continue;
-      const barbs = m.symbol === 'full' ? 2 : 1;
+      if (near.length === 0) continue;
+      // The head is some of these strokes (a charge or a letter can be close by
+      // too): try every group of up to three of the four closest, prefer a full head.
+      const cands = near.sort((p, q) => p.d - q.d).slice(0, 4).map((c) => c.j);
+      let full: { group: number[]; score: number } | null = null;
+      let half: { group: number[]; score: number } | null = null;
+      for (let mask = 1; mask < 1 << cands.length; mask++) {
+        const group = cands.filter((_, k) => mask & (1 << k));
+        if (group.length > 3) continue;
+        const m = classifyHead(heads, group.map((j) => pts[j]), end.p, dir);
+        debug?.('arrowhead', { shaft: i, group, match: m });
+        if (!m || m.score < minScore) continue;
+        if (m.symbol === 'full' && (!full || m.score > full.score)) full = { group, score: m.score };
+        if (m.symbol === 'half' && (!half || m.score > half.score)) half = { group, score: m.score };
+      }
+      const pick = full ?? half;
+      if (!pick) continue;
+      const barbs = full ? 2 : 1;
+      // A single barb found by the rules is replaced only by a head read as full.
       if (result && barbs < 2) continue;
-      result = { strokes: group, barbs, atStart: end.atStart };
+      result = { strokes: pick.group, barbs, atStart: end.atStart };
       if (barbs === 2) break;
     }
   }
@@ -654,8 +680,9 @@ function classifyHead(heads: PointCloudRecognizer, strokes: Pt[][], tip: Pt, dir
 
 /**
  * Two straight shafts that form an equilibrium sign: antiparallel, side by side
- * and overlapping. Returns the shaft of the forward arrow (the one on the left of
- * its own direction, i.e. the upper arrow of a left-to-right ⇌), spanning both.
+ * and overlapping. Returns a shaft spanning both, in reading direction: ⇌ looks
+ * the same turned by 180°, so "forward" is left to right (top to bottom when
+ * vertical).
  */
 function equilibriumPair(a: Pt[], b: Pt[], L: number): Pt[] | null {
   const ua = vec(a[0], a[a.length - 1]), ub = vec(b[0], b[b.length - 1]);
@@ -673,8 +700,8 @@ function equilibriumPair(a: Pt[], b: Pt[], L: number): Pt[] | null {
   const [b0, b1] = [proj(b[0]), proj(b[b.length - 1])].sort((p, q) => p - q);
   const overlap = Math.min(la, b1) - Math.max(0, b0);
   if (overlap < 0.5 * Math.min(la, lb)) return null;
-  // Forward arrow: on the left of its direction (screen y down: cross < 0).
-  const [fwd, back] = side < 0 ? [a, b] : [b, a];
+  const aForward = Math.abs(da.x) > 0.3 ? da.x > 0 : da.y > 0;
+  const [fwd, back] = aForward ? [a, b] : [b, a];
   const avg = (p: Pt, q: Pt) => ({ x: (p.x + q.x) / 2, y: (p.y + q.y) / 2 });
   return [avg(fwd[0], back[back.length - 1]), avg(fwd[fwd.length - 1], back[0])];
 }
