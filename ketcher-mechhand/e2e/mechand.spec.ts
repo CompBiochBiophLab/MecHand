@@ -34,7 +34,9 @@ test('opens a mechanism template in Ketcher', async ({ page }) => {
 test('recognizes handwritten ethanol and inserts it into Ketcher', async ({ page }) => {
   await ready(page);
   await page.click('[data-testid="mechand-freehand"]');
-  const box = (await page.locator('[data-testid="mechand-ink"]').boundingBox())!;
+  const ink = page.locator('[data-testid="mechand-ink"]');
+  await ink.waitFor({ state: 'visible' });
+  const box = (await ink.boundingBox())!;
   const o: P = [box.x + box.width / 2 - 100, box.y + box.height / 2];
   // C–C–O zig-zag drawn as one stroke, ending short of the "O" label.
   await draw(page, o, [[0, 30], [52, 0], [92, 23]]);

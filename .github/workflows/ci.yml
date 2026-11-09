@@ -38,7 +38,7 @@ jobs:
           node-version: 24
           cache: npm
           cache-dependency-path: ketcher-mechhand/package-lock.json
-      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends texlive-latex-extra texlive-pictures texlive-science
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends texlive-latex-extra texlive-pictures texlive-science texlive-plain-generic
       - run: npm ci
       - run: npm run test:latex
 

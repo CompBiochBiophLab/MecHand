@@ -11,7 +11,9 @@ test('sends the ink to the DECIMER server and inserts its structure', async ({ p
   await page.goto(`/?engine=server&server=${encodeURIComponent(SERVER!)}`);
   await page.waitForFunction(() => Boolean((window as any).mechand), null, { timeout: 60_000 });
   await page.click('[data-testid="mechand-freehand"]');
-  const box = (await page.locator('[data-testid="mechand-ink"]').boundingBox())!;
+  const ink = page.locator('[data-testid="mechand-ink"]');
+  await ink.waitFor({ state: 'visible' });
+  const box = (await ink.boundingBox())!;
   const cx = box.x + box.width / 2, cy = box.y + box.height / 2, r = 55;
   // A cyclohexane ring drawn in one stroke.
   const pts = Array.from({ length: 7 }, (_, k) => [cx + r * Math.cos((Math.PI / 3) * k + Math.PI / 6), cy + r * Math.sin((Math.PI / 3) * k + Math.PI / 6)]);

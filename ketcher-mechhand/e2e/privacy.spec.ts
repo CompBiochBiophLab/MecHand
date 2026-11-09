@@ -15,7 +15,9 @@ test('uses no network after loading and stores Teach samples only locally', asyn
   await page.selectOption('[data-testid="mechand-templates"]', 'sn2');
   await page.evaluate(() => (window as any).ketcher.setMolecule(''));
   await page.click('[data-testid="mechand-freehand"]');
-  const box = (await page.locator('[data-testid="mechand-ink"]').boundingBox())!;
+  const ink = page.locator('[data-testid="mechand-ink"]');
+  await ink.waitFor({ state: 'visible' });
+  const box = (await ink.boundingBox())!;
   const ox = box.x + box.width / 2 - 100, oy = box.y + box.height / 2;
   await page.mouse.move(ox, oy + 30);
   await page.mouse.down();
@@ -26,7 +28,9 @@ test('uses no network after loading and stores Teach samples only locally', asyn
   await page.click('[data-testid="mechand-freehand"]');
 
   await page.locator('button', { hasText: 'Teach' }).click();
-  const tb = (await page.locator('[data-testid="mechand-teach"] svg').boundingBox())!;
+  const teachBox = page.locator('[data-testid="mechand-teach"] svg');
+  await teachBox.waitFor({ state: 'visible' });
+  const tb = (await teachBox.boundingBox())!;
   await page.mouse.move(tb.x + 110, tb.y + 50);
   await page.mouse.down();
   for (let k = 1; k <= 24; k++) {

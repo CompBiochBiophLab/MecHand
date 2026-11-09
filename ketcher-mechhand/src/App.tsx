@@ -52,17 +52,19 @@ export default function App() {
   const [backendOk, setBackendOk] = useState<boolean | null>(null);
   const [backendEngine, setBackendEngine] = useState<string | undefined>();
 
-  // Mount the ink layer once Ketcher is ready.
+  // Mount the ink layer once, when Ketcher first becomes ready (Ketcher may call
+  // onInit again; recreating the layer would drop the ink and race with input).
+  const ketcherReady = ketcher !== null;
   useEffect(() => {
-    if (!ketcher) return;
+    if (!ketcherReady) return;
     let layer: FreehandLayer | null = null;
     waitForCanvasHost().then((host) => {
       layer = new FreehandLayer(host, (l) => setStrokeCount(l.strokes.length));
       layerRef.current = layer;
-      (window as unknown as { mechand: unknown }).mechand = { layer, ketcher };
+      (window as unknown as { mechand: unknown }).mechand = { layer };
     });
     return () => layer?.destroy();
-  }, [ketcher]);
+  }, [ketcherReady]);
 
   useEffect(() => layerRef.current?.setEnabled(freehand), [freehand, strokeCount]);
 
