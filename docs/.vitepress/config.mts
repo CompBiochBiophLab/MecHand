@@ -33,6 +33,7 @@ export default defineConfig({
         items: [
           { text: 'Handwriting recognition', link: '/guide/recognition' },
           { text: 'Optional DECIMER server', link: '/guide/server' },
+          { text: 'User study mode', link: '/guide/study' },
           { text: 'Development', link: '/guide/development' },
         ],
       },
