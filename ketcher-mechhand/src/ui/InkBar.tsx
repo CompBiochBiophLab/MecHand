@@ -142,7 +142,7 @@ export function InkBar({ pen, tool, lastInput, openStroke, onPen, onTool }: {
           key={lastInput?.n ?? 0} data-testid="mechand-input-device" data-type={lastInput?.type ?? ''} data-accepted={lastInput?.accepted ?? ''}
           role="status" aria-label={device && lastInput ? `Last input: ${device.name}${lastInput.accepted ? '' : ' (ignored)'}` : 'No input yet'}
           style={{
-            ...group, marginLeft: 6, padding: '3px 8px', borderRadius: 12, fontSize: 12, width: compact ? 40 : 150, boxSizing: 'border-box',
+            ...group, marginLeft: 6, padding: '0 8px', borderRadius: 13, fontSize: 12, width: compact ? 40 : 150, height: 26, boxSizing: 'border-box',
             justifyContent: compact ? 'center' : undefined,
             whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
             background: !lastInput ? '#f9fafb' : lastInput.accepted ? '#ecfdf5' : '#fffbeb',
