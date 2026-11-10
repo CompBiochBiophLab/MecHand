@@ -21,17 +21,18 @@ Gràcies per participar! La sessió dura uns **60 minuts**. No és cap examen: a
 
 # 1. Entrenament (≈ 10 minuts)
 
-Prem **Obre ✍ Teach**. En cada pestanya, tria un element, dibuixa'l al requadre i prem **Save sample**
-(**Undo stroke** esborra l'últim traç). Sota el requadre veuràs com ho llegeix MecHand («Currently read
-as»): si l'encerta (✓), n'hi ha prou amb una o dues mostres. Desa unes **3 mostres** de:
+L'aplicació es mostra en català. Prem **Obre ✍ Ensenya**. En cada pestanya, tria un element,
+dibuixa'l al requadre i prem **Desa la mostra** (**Desfés el traç** esborra l'últim traç). Sota el
+requadre veuràs com ho llegeix MecHand («Ara es llegeix com»): si l'encerta (✓), n'hi ha prou amb una
+o dues mostres. Desa unes **3 mostres** de:
 
-- *Letters & signs*: C, O, N, H, F, l (de Cl), r (de Br), a (de Na), + i −; i també ⊕ i ⊖ si
+- *Lletres i signes*: C, O, N, H, F, l (de Cl), r (de Br), a (de Na), + i −; i també ⊕ i ⊖ si
   acostumes a escriure les càrregues encerclades;
-- *Arrows*: fletxa corba de 2 electrons, fletxa de reacció, equilibri (⇌);
+- *Fletxes*: fletxa corba de 2 electrons, fletxa de reacció, equilibri (⇌);
 - *Electrons*: parell solitari.
 
 A les pestanyes de fletxes i electrons, la línia grisa marca la llargada d'un enllaç: dibuixa a aquella
-escala. Quan acabis, tanca Teach (Esc) i prem **He acabat l'entrenament**.
+escala. Quan acabis, tanca la finestra (Esc) i prem **He acabat l'entrenament**.
 
 # 2. Tasques (2 blocs de 5 tasques)
 
@@ -44,12 +45,12 @@ Llegeix bé l'enunciat: en alguns mecanismes només cal dibuixar una part de la 
 1. Prem **Comença la tasca** (comença el cronòmetre).
 2. Dibuixa-ho al llenç de Ketcher, a l'esquerra, de la manera que indica el requadre de color:
 
-   - **MecHand: dibuix a mà alçada.** Prem el botó del bolígraf, **Freehand** (o Alt+F). Apareix una
+   - **MecHand: dibuix a mà alçada.** Prem el botó del bolígraf, **Mà alçada** (o Alt+F). Apareix una
      segona barra amb les eines de tinta (vegeu més avall). Dibuixa amb el llapis, el dit, el ratolí o
-     el trackpad i prem **Recognize** (o la barra d'espai). Revisa el que ha reconegut a la finestra
-     «Is this what you meant?» i prem **Insert into Ketcher** si és correcte, **Keep drawing** per
-     continuar dibuixant o **Discard ink** per esborrar la tinta i tornar-hi. Pots acabar de
-     corregir amb les eines de Ketcher.
+     el trackpad i prem **Reconeix** (o la barra d'espai). Revisa el que ha reconegut a la finestra
+     «És això el que volies dir?» i prem **Insereix a Ketcher** si és correcte (o Retorn), **Continua
+     dibuixant** (Esc) per corregir traços o **Descarta la tinta** per esborrar-la i tornar-hi. Pots
+     acabar de corregir amb les eines de Ketcher, que són en anglès.
    - **Només eines de Ketcher.** El dibuix a mà alçada està desactivat: fes servir les eines de la
      barra de Ketcher (enllaços, àtoms, càrregues amb «A+» i «A−», fletxes). Les fletxes corbes són a
      l'eina de fletxes: «Arrow Elliptical Arc Open Angle» (2 e⁻) o «… Open Half Angle» (1 e⁻).
@@ -66,11 +67,12 @@ fletxes. Entre els dos blocs pots fer una pausa.
 
 | Control | Què fa |
 | --- | --- |
-| **Pen** (bolígraf) / **Eraser** (goma) | Dibuixar o esborrar. La goma esborra traços sencers: passa-la per sobre dels traços (s'aclareixen) i aixeca-la. Tecles P i E. La punta d'esborrar d'alguns llapis (Surface, Wacom) també esborra. |
+| **Llapis** / **Goma** | Dibuixar o esborrar. La goma esborra traços sencers: passa-la per sobre dels traços (s'aclareixen) i aixeca-la. Tecles P i E. La punta d'esborrar d'alguns llapis (Surface, Wacom) també esborra. |
 | Colors, tipus de línia i gruix | Només canvien l'aspecte de la tinta: el reconeixement no en depèn. |
-| Mode d'entrada | **Auto** (per defecte): un cop fas servir el llapis, el dit i el palmell s'ignoren. **Pen only**: només dibuixa el llapis. **Pen and finger**: dibuixen tots dos. **Trackpad**: un clic comença el traç, el mous sense prémer i un altre clic l'acaba. |
+| Mode d'entrada | **Automàtic** (per defecte): un cop fas servir el llapis, el dit i el palmell s'ignoren. **Només llapis**: només dibuixa el llapis. **Llapis i dit**: dibuixen tots dos. **Trackpad**: un clic comença el traç, el mous sense prémer i un altre clic l'acaba. |
 | Indicador del dispositiu | Diu si el navegador ha vist un llapis, un dit o un ratolí/trackpad, i si l'ha ignorat. |
-| Desfer, refer i paperera (barra de dalt) | Desfer o refer l'últim canvi a la tinta (Ctrl/⌘+Z, Ctrl/⌘+Shift+Z) o esborrar-la tota. |
+| Desfer, refer i paperera (barra de dalt) | Desfer o refer l'últim canvi a la tinta (Ctrl/⌘+Z, Ctrl/⌘+Maj+Z) o esborrar-la tota. |
+| **Ajuda** (F1) | Obre el centre d'ajuda al costat del llenç, amb consells per al que estàs fent. |
 
 **Consells per al dibuix a mà alçada:** dibuixa els enllaços amb traços rectes; deixa un petit espai
 entre l'enllaç i la lletra de l'àtom; escriu les càrregues a dalt a la dreta de l'àtom; dibuixa la
@@ -95,9 +97,9 @@ A la pantalla final:
 
 - Si la pàgina es recarrega, la sessió es recupera, però el dibuix de la tasca en curs es perd: torna a
   prémer **Comença la tasca** i torna-la a començar.
-- Si no pots dibuixar: comprova que el bolígraf **Freehand** està activat (només en les tasques de
-  MecHand) i que l'indicador de dispositiu no diu «ignored»; si diu «Finger ignored» i vols dibuixar
-  amb el dit, tria el mode d'entrada **Pen and finger**.
+- Si no pots dibuixar: comprova que el bolígraf **Mà alçada** està activat (només en les tasques de
+  MecHand) i que l'indicador de dispositiu no diu «ignorat»; si diu «Dit ignorat» i vols dibuixar amb
+  el dit, tria el mode d'entrada **Llapis i dit**.
 - **Amb un trackpad** (per exemple, d'un MacBook): tria el mode d'entrada **Trackpad** (clic – moure –
   clic), o mantén premut el trackpad mentre dibuixes.
 - Avisa la persona de contacte per a qualsevol problema tècnic.

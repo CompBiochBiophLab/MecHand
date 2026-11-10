@@ -80,9 +80,10 @@ El pla d'anàlisi es preregistra (OSF) abans de la primera sessió.
   participar; (e) les retirades es poden fer de manera anònima (codi en paper a una bústia).
 - **Idioma.** L'aplicació, els qüestionaris, el full d'informació i el consentiment estan en català,
   i entendre el català escrit és criteri d'inclusió; la persona de contacte pot aclarir dubtes en
-  castellà o anglès. Si es volen incloure persones que no entenen el català, cal traduir el full
-  d'informació, el consentiment, el panell de l'aplicació i la SUS (amb una versió validada) abans de
-  començar [pendent de decidir].
+  castellà o anglès. L'aplicació ja té el panell de l'estudi en castellà i anglès (l'anglès amb els
+  ítems originals de la SUS); si es volen incloure persones que no entenen el català, cal traduir
+  també el full d'informació i el consentiment, i valorar l'ús d'una versió validada de la SUS en
+  castellà [pendent de decidir]. L'idioma de cada sessió queda registrat.
 - **Compensació:** cap.
 
 # 6. Riscos i beneficis

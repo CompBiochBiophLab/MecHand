@@ -52,8 +52,9 @@ CC BY 4.0).
 - Data límit de conservació (documents 05 i 07).
 - Confirmar amb la secretaria del CER que el formulari de 2020 i l'adreça són vigents; dictamen (codi
   i data als documents 05 i 09).
-- Decidir si s'inclouen persones que no entenen el català (cal traduir el full d'informació, el
-  consentiment, el panell de l'aplicació i la SUS) o si es manté com a criteri d'inclusió.
+- Decidir si s'inclouen persones que no entenen el català o si es manté com a criteri d'inclusió. El
+  panell de l'aplicació ja existeix en castellà i anglès (`&lang=es`, `&lang=en`); caldria traduir el
+  full d'informació i el consentiment, i triar una SUS validada en castellà.
 - Preregistre del pla d'anàlisi (OSF).
 - Ruta de la carpeta institucional xifrada i memòria USB-C xifrada per maquinari (document 03).
 - Dues persones avaluadores per a la valoració cega de les fletxes.
