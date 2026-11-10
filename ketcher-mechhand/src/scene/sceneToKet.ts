@@ -34,9 +34,10 @@ export function sceneToKet(scene: Scene): string {
     const bonds = scene.bonds
       .filter((b) => local.has(b.begin) && local.has(b.end))
       .map((b) => {
-        const bond: Record<string, unknown> = { type: BOND_TYPE[b.order] ?? 1, atoms: [local.get(b.begin), local.get(b.end)] };
+        const bond: Record<string, unknown> = { type: b.partial ? 10 : BOND_TYPE[b.order] ?? 1, atoms: [local.get(b.begin), local.get(b.end)] };
         if (b.stereo === 'up') bond.stereo = 1;
         if (b.stereo === 'down') bond.stereo = 6;
+        if (b.stereo === 'either') bond.stereo = 4;
         return bond;
       });
     const key = `mol${m}`;

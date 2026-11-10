@@ -4,7 +4,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { LOCALES, useT } from '../i18n/i18n';
 import { HelpTip, HelpToggleButton } from './HelpSystem';
 import {
-  ExportIcon, GlobeIcon, HelpIcon, InfoIcon, LibraryIcon, MecHandLogo, PenIcon, RecognizeIcon, RedoIcon, TeachIcon, TrashIcon, UndoIcon,
+  ExportIcon, GlobeIcon, HelpIcon, ImageIcon, InfoIcon, LibraryIcon, MecHandLogo, PenIcon, RecognizeIcon, RedoIcon, TeachIcon, TrashIcon, UndoIcon,
 } from './icons';
 
 export const barStyle: CSSProperties = {
@@ -77,6 +77,7 @@ export function MecHandBar(props: {
   onRedo: () => void;
   onClear: () => void;
   onLibrary: () => void;
+  onImage: () => void;
   onExport: () => void;
   onTeach: () => void;
   onAbout: () => void;
@@ -122,6 +123,9 @@ export function MecHandBar(props: {
       {divider}
       <HelpTip id="btn-library">
         <ToolButton icon={<LibraryIcon />} label={t('toolbar.library')} name={t('toolbar.libraryName')} showLabel={!compact} disabled={off.templates} onClick={props.onLibrary} testId="mechand-library-btn" />
+      </HelpTip>
+      <HelpTip id="btn-image">
+        <ToolButton icon={<ImageIcon />} label={t('toolbar.image')} name={t('toolbar.imageName')} showLabel={!compact} disabled={off.templates} onClick={props.onImage} testId="mechand-image-btn" />
       </HelpTip>
       <HelpTip id="btn-export">
         <ToolButton icon={<ExportIcon />} label={t('toolbar.export')} name={t('toolbar.export')} showLabel={!compact} onClick={props.onExport} testId="mechand-export-btn" />

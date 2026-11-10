@@ -100,9 +100,11 @@ function parseBond(b: unknown, offset: number, count: number): SceneBond | null 
   const t = b.type;
   const order: SceneBond['order'] = t === 2 || t === 3 || t === 4 ? t : 1;
   const bond: SceneBond = { begin: offset + bi, end: offset + bj, order };
-  // KET/molfile stereo: 1 = up (wedge), 6 = down (hash); narrow end at atoms[0].
+  if (t === 10) bond.partial = true; // hydrogen / partial bond (dotted)
+  // KET/molfile stereo: 1 = up (wedge), 6 = down (hash), 4 = either (wavy); narrow end at atoms[0].
   if (order === 1 && b.stereo === 1) bond.stereo = 'up';
   if (order === 1 && b.stereo === 6) bond.stereo = 'down';
+  if (order === 1 && b.stereo === 4) bond.stereo = 'either';
   return bond;
 }
 

@@ -26,6 +26,7 @@ import { MecHandBar } from './ui/MecHandBar';
 import { useCompact } from './ui/useCompact';
 import { TeachPanel } from './ui/TeachPanel';
 import { TemplateLibrary } from './ui/TemplateLibrary';
+import { ImageImportDialog } from './ui/ImageImportDialog';
 import { StudyPanel, type StudyStatus } from './study/StudyPanel';
 import { inkForStudy, resultForStudy, studyLog, studyState } from './study/recorder';
 import pkg from '../package.json';
@@ -38,7 +39,7 @@ const STUDY = params.get('study') === '1';
 type Dialog =
   | { kind: 'none' }
   | { kind: 'consolidate'; result: SketchResult; issues: MechanismIssue[]; smiles?: string; note?: string }
-  | { kind: 'export' } | { kind: 'teach' } | { kind: 'about' } | { kind: 'library' };
+  | { kind: 'export' } | { kind: 'teach' } | { kind: 'about' } | { kind: 'library' } | { kind: 'image' };
 
 /**
  * A text field the user is typing in. Ketcher keeps the focus in a hidden clipboard textarea
@@ -337,6 +338,7 @@ export default function App() {
           onClear={clearInk}
           disabled={STUDY ? { freehand: !freehandAllowed, templates: true, teach: !study.teachAllowed } : undefined}
           onLibrary={() => setDialog({ kind: 'library' })}
+          onImage={() => setDialog({ kind: 'image' })}
           onExport={() => setDialog({ kind: 'export' })}
           onTeach={() => setDialog({ kind: 'teach' })}
           onAbout={() => setDialog({ kind: 'about' })}
@@ -399,6 +401,27 @@ export default function App() {
         />
       )}
       {dialog.kind === 'export' && ketcher && <ExportDialog ketcher={ketcher} onClose={() => setDialog({ kind: 'none' })} />}
+      {dialog.kind === 'image' && ketcher && (
+        <ImageImportDialog
+          model={model}
+          onClose={() => setDialog({ kind: 'none' })}
+          onInsert={async (rec) => {
+            await ketcher.addFragment(sceneToKet(rec.result.scene));
+            setDialog({ kind: 'none' });
+          }}
+          onInk={(strokes, size) => {
+            const layer = layerRef.current;
+            if (!layer) return;
+            // Fit the drawing into the canvas (at most 1.5× its size in the image).
+            const { width, height } = layer.size;
+            const k = Math.min(0.85 * width / size.width, 0.85 * height / size.height, 1.5);
+            const dx = (width - size.width * k) / 2, dy = (height - size.height * k) / 2;
+            setFreehand(true);
+            layer.addStrokes(strokes.map((s) => s.map((p) => ({ x: dx + p.x * k, y: dy + p.y * k }))));
+            setDialog({ kind: 'none' });
+          }}
+        />
+      )}
       {dialog.kind === 'library' && ketcher && (
         <TemplateLibrary
           onInsert={(entry: LibraryEntry, mode: InsertMode) => insertTemplate(ketcher, entry, mode)}

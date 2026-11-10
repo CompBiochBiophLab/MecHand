@@ -158,6 +158,15 @@ export const CheckIcon = (p: IconProps) => (
   </Icon>
 );
 
+/** A picture (read a mechanism from an image). */
+export const ImageIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <rect x="3.5" y="5" width="17" height="14" rx="2" />
+    <circle cx="9" cy="10" r="1.6" />
+    <path d="M4 17l5-4.5 3.5 3 3-2.5L20 17" />
+  </Icon>
+);
+
 export const GlobeIcon = (p: IconProps) => (
   <Icon {...p}>
     <circle cx="12" cy="12" r="8.5" />

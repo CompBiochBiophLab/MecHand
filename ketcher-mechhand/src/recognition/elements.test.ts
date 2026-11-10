@@ -75,7 +75,7 @@ describe('Teach mode for arrows, bonds and electrons', () => {
     const scene: Scene = {
       atoms: [...ethanol(-2), ...ethanol(4)],
       bonds: [{ begin: 0, end: 1, order: 1 }, { begin: 1, end: 2, order: 1 }, { begin: 3, end: 4, order: 1 }, { begin: 4, end: 5, order: 1 }],
-      arrows: [{ kind: 'equilibrium', start: { x: -1, y: 0 }, end: { x: 1.6, y: 0 }, mode: 'equilibrium-open-half-angle' }],
+      arrows: [{ kind: 'equilibrium', start: { x: -1, y: 0 }, end: { x: 1.6, y: 0 }, mode: 'equilibrium-open-angle' }],
       pluses: [],
     };
     const model = buildModel();

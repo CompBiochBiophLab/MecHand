@@ -33,8 +33,16 @@ export interface SceneBond {
   begin: number;
   end: number;
   order: 1 | 2 | 3 | 4;
-  /** Stereo wedge, pointing from `begin` (narrow) to `end` (wide). */
-  stereo?: 'up' | 'down';
+  /**
+   * Stereo bond (IUPAC 2006): 'up' solid wedge, 'down' hashed wedge, both with the
+   * narrow end at `begin` (the stereocentre); 'either' wavy bond (unknown configuration).
+   */
+  stereo?: 'up' | 'down' | 'either';
+  /**
+   * Partial or hydrogen bond (IUPAC 2008, GR-1.8: a dotted line; dashed acceptable):
+   * KET bond type 10, drawn dotted by Ketcher. `order` is then 1.
+   */
+  partial?: boolean;
 }
 
 export type ArrowKind =

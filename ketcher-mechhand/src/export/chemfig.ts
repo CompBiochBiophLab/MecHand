@@ -204,8 +204,8 @@ export function toChemfig(input: Scene): string {
       if (from !== b.begin) side = side === 'left' ? 'right' : side === 'right' ? 'left' : side;
       return side === 'left' ? '=^' : side === 'right' ? '=_' : '=';
     }
-    if (b.stereo) {
-      // Narrow end at b.begin; chemfig "<" is narrow at the departure atom.
+    if (b.stereo && b.stereo !== 'either') {
+      // Narrow end at b.begin; chemfig "<" is narrow at the departure atom (chemfig has no wavy bond).
       const base = b.begin === from ? '<' : '>';
       return b.stereo === 'up' ? base : `${base}:`;
     }
