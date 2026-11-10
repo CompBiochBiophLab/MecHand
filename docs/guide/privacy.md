@@ -1,7 +1,8 @@
 # Privacy
 
 **MecHand processes everything in your browser. Your drawings and your handwriting samples are
-never sent anywhere.**
+never sent anywhere.** The one exception is opt-in: if you ask the template library to look a
+molecule name up online, the text you typed (and only that) is sent to PubChem or OPSIN.
 
 This is not only a design intention: an automated test
 ([`e2e/privacy.spec.ts`](https://github.com/CompBiochBiophLab/MecHand/blob/main/ketcher-mechhand/e2e/privacy.spec.ts))
@@ -15,6 +16,8 @@ data, or sets a cookie.
 | Your ink and recognized structures | Stay in the page (memory). Nothing is uploaded. |
 | Teach samples | Your browser's local storage only (`mechand.symbols.user.v1` for letters, `mechand.elements.user.v1` for arrows, bonds and electrons). Each sample holds the symbol or element (plus, for elements, the scale of the Teach box) and the *x, y* points of its strokes — no timestamps, pressure, device or identity. Imported files are reduced to the same fields. Delete them with **Teach → Delete all**, or by clearing the site's data. |
 | Pen settings | Your browser's local storage only (`mechand.pen.v1`): ink colour, kind of line, width and input mode. Nothing about your strokes. |
+| Library favourites and recent templates | Your browser's local storage only (`mechand.library.favourites`, `mechand.library.recent`): template names. |
+| A name or CAS number you ask the library to look up online | Only when you press **Look up online** (or Alt+Enter): the typed text goes to PubChem (NCBI/NIH, USA) and, if PubChem does not know it, to OPSIN (EMBL-EBI, UK). SMILES and InChI are always read offline. Not available in the user-study mode. |
 | Ketcher settings | Your browser's local storage (Ketcher's own keys). |
 | Cookies, analytics, trackers | None. |
 | Exported files | Only where you save or paste them. |

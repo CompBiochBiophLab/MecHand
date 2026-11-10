@@ -11,9 +11,9 @@ MecHand/
 │   │   ├── recognition/     handwriting recognizer, $P model, electron-flow check
 │   │   ├── scene/           KET ⇄ Scene conversion
 │   │   ├── export/          TikZ and chemfig exporters
-│   │   ├── templates/       mechanism templates (KET) and their index
+│   │   ├── templates/       mechanism templates (KET), the structure library (library.json)
 │   │   └── ui/              dialogs and toolbar
-│   ├── templates/           build_templates.py (RDKit generator of the templates)
+│   ├── templates/           build_templates.py, build_library.py (RDKit generators)
 │   ├── e2e/                 Playwright tests (Chromium, Firefox, WebKit)
 │   └── package.json         Ketcher 3.18.0 and every other dependency, pinned
 ├── backend/                 optional DECIMER recognition server (FastAPI)

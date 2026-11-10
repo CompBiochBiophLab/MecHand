@@ -1,7 +1,6 @@
 /** The MecHand toolbar shown above Ketcher. */
 
 import type { CSSProperties, ReactNode } from 'react';
-import { CATEGORY_LABEL, TEMPLATES } from '../templates/catalog';
 import { HelpTip, HelpToggleButton } from './HelpSystem';
 import { useCompact } from './useCompact';
 import {
@@ -61,8 +60,7 @@ export function MecHandBar(props: {
   onUndo: () => void;
   onRedo: () => void;
   onClear: () => void;
-  onTemplate: (id: string) => void;
-  onLibrary?: () => void;
+  onLibrary: () => void;
   onExport: () => void;
   onTeach: () => void;
   onAbout: () => void;
@@ -71,7 +69,6 @@ export function MecHandBar(props: {
 }) {
   const off = props.disabled ?? {};
   const compact = useCompact();
-  const categories = [...new Set(TEMPLATES.map((t) => t.category))];
   return (
     <div style={barStyle} data-testid="mechand-bar" role="toolbar" aria-label="MecHand">
       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginRight: 6 }}>
@@ -101,29 +98,8 @@ export function MecHandBar(props: {
         <ToolButton icon={<TrashIcon />} name="Clear ink" showLabel={false} disabled={!props.strokeCount} onClick={props.onClear} testId="mechand-clear-ink" />
       </HelpTip>
       {divider}
-      {props.onLibrary && (
-        <HelpTip id="btn-library">
-          <ToolButton icon={<LibraryIcon />} label="Library" name="Template library" showLabel={!compact} disabled={off.templates} onClick={props.onLibrary} testId="mechand-library-btn" />
-        </HelpTip>
-      )}
-      <HelpTip id="menu-templates">
-        <select
-          data-testid="mechand-templates"
-          value=""
-          onChange={(e) => e.target.value && props.onTemplate(e.target.value)}
-          style={{ ...toolButtonStyle(false, off.templates), display: 'inline-block', width: compact ? 118 : 150, padding: '4px 6px' }}
-          disabled={off.templates}
-          aria-label="Open a mechanism template"
-        >
-          <option value="">Mechanisms…</option>
-          {categories.map((c) => (
-            <optgroup key={c} label={CATEGORY_LABEL[c]}>
-              {TEMPLATES.filter((t) => t.category === c).map((t) => (
-                <option key={t.id} value={t.id} title={t.description}>{t.title}</option>
-              ))}
-            </optgroup>
-          ))}
-        </select>
+      <HelpTip id="btn-library">
+        <ToolButton icon={<LibraryIcon />} label="Library" name="Template library" showLabel={!compact} disabled={off.templates} onClick={props.onLibrary} testId="mechand-library-btn" />
       </HelpTip>
       <HelpTip id="btn-export">
         <ToolButton icon={<ExportIcon />} label="Export" name="Export" showLabel={!compact} onClick={props.onExport} testId="mechand-export-btn" />

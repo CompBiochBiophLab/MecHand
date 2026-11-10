@@ -12,7 +12,7 @@ import type { SymbolSample } from './recognition/dollarP';
 import { type ElementSample, loadElementSamples, saveElementSamples } from './recognition/elements';
 import { type SketchResult, recognizeSketch } from './recognition/sketch';
 import { sceneToKet } from './scene/sceneToKet';
-import { TEMPLATES } from './templates/catalog';
+import { type InsertMode, type LibraryEntry, insertTemplate } from './templates/library';
 import { AboutPanel, type Engine } from './ui/AboutPanel';
 import { ConsolidateDialog } from './ui/ConsolidateDialog';
 import { ExportDialog } from './ui/ExportDialog';
@@ -20,6 +20,7 @@ import { HelpProvider } from './ui/HelpSystem';
 import { InkBar, type LastInput } from './ui/InkBar';
 import { MecHandBar } from './ui/MecHandBar';
 import { TeachPanel } from './ui/TeachPanel';
+import { TemplateLibrary } from './ui/TemplateLibrary';
 import { StudyPanel, type StudyStatus } from './study/StudyPanel';
 import { inkForStudy, resultForStudy, studyLog, studyState } from './study/recorder';
 import pkg from '../package.json';
@@ -32,10 +33,16 @@ const STUDY = params.get('study') === '1';
 type Dialog =
   | { kind: 'none' }
   | { kind: 'consolidate'; result: SketchResult; issues: MechanismIssue[]; smiles?: string; note?: string }
-  | { kind: 'export' } | { kind: 'teach' } | { kind: 'about' };
+  | { kind: 'export' } | { kind: 'teach' } | { kind: 'about' } | { kind: 'library' };
 
+/**
+ * A text field the user is typing in. Ketcher keeps the focus in a hidden clipboard textarea
+ * (`data-cliparea`) whenever its canvas has it; that one does not count, or MecHand's shortcuts
+ * would never fire after the canvas was used.
+ */
 const isEditable = (t: EventTarget | null) =>
-  t instanceof HTMLElement && (t.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName));
+  t instanceof HTMLElement && !t.hasAttribute('data-cliparea') &&
+  (t.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName));
 
 /**
  * Ketcher's drawing area (falls back to the whole editor). Ketcher renders more
@@ -222,6 +229,13 @@ export default function App() {
         if (freehandAllowed) setFreehand((f) => !f);
         return;
       }
+      // Ctrl/⌘+K: the template library (not in study mode, where templates are off).
+      if (mod && e.code === 'KeyK' && !STUDY) {
+        e.preventDefault();
+        e.stopPropagation();
+        setDialog({ kind: 'library' });
+        return;
+      }
       if (!freehand) return;
       const layer = layerRef.current;
       if (e.code === 'Space' && !mod) {
@@ -269,10 +283,7 @@ export default function App() {
           onRedo={redoInk}
           onClear={clearInk}
           disabled={STUDY ? { freehand: !freehandAllowed, templates: true, teach: !study.teachAllowed } : undefined}
-          onTemplate={(id) => {
-            const t = TEMPLATES.find((x) => x.id === id);
-            if (t && ketcher) ketcher.setMolecule(t.ket);
-          }}
+          onLibrary={() => setDialog({ kind: 'library' })}
           onExport={() => setDialog({ kind: 'export' })}
           onTeach={() => setDialog({ kind: 'teach' })}
           onAbout={() => setDialog({ kind: 'about' })}
@@ -326,6 +337,14 @@ export default function App() {
         />
       )}
       {dialog.kind === 'export' && ketcher && <ExportDialog ketcher={ketcher} onClose={() => setDialog({ kind: 'none' })} />}
+      {dialog.kind === 'library' && ketcher && (
+        <TemplateLibrary
+          onInsert={(entry: LibraryEntry, mode: InsertMode) => insertTemplate(ketcher, entry, mode)}
+          onClose={() => setDialog({ kind: 'none' })}
+          convert={async (notation) => (await ketcher.indigo.convert(notation, { outputFormat: 'chemical/x-indigo-ket' as never })).struct}
+          online={!STUDY}
+        />
+      )}
       {dialog.kind === 'teach' && (
         <TeachPanel
           samples={userSamples}

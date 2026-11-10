@@ -12,7 +12,9 @@ test('uses no network after loading and stores Teach samples only locally', asyn
   await page.waitForFunction(() => Boolean((window as any).mechand), null, { timeout: 60_000 });
   const afterLoad = requests.length;
 
-  await page.selectOption('[data-testid="mechand-templates"]', 'sn2');
+  await page.click('[data-testid="mechand-library-btn"]');
+  await page.fill('[data-testid="mechand-library-search"]', 'SN2');
+  await page.locator('[data-testid="mechand-library-item"][data-id="mech-sn2"]').click();
   await page.evaluate(() => (window as any).ketcher.setMolecule(''));
   await page.click('[data-testid="mechand-freehand"]');
   const ink = page.locator('[data-testid="mechand-ink"]');

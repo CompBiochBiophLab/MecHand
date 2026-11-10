@@ -39,7 +39,9 @@ async function drawFixture(page: Page) {
 
 test('website and tutorial screenshots', async ({ page }) => {
   await ready(page);
-  await page.selectOption('[data-testid="mechand-templates"]', 'sn2');
+  await page.click('[data-testid="mechand-library-btn"]');
+  await page.fill('[data-testid="mechand-library-search"]', 'SN2');
+  await page.locator('[data-testid="mechand-library-item"][data-id="mech-sn2"]').click();
   await expect.poll(() => page.evaluate(() => (window as any).ketcher.getSmiles())).toContain('Br');
   await page.waitForTimeout(500);
   await page.screenshot({ path: join(DOCS, 'app-template.png') });

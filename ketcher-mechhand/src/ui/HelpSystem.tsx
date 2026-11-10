@@ -97,17 +97,12 @@ export const HELP_CONTENT: Record<string, HelpEntry> = {
       'rejection discarded the contact; change the input mode if your finger should draw.',
   },
   'btn-library': {
-    brief: 'Template library: rings, functional groups, biomolecules, reagents and mechanisms.',
+    brief: 'Template library; also draws a molecule from its SMILES, InChI, CAS number or name.',
     student:
-      'Search by name or formula, keep favourites, and add a structure to the canvas or open a ' +
-      'complete mechanism.',
+      'Rings, functional groups, biomolecules, reagents and complete mechanisms. Search by name ' +
+      '(English or Catalan), formula or CAS number, or type a SMILES or InChI to draw it. Names ' +
+      'that are not in the library can be looked up online (PubChem, OPSIN) if you ask.',
     shortcut: 'Ctrl/⌘+K',
-  },
-  'menu-templates': {
-    brief: 'Open a complete textbook mechanism (organic, inorganic, biochemistry).',
-    student:
-      'Loads a textbook mechanism into Ketcher. Use it to see how arrows are drawn, to ' +
-      'practise redrawing it by hand, or to try the LaTeX export.',
   },
   'btn-export': {
     brief: 'Export to TikZ, chemfig, ChemDraw (CDXML), MOL/RXN, KET or SMILES.',

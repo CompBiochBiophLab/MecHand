@@ -22,7 +22,7 @@ export default defineConfig({
         items: [
           { text: 'Getting started', link: '/guide/getting-started' },
           { text: 'Drawing mechanisms', link: '/guide/drawing' },
-          { text: 'Mechanism templates', link: '/guide/templates' },
+          { text: 'Templates', link: '/guide/templates' },
           { text: 'Export to LaTeX and other editors', link: '/guide/export' },
           { text: 'Browser support', link: '/guide/browsers' },
           { text: 'Privacy', link: '/guide/privacy' },

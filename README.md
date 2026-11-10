@@ -205,7 +205,16 @@ cases are crowded metal complexes and labels with many explicit hydrogens.
 
 ## Templates
 
-**Templates…** opens 13 textbook mechanisms (KET files in
+**Library** (Ctrl/⌘+K) opens a searchable template library: about 180 structures (rings, functional
+groups with R groups, the 20 amino acids, nucleobases, sugars, cofactors, reagents and solvents),
+generated with RDKit by [`templates/build_library.py`](ketcher-mechhand/templates/build_library.py),
+and the mechanisms below. The search ignores accents, understands English and Catalan names,
+abbreviations, formulas and CAS numbers, and tolerates typos; favourites and recent templates are
+kept in the browser. The same box draws a molecule from its **SMILES or InChI** (offline, with
+Ketcher's engine) and, only when you press *Look up online*, from a **name or CAS number** via
+PubChem or OPSIN (the typed text is all that is sent).
+
+The 13 textbook mechanisms (KET files in
 [`ketcher-mechhand/src/templates/mechanisms/`](ketcher-mechhand/src/templates/mechanisms/)), generated
 reproducibly with RDKit by [`templates/build_templates.py`](ketcher-mechhand/templates/build_templates.py),
 which also checks that charges and atoms balance across each arrow.

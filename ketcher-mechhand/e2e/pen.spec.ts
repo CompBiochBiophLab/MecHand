@@ -163,3 +163,18 @@ test('the pen bar keeps its height while drawing (no canvas shift under the pen)
     await page.keyboard.press('Escape');
   }
 });
+
+test('shortcuts work while Ketcher keeps the focus in its clipboard area', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForFunction(() => Boolean((window as any).mechand), null, { timeout: 60_000 });
+  expect(await page.evaluate(() => document.activeElement?.hasAttribute('data-cliparea'))).toBe(true);
+  await page.keyboard.press('Alt+KeyF');
+  await expect(page.locator('[data-testid="mechand-freehand"]')).toHaveAttribute('aria-pressed', 'true');
+  const box = (await page.locator('[data-testid="mechand-ink"]').boundingBox())!;
+  await draw(page, [box.x + 300, box.y + 300], [[0, 0], [60, 0]]);
+  await page.keyboard.press('KeyE');
+  await expect(page.locator('[data-testid="mechand-tool-eraser"]')).toHaveAttribute('aria-pressed', 'true');
+  await page.keyboard.press('KeyP');
+  await page.keyboard.press('Space');
+  await expect(page.locator('[data-testid="mechand-consolidate"]')).toBeVisible();
+});

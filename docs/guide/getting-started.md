@@ -17,7 +17,7 @@ The MecHand bar sits above the Ketcher editor:
 | **Recognize** (Space) | Reads your ink and shows what MecHand understood. |
 | **Undo / Redo ink** (Ctrl/⌘+Z, Ctrl/⌘+Shift+Z in freehand mode) | Undoes or redoes the last change to the ink: a stroke, an erasure or a clear. |
 | **Clear ink** (bin icon) | Removes all strokes that have not been inserted yet (Undo brings them back). |
-| **Mechanisms…** | Opens a complete standard mechanism (organic, inorganic, biochemistry). |
+| **Library** (Ctrl/⌘+K) | Template library: rings, functional groups, biomolecules, reagents and complete mechanisms; also draws a molecule from its SMILES, InChI, CAS number or name. |
 | **Export** | TikZ, chemfig, ChemDraw (CDXML), MOL/RXN, KET, SMILES. |
 | **Teach** | Teaches MecHand your handwriting. |
 | **About** | Version, recognition model, structure engine and browser notes. |

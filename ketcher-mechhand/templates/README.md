@@ -83,3 +83,33 @@ Write a function that returns a `Mechanism` and add it to `MECHANISMS`.
     - A bond-source endpoint is offset 0.06 from the bond midpoint.
     - A bond-target endpoint is offset 0.15 from the bond midpoint.
     - `|height|` is clamp(0.25·chord + 0.2, 0.35, 0.8).
+
+# Structure library
+
+`build_library.py` generates the structures of the template library (rings, functional groups,
+biomolecules, reagents) into `../src/templates/library.json`. The app shows them in the library
+panel together with the mechanism templates above.
+
+```sh
+python build_library.py                 # write library.json, then validate it
+python build_library.py --check         # validate the committed file (fails if it is out of date)
+python build_library.py --preview DIR   # also write one PNG contact sheet per category into DIR
+```
+
+Each entry is a SMILES string plus a display name, English synonyms and Catalan names. The
+script lays it out with RDKit (CoordGen, bond length 1.0, y up, centred), orients it (R groups on the
+left, C=O up, amino acids N → COOH with the side chain up), adds wedges from the declared
+stereochemistry and stores Kekulé bonds, charges, radicals and the H counts thumbnails show.
+
+Validation:
+
+- the drawing, read back as a molfile, gives the same canonical SMILES (constitution, charges,
+  stereocentres and double-bond geometry);
+- Ketcher's implicit-hydrogen rules give the same hydrogens as RDKit on every atom (no valence
+  warnings, no missing H);
+- declared CIP labels and InChIKeys match (amino acids, sugars, nucleotides, lipids);
+- ids are unique, every category is non-empty, bond lengths are 1.0 ± 0.1 and no atoms overlap.
+
+R groups are dummy atoms: one `*` becomes the pseudo-atom "R"; several (`[1*]`, `[2*]`, `[3*]`)
+become R-group labels R1, R2, R3. Salts are laid out ion by ion. Thumbnails are drawn at runtime from
+the stored coordinates, so the file holds no images.
