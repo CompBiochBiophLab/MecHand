@@ -29,7 +29,7 @@ test('uses no network after loading and stores Teach samples only locally', asyn
   await page.click('[data-testid="mechand-confirm"]');
   await page.click('[data-testid="mechand-freehand"]');
 
-  await page.locator('button', { hasText: 'Teach' }).click();
+  await page.click('[data-testid="mechand-teach-btn"]');
   const teachBox = page.locator('[data-testid="mechand-teach-box"]');
   await teachBox.waitFor({ state: 'visible' });
   const tb = (await teachBox.boundingBox())!;

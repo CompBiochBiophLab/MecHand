@@ -20,6 +20,11 @@ test.skip(!process.env.MECHAND_SCREENSHOTS, 'set MECHAND_SCREENSHOTS=1 to regene
 test.use({ viewport: { width: 1360, height: 820 }, deviceScaleFactor: 2 });
 
 async function ready(page: Page, url = '/') {
+  // No first-visit tips or tour offer in the pictures.
+  await page.addInitScript(() => {
+    localStorage.setItem('mechand.tips.v1', JSON.stringify(['welcome', 'firstFreehand', 'ignored', 'trackpad']));
+    localStorage.setItem('mechand.tour.v1', 'done');
+  });
   await page.goto(url);
   await page.waitForFunction(() => Boolean((window as unknown as { mechand?: unknown }).mechand), null, { timeout: 60_000 });
 }
@@ -79,6 +84,11 @@ test('website and tutorial screenshots', async ({ page }) => {
   await page.mouse.up();
   await page.locator('[data-testid="mechand-teach-reading"]').waitFor();
   await page.screenshot({ path: join(DOCS, 'teach-panel.png') });
+  await page.keyboard.press('Escape');
+
+  await page.keyboard.press('F1');
+  await page.locator('[data-testid="mechand-help-center"]').waitFor();
+  await page.screenshot({ path: join(DOCS, 'help-center.png') });
   await page.keyboard.press('Escape');
 
   await page.click('[data-testid="mechand-about-btn"]');

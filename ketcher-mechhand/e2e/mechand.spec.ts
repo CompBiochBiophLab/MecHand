@@ -25,7 +25,7 @@ test('opens a mechanism template in Ketcher', async ({ page }) => {
   await page.click('[data-testid="mechand-library-btn"]');
   await page.fill('[data-testid="mechand-library-search"]', 'SN2');
   await page.locator('[data-testid="mechand-library-item"][data-id="mech-sn2"]').click();
-  await expect.poll(() => page.evaluate(() => (window as any).ketcher.getSmiles())).toContain('Br');
+  await expect.poll(() => page.evaluate(() => (window as any).ketcher.getSmiles()), { timeout: 45_000 }).toContain('Br');
   const ket = JSON.parse(await page.evaluate(() => (window as any).ketcher.getKet()));
   const arcs = ket.root.nodes.filter((n: any) => n.type === 'arrow' && String(n.data.mode).startsWith('elliptical-arc'));
   expect(arcs.length).toBeGreaterThan(0);

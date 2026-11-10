@@ -99,7 +99,7 @@ test('runs a study session locally and produces a minimal session file', async (
   }
   await sus(page);
   // The structure engine cannot be switched to a server in study mode.
-  await page.locator('button', { hasText: 'About' }).click();
+  await page.click('[data-testid="mechand-about-btn"]');
   await expect(page.locator('[data-testid="mechand-engine-locked"]')).toBeVisible();
   await page.keyboard.press('Escape');
   await page.selectOption('[data-testid="study-preference"]', 'igual');
@@ -118,6 +118,7 @@ test('runs a study session locally and produces a minimal session file', async (
     writeFileSync(join(save, `${test.info().project.name}-${download.suggestedFilename()}`), text);
   }
   expect(s.schema).toBe('mechand-study-session/3');
+  expect(s.uiLanguage).toBe('ca'); // study sessions run in Catalan unless ?lang= says otherwise
   expect(s.code).toMatch(/^MH-[A-Z2-9]{5}$/);
   expect(s.group).toBe('A1');
   expect(s.year).toBeGreaterThan(2025);
