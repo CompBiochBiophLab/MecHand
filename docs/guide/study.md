@@ -28,7 +28,7 @@ participant through:
 The session file (schema `mechand-study-session/3`, see
 [`recorder.ts`](https://github.com/CompBiochBiophLab/MecHand/blob/main/ketcher-mechhand/src/study/recorder.ts))
 holds a random code such as `MH-7K3Q9`, the group, the year, the app version and commit, the
-answers, a coarse description of the browser and device (browser and OS names and major versions,
+interface language (Catalan by default in the study), the answers, a coarse description of the browser and device (browser and OS names and major versions,
 architecture, screen size, touch points, pointer types), and for each task the time, the ink (x, y
 points rounded to 0.1 px and when each stroke started and ended), what MecHand recognized, the
 participant's decisions, the use of the pen controls, and the final drawing. Teach samples are

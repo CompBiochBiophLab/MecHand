@@ -16,6 +16,7 @@ data, or sets a cookie.
 | Your ink and recognized structures | Stay in the page (memory). Nothing is uploaded. |
 | Teach samples | Your browser's local storage only (`mechand.symbols.user.v1` for letters, `mechand.elements.user.v1` for arrows, bonds and electrons). Each sample holds the symbol or element (plus, for elements, the scale of the Teach box) and the *x, y* points of its strokes — no timestamps, pressure, device or identity. Imported files are reduced to the same fields. Delete them with **Teach → Delete all**, or by clearing the site's data. |
 | Pen settings | Your browser's local storage only (`mechand.pen.v1`): ink colour, kind of line, width and input mode. Nothing about your strokes. |
+| Interface language, guided tour and tips already shown | Your browser's local storage only (`mechand.lang.v1`, `mechand.tour.v1`, `mechand.tips.v1`). |
 | Library favourites and recent templates | Your browser's local storage only (`mechand.library.favourites`, `mechand.library.recent`): template names. |
 | A name or CAS number you ask the library to look up online | Only when you press **Look up online** (or Alt+Enter): the typed text goes to PubChem (NCBI/NIH, USA) and, if PubChem does not know it, to OPSIN (EMBL-EBI, UK). SMILES and InChI are always read offline. Not available in the user-study mode. |
 | Ketcher settings | Your browser's local storage (Ketcher's own keys). |

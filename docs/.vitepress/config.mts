@@ -34,6 +34,7 @@ export default defineConfig({
           { text: 'Handwriting recognition', link: '/guide/recognition' },
           { text: 'Optional DECIMER server', link: '/guide/server' },
           { text: 'User study mode', link: '/guide/study' },
+          { text: 'Translating MecHand', link: '/guide/translating' },
           { text: 'Development', link: '/guide/development' },
         ],
       },

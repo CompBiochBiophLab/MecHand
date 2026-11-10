@@ -101,5 +101,7 @@ be added to the shared model (see [Handwriting recognition](./recognition#updati
 | Ctrl+Z / ⌘Z | Undo the last change to the ink (freehand mode; otherwise Ketcher's undo) |
 | Ctrl+Shift+Z / ⌘⇧Z (or Ctrl+Y) | Redo ink (freehand mode) |
 | Esc | Drop an open trackpad stroke; close a dialog |
+| Ctrl+K / ⌘K | Template library |
+| F1 | Help centre |
 
 All of Ketcher's own shortcuts keep working when freehand mode is off.

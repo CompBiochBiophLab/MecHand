@@ -20,8 +20,16 @@ The MecHand bar sits above the Ketcher editor:
 | **Library** (Ctrl/⌘+K) | Template library: rings, functional groups, biomolecules, reagents and complete mechanisms; also draws a molecule from its SMILES, InChI, CAS number or name. |
 | **Export** | TikZ, chemfig, ChemDraw (CDXML), MOL/RXN, KET, SMILES. |
 | **Teach** | Teaches MecHand your handwriting. |
+| Language (globe) | Language of the interface: English, Català, Español… ([add yours](./translating)). |
+| **Help** (F1) | Help centre: tips for what you are doing now, searchable topics, keyboard shortcuts and a guided tour of the controls. |
 | **About** | Version, recognition model, structure engine and browser notes. |
 | **?** | Shows short help labels on every button (Expert or Student level). |
+
+![The help centre beside the canvas](/img/help-center.png)
+
+On your first visit MecHand offers a one-minute **guided tour**; you can take it again from the
+help centre. Small tips also appear once when they can help — for instance when palm rejection is
+ignoring your finger, or when you seem to be drawing with a trackpad.
 
 Continue with [Drawing mechanisms](./drawing), or follow the [tutorial (PDF)](/tutorial.pdf).
 
