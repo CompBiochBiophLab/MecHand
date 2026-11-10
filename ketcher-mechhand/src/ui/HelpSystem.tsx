@@ -8,122 +8,40 @@
  *                        When help is ON, shows an always-visible callout.
  *                        When help is OFF, shows only on hover (native title).
  *
- * Content lives in HELP_CONTENT below — edit this map to adjust copy.
+ * Texts live in the locale files (src/i18n/locales/*.json, keys help.<id>.brief and .student).
  * Designed to serve both expert chemists (brief mode) and students (verbose mode).
  */
 
 import React, {
   createContext, useContext, useRef, useState, type ReactNode,
 } from 'react';
+import { useT } from '../i18n/i18n';
 
 // ── Help content registry ─────────────────────────────────────────────────────
 
 export type HelpLevel = 'brief' | 'student';
 
-export interface HelpEntry {
-  brief: string;    // one line — for experts
-  student: string;  // 2-3 lines — for students
-  shortcut?: string;
-}
-
-export const HELP_CONTENT: Record<string, HelpEntry> = {
-  'btn-freehand': {
-    brief: 'Freehand mode: draw on top of Ketcher with a pen, finger, trackpad or mouse.',
-    student:
-      'Turn this on and draw the mechanism as on paper: bonds as lines (zig-zag chains ' +
-      'and rings can be one stroke), atom labels as letters, charges as + or −, and ' +
-      'curved arrows with a head. The pen bar below sets colour, line and input. ' +
-      'Turn it off to use Ketcher\'s own tools again.',
-    shortcut: 'Alt+F',
-  },
-  'btn-recognize': {
-    brief: 'Recognize the ink and propose a clean structure.',
-    student:
-      'MecHand reads your strokes in the browser (no server), shows what it understood ' +
-      'and checks the electron flow of the curved arrows. Confirm to insert it into Ketcher.',
-    shortcut: 'Space',
-  },
-  'btn-undo-ink': {
-    brief: 'Undo the last change to the ink (stroke, erasure or clear).',
-    student: 'Undoes the last stroke, erasure or clear. Ketcher\'s structure is not touched.',
-    shortcut: 'Ctrl/⌘+Z',
-  },
-  'btn-redo-ink': {
-    brief: 'Redo what Undo ink undid.',
-    student: 'Puts back the last change that Undo ink removed.',
-    shortcut: 'Ctrl/⌘+Shift+Z',
-  },
-  'btn-clear-ink': {
-    brief: 'Remove all ink (can be undone).',
-    student: 'Deletes all freehand strokes that have not been inserted yet. Undo ink brings them back.',
-  },
-  'tool-pen': {
-    brief: 'Draw ink.',
-    student: 'The pen draws strokes. Choose its colour, kind of line and width on this bar.',
-    shortcut: 'P',
-  },
-  'tool-eraser': {
-    brief: 'Erase whole strokes by touching them.',
-    student:
-      'Drag over the strokes you want to remove (they fade) and lift: they are erased. ' +
-      'The eraser end of a pen (Surface, Wacom) erases too, whatever tool is selected.',
-    shortcut: 'E',
-  },
-  'pen-colour': {
-    brief: 'Ink colour.',
-    student: 'Colours help you organise a drawing (e.g. arrows in red). Recognition ignores colour.',
-  },
-  'pen-style': {
-    brief: 'Kind of line: ballpoint, fountain pen, marker or dashed.',
-    student:
-      'Ballpoint draws an even line; the fountain pen follows pen pressure (or speed with a mouse); ' +
-      'the marker is broad and translucent; dashed is only a look. All are recognized the same way.',
-  },
-  'pen-width': {
-    brief: 'Line width.',
-    student: 'From fine to extra bold. Only the look changes; recognition uses the shape of the stroke.',
-  },
-  'pen-input': {
-    brief: 'Which inputs draw: auto, pen only, pen and finger, or trackpad.',
-    student:
-      'Auto: once you use a pen, fingers and palms are ignored. Pen only: fingers never draw. ' +
-      'Pen and finger: both draw. Trackpad: click to start a stroke, move without pressing, ' +
-      'click to end it (no click-and-drag needed).',
-  },
-  'pen-device': {
-    brief: 'The device of the last contact, and whether it could draw.',
-    student:
-      'Shows whether the browser saw a pen, a finger or a mouse/trackpad. "Ignored" means palm ' +
-      'rejection discarded the contact; change the input mode if your finger should draw.',
-  },
-  'btn-library': {
-    brief: 'Template library; also draws a molecule from its SMILES, InChI, CAS number or name.',
-    student:
-      'Rings, functional groups, biomolecules, reagents and complete mechanisms. Search by name ' +
-      '(English or Catalan), formula or CAS number, or type a SMILES or InChI to draw it. Names ' +
-      'that are not in the library can be looked up online (PubChem, OPSIN) if you ask.',
-    shortcut: 'Ctrl/⌘+K',
-  },
-  'btn-export': {
-    brief: 'Export to TikZ, chemfig, ChemDraw (CDXML), MOL/RXN, KET or SMILES.',
-    student:
-      'Converts the Ketcher canvas, including curved arrows, into code for your LaTeX ' +
-      'document, or into files that ChemDraw, Marvin and other editors open.',
-  },
-  'btn-teach': {
-    brief: 'Teach MecHand your handwriting.',
-    student:
-      'Draw a few examples of a letter or sign, an arrow, a bond or a lone pair. They are ' +
-      'stored in this browser and used immediately; export them to contribute them to the shared model.',
-  },
-  'btn-about': {
-    brief: 'How recognition works, model version and browser support.',
-    student: 'Shows the recognition model in use, what it can read, and known browser issues.',
-  },
-  'btn-help-toggle': {
-    brief: 'Show or hide these help labels.',
-    student: 'Toggle the help labels. Choose Expert for one-liners or Student for explanations.',
-  },
+/** Help label ids (texts in the locale files under help.<id>.brief / help.<id>.student) and their shortcuts. */
+export const HELP_SHORTCUTS: Record<string, string | undefined> = {
+  'btn-freehand': 'Alt+F',
+  'btn-recognize': 'Space',
+  'btn-undo-ink': 'Ctrl/⌘+Z',
+  'btn-redo-ink': 'Ctrl/⌘+Shift+Z',
+  'btn-clear-ink': undefined,
+  'tool-pen': 'P',
+  'tool-eraser': 'E',
+  'pen-colour': undefined,
+  'pen-style': undefined,
+  'pen-width': undefined,
+  'pen-input': undefined,
+  'pen-device': undefined,
+  'btn-library': 'Ctrl/⌘+K',
+  'btn-export': undefined,
+  'btn-teach': undefined,
+  'btn-about': undefined,
+  'btn-help': 'F1',
+  'btn-language': undefined,
+  'btn-help-toggle': undefined,
 };
 
 // ── Context ───────────────────────────────────────────────────────────────────
@@ -162,6 +80,7 @@ export const HelpProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 export const HelpToggleButton: React.FC = () => {
   const { visible, level, toggle, setLevel } = useHelp();
+  const { t } = useT();
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
       {/* Level selector */}
@@ -173,16 +92,20 @@ export const HelpToggleButton: React.FC = () => {
             fontSize: 11, border: '1px solid #d1d5db', borderRadius: 4,
             padding: '1px 4px', background: '#f9fafb', cursor: 'pointer',
           }}
-          title="Help detail level"
+          title={t('helpToggle.level')}
+          aria-label={t('helpToggle.level')}
         >
-          <option value="brief">Expert</option>
-          <option value="student">Student</option>
+          <option value="brief">{t('helpToggle.expert')}</option>
+          <option value="student">{t('helpToggle.student')}</option>
         </select>
       )}
       {/* Toggle button */}
       <button
         onClick={toggle}
-        title="Toggle help labels"
+        title={t('helpToggle.title')}
+        aria-label={t('helpToggle.title')}
+        aria-pressed={visible}
+        data-testid="mechand-help-labels"
         style={{
           width: 26, height: 26, borderRadius: 13,
           border: `2px solid ${visible ? '#3b82f6' : '#d1d5db'}`,
@@ -208,13 +131,14 @@ interface HelpTipProps {
 
 export const HelpTip: React.FC<HelpTipProps> = ({ id, children, placement = 'bottom' }) => {
   const { visible, level } = useHelp();
-  const entry = HELP_CONTENT[id];
+  const { t } = useT();
   const [hovered, setHovered] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
-  if (!entry) return <>{children}</>;
+  if (!(id in HELP_SHORTCUTS)) return <>{children}</>;
 
-  const text = entry[level];
+  const text = t(`help.${id}.${level}`);
+  const entry = { shortcut: HELP_SHORTCUTS[id] };
   const showCallout = visible || hovered;
 
   const placementStyle: React.CSSProperties =

@@ -11,9 +11,9 @@ fletxes) amb dos classificadors per exemples del tipus $P (*point cloud*), un pe
 signes, i un altre per a les puntes de fletxa. «Entrenar» vol dir **afegir exemples**, cosa que té
 efecte immediatament, al navegador i sense cap servidor:
 
-| Pestanya de ✍ Teach | Què es dibuixa | Què canvia |
+| Pestanya d'✍ Ensenya (*Teach*) | Què es dibuixa | Què canvia |
 | --- | --- | --- |
-| *Letters & signs* | Lletres d'elements, xifres 2–4, + i −, ⊕ i ⊖ | Cada mostra és un exemple més per al classificador de lletres |
+| *Lletres i signes* | Lletres d'elements, xifres 2–4, + i −, ⊕ i ⊖ | Cada mostra és un exemple més per al classificador de lletres |
 | *Arrows* | Fletxes corbes (2 e⁻ i 1 e⁻), de reacció i d'equilibri | La punta de cada fletxa dibuixada amb un traç separat s'afegeix al model de puntes: un estil personal (triangle, punta plena…) es reconeix a partir d'aleshores |
 | *Bonds* | Enllaços simples, dobles, triples i un anell de benzè | Es reconeixen per geometria: serveix per comprovar que l'estil es llegeix bé |
 | *Electrons* | Parells solitaris i radicals, al costat d'una O grisa | La mida dels punts fixa fins a quina mida una marca compta com a punt |
@@ -28,12 +28,12 @@ coordenades *x*, *y* dels traços.
 En començar la sessió, l'aplicació esborra les mostres que hi pogués haver al navegador (d'una altra
 persona o d'una sessió anterior): cada participant parteix del model compartit.
 
-1. La persona participant prem **Obre ✍ Teach** al panell de l'estudi.
-2. Pestanya **Letters & signs**: unes 3 mostres de cadascun d'aquests símbols, els que apareixen als
+1. La persona participant prem **Obre ✍ Ensenya** al panell de l'estudi.
+2. Pestanya **Lletres i signes**: unes 3 mostres de cadascun d'aquests símbols, els que apareixen als
    estímuls: **C, O, N, H, F, l** (la ela de Cl), **r** (de Br), **a** (de Na), **+** i **−**, i també
    **⊕** i **⊖** si escriu les càrregues encerclades. Si el requadre ja els llegeix bé a la primera
    (✓), n'hi ha prou amb una o dues mostres.
-3. Pestanya **Arrows**: unes 3 fletxes corbes de 2 electrons, 1 fletxa de reacció i 1 equilibri (⇌),
+3. Pestanya **Fletxes**: unes 3 fletxes corbes de 2 electrons, 1 fletxa de reacció i 1 equilibri (⇌),
    dibuixades com ho fa habitualment, a l'escala de la línia grisa (un enllaç).
 4. Pestanya **Electrons**: 2 parells solitaris.
 5. Tancar (Esc) i prémer **He acabat l'entrenament**.

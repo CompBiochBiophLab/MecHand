@@ -14,12 +14,13 @@
 
 import { type CSSProperties, type KeyboardEvent, type PointerEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  CATEGORY_NAME, FAVOURITES_KEY, type InsertMode, LIBRARY, LIBRARY_CATEGORIES, type LibraryCategory, type LibraryEntry,
+  FAVOURITES_KEY, type InsertMode, LIBRARY, LIBRARY_CATEGORIES, type LibraryCategory, type LibraryEntry,
   RECENT_KEY, loadIds, saveIds, searchLibrary, toggledFavourite, withRecent,
 } from '../templates/library';
 import {
   type Converter, type TextStructure, entryFromHit, lookupOnline, lookupWorthy, queryKind, structureFromNotation,
 } from '../templates/textToStructure';
+import { type T, useT } from '../i18n/i18n';
 import { Modal } from './Modal';
 import { MoleculeThumb, thumbData } from './MoleculeThumb';
 
@@ -48,15 +49,18 @@ export interface TemplateLibraryProps {
   online?: boolean;
 }
 
-const FILTERS: { id: LibraryFilter; label: string }[] = [
-  { id: 'all', label: 'All' },
-  { id: 'recent', label: 'Recent' },
-  { id: 'favourites', label: '★ Favourites' },
-  ...LIBRARY_CATEGORIES.map((c) => ({ id: c.id as LibraryFilter, label: c.label })),
-];
+const FILTERS: LibraryFilter[] = ['all', 'recent', 'favourites', ...LIBRARY_CATEGORIES.map((c) => c.id as LibraryFilter)];
+const filterLabel = (f: LibraryFilter, t: T) =>
+  f === 'all' || f === 'recent' || f === 'favourites' ? t(`library.filter.${f}`) : t(`library.category.${f}`);
+/** Translated name of a library sub-group ("Amino acids" → library.groupName.amino-acids). */
+export const groupLabel = (group: string, t: T) => {
+  const key = `library.groupName.${group.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
+  const s = t(key);
+  return s === key ? group : s;
+};
 
 const otherMode = (m: InsertMode): InsertMode => (m === 'add' ? 'replace' : 'add');
-const modeVerb = (m: InsertMode) => (m === 'add' ? 'Add to canvas' : 'Replace canvas');
+const modeVerb = (m: InsertMode, t: T) => (m === 'add' ? t('library.add') : t('library.replace'));
 const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
 
 const THUMB_W = 100, THUMB_H = 70;
@@ -126,6 +130,7 @@ const S = {
 export function TemplateLibraryPanel({
   onInsert, onClose, entries = LIBRARY, initialFilter = 'all', closeOnInsert = true, testId, convert, online = false,
 }: TemplateLibraryProps & { testId?: string }) {
+  const { t } = useT();
   const [query, setQuery] = useState('');
   /** The search text read as SMILES or InChI (offline). */
   const [notation, setNotation] = useState<TextStructure | null>(null);
@@ -193,14 +198,14 @@ export function TemplateLibraryPanel({
     let last = '';
     items.forEach((entry, index) => {
       if (grouped) {
-        const label = filter === 'all' ? CATEGORY_NAME[entry.category] : entry.group;
+        const label = filter === 'all' ? t(`library.category.${entry.category}`) : groupLabel(entry.group, t);
         if (label !== last) out.push({ kind: 'header', label });
         last = label;
       }
       out.push({ kind: 'item', entry, index });
     });
     return out;
-  }, [items, query, filter]);
+  }, [items, query, filter, t]);
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { all: entries.length, recent: 0, favourites: 0 };
@@ -336,9 +341,9 @@ export function TemplateLibraryPanel({
   const optionId = (e: LibraryEntry) => `mechand-library-opt-${e.id}`;
   const mod = isMac ? '⌘' : 'Ctrl';
 
-  let emptyText = `No templates match “${query.trim()}”.${online ? '' : ' SMILES and InChI are read directly.'}`;
-  if (!query.trim() && filter === 'favourites') emptyText = `No favourites yet. Click ☆ on a template (or press ${mod}+D) to keep it here.`;
-  else if (!query.trim() && filter === 'recent') emptyText = 'Templates you insert will appear here.';
+  let emptyText = t(online ? 'library.noMatch' : 'library.noMatchOffline', { query: query.trim() });
+  if (!query.trim() && filter === 'favourites') emptyText = t('library.noFavourites', { mod });
+  else if (!query.trim() && filter === 'recent') emptyText = t('library.noRecent');
 
   tileRefs.current.length = items.length;
 
@@ -352,8 +357,8 @@ export function TemplateLibraryPanel({
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search, or type a SMILES, InChI, CAS number or name: benzene, Trp, CCO, 64-17-5…"
-          aria-label="Search templates, or type a SMILES, InChI, CAS number or name"
+          placeholder={t('library.search')}
+          aria-label={t('library.searchLabel')}
           role="combobox"
           aria-expanded="true"
           aria-controls={listId}
@@ -364,34 +369,34 @@ export function TemplateLibraryPanel({
           style={S.search}
         />
       </div>
-      <div style={S.chips} role="tablist" aria-label="Template categories">
+      <div style={S.chips} role="tablist" aria-label={t('library.categoriesLabel')}>
         {FILTERS.map((f) => (
-          <button key={f.id} type="button" role="tab" aria-selected={filter === f.id} style={S.chip(filter === f.id)}
-            onClick={() => selectFilter(f.id)} data-filter={f.id}>
-            {f.label}
-            <span style={{ marginLeft: 6, fontSize: 11, color: filter === f.id ? '#1d4ed8' : '#9ca3af' }}>{counts[f.id] ?? 0}</span>
+          <button key={f} type="button" role="tab" aria-selected={filter === f} style={S.chip(filter === f)}
+            onClick={() => selectFilter(f)} data-filter={f}>
+            {filterLabel(f, t)}
+            <span style={{ marginLeft: 6, fontSize: 11, color: filter === f ? '#1d4ed8' : '#9ca3af' }}>{counts[f] ?? 0}</span>
           </button>
         ))}
       </div>
       {online && convert && lookupWorthy(query) && !notation && !onlineHit && (
         <div style={S.lookup} data-testid="mechand-lookup">
           {lookup?.query === q && lookup.status === 'loading' ? (
-            <span>Looking up “{q}”…</span>
+            <span>{t('library.lookingUp', { query: q })}</span>
           ) : lookedUp ? (
-            <span data-testid="mechand-lookup-none">No structure found online for “{q}”.</span>
+            <span data-testid="mechand-lookup-none">{t('library.lookupNone', { query: q })}</span>
           ) : (
             <>
               <button type="button" style={S.lookupBtn} onClick={runLookup} data-testid="mechand-lookup-btn">
-                Look up “{q}” online
+                {t('library.lookup', { query: q })}
               </button>
               <span style={{ color: '#6b7280' }}>
-                {' '}PubChem (NIH) and OPSIN (EMBL-EBI) receive the text you typed, nothing else. <kbd style={S.kbd}>Alt+↵</kbd>
+                {' '}{t('library.lookupNote')} <kbd style={S.kbd}>Alt+↵</kbd>
               </span>
             </>
           )}
         </div>
       )}
-      <div ref={gridRef} id={listId} role="listbox" aria-label="Templates" style={S.grid}>
+      <div ref={gridRef} id={listId} role="listbox" aria-label={t('library.listLabel')} style={S.grid}>
         {rows.map((row) => {
           if (row.kind === 'header') return <div key={`h-${row.label}`} style={S.header} role="presentation">{row.label}</div>;
           const { entry, index } = row;
@@ -408,7 +413,7 @@ export function TemplateLibraryPanel({
               aria-selected={isActive}
               data-testid="mechand-library-item"
               data-id={entry.id}
-              title={`${entry.name}\nClick: ${modeVerb(entry.defaultMode).toLowerCase()} · Shift+click: ${modeVerb(alt).toLowerCase()}`}
+              title={t('library.tileTitle', { name: entry.name, mode: modeVerb(entry.defaultMode, t).toLowerCase(), other: modeVerb(alt, t).toLowerCase() })}
               style={S.tile(isActive, wide)}
               onPointerMove={onTilePointerMove(index)}
               onClick={(e) => insert(entry, e.shiftKey ? alt : entry.defaultMode)}
@@ -416,8 +421,8 @@ export function TemplateLibraryPanel({
               <button
                 type="button"
                 tabIndex={-1}
-                aria-label={`${modeVerb(alt)}: ${entry.name}`}
-                title={modeVerb(alt)}
+                aria-label={`${modeVerb(alt, t)}: ${entry.name}`}
+                title={modeVerb(alt, t)}
                 data-testid="mechand-library-alt"
                 style={S.corner('left', isActive || touch)}
                 onClick={(e) => { e.stopPropagation(); insert(entry, alt); }}
@@ -425,9 +430,9 @@ export function TemplateLibraryPanel({
               <button
                 type="button"
                 tabIndex={-1}
-                aria-label={fav ? `Remove ${entry.name} from favourites` : `Add ${entry.name} to favourites`}
+                aria-label={t(fav ? 'library.favRemove' : 'library.favAdd', { name: entry.name })}
                 aria-pressed={fav}
-                title={fav ? 'Remove from favourites' : 'Add to favourites'}
+                title={t(fav ? 'library.favRemoveShort' : 'library.favAddShort')}
                 data-testid="mechand-library-star"
                 style={S.corner('right', isActive || touch, fav)}
                 onClick={(e) => { e.stopPropagation(); toggleFavourite(entry.id); }}
@@ -445,18 +450,18 @@ export function TemplateLibraryPanel({
             <>
               <b>{current.name}</b>
               {current.displayFormula && <> · <Formula text={current.displayFormula} /></>}
-              <span style={{ color: '#6b7280' }}> · {current.group}</span>
-              {current.cas?.length ? <span style={{ color: '#6b7280' }}> · CAS {current.cas[0]}</span> : null}
+              <span style={{ color: '#6b7280' }}> · {groupLabel(current.group, t)}</span>
+              {current.cas?.length ? <span style={{ color: '#6b7280' }}> · {t('library.cas', { cas: current.cas[0] })}</span> : null}
               <div style={{ color: '#6b7280', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {current.description ?? current.keywords.slice(0, 6).join(' · ')}
               </div>
             </>
-          ) : <span style={{ color: '#6b7280' }}>{items.length} templates</span>}
+          ) : <span style={{ color: '#6b7280' }}>{t('library.count', { count: items.length })}</span>}
         </div>
         <div style={S.hint}>
-          <kbd style={S.kbd}>↵</kbd> {current ? modeVerb(current.defaultMode).toLowerCase() : 'insert'}
-          {' · '}<kbd style={S.kbd}>⇧↵</kbd> {current ? modeVerb(otherMode(current.defaultMode)).toLowerCase() : 'other mode'}
-          {' · '}<kbd style={S.kbd}>{mod}+D</kbd> ★{' · '}<kbd style={S.kbd}>Esc</kbd> close
+          <kbd style={S.kbd}>↵</kbd> {current ? modeVerb(current.defaultMode, t).toLowerCase() : t('library.insert')}
+          {' · '}<kbd style={S.kbd}>⇧↵</kbd> {current ? modeVerb(otherMode(current.defaultMode), t).toLowerCase() : t('library.otherMode')}
+          {' · '}<kbd style={S.kbd}>{mod}+D</kbd> ★{' · '}<kbd style={S.kbd}>Esc</kbd> {t('dialog.close').toLowerCase()}
         </div>
       </div>
     </div>
@@ -476,10 +481,11 @@ function useViewportWidth(): number {
 
 /** The library in a modal dialog (data-testid="mechand-library"). */
 export function TemplateLibrary(props: TemplateLibraryProps) {
+  const { t } = useT();
   // Modal adds 2 x 22 px of padding outside `width`; keep 8 px of backdrop on each side.
   const width = Math.max(260, Math.min(880, useViewportWidth() - 60));
   return (
-    <Modal title="Template library" onClose={props.onClose} testId="mechand-library" width={width}>
+    <Modal title={t('library.title')} onClose={props.onClose} testId="mechand-library" width={width}>
       <TemplateLibraryPanel {...props} />
     </Modal>
   );

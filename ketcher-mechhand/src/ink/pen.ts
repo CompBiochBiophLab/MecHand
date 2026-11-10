@@ -25,35 +25,29 @@ export interface PenSettings {
   input: InputMode;
 }
 
-export const PEN_COLOURS: { value: string; name: string }[] = [
-  { value: '#111827', name: 'Black' },
-  { value: '#1d4ed8', name: 'Blue' },
-  { value: '#dc2626', name: 'Red' },
-  { value: '#15803d', name: 'Green' },
-  { value: '#7c3aed', name: 'Purple' },
-  { value: '#ea580c', name: 'Orange' },
+/** Ink colours; `id` is the key of the name in the locale files (pen.colour.<id>). */
+export const PEN_COLOURS: { value: string; id: string }[] = [
+  { value: '#111827', id: 'black' },
+  { value: '#1d4ed8', id: 'blue' },
+  { value: '#dc2626', id: 'red' },
+  { value: '#15803d', id: 'green' },
+  { value: '#7c3aed', id: 'purple' },
+  { value: '#ea580c', id: 'orange' },
 ];
 
-export const PEN_STYLES: { value: PenStyle; name: string; hint: string }[] = [
-  { value: 'ballpoint', name: 'Ballpoint', hint: 'Even line' },
-  { value: 'fountain', name: 'Fountain pen', hint: 'Line width follows pen pressure (or speed with a mouse)' },
-  { value: 'marker', name: 'Marker', hint: 'Broad, translucent line' },
-  { value: 'dashed', name: 'Dashed', hint: 'Dashed line (only the look: it is recognized like any other stroke)' },
+/** Kinds of line (names in the locale files: pen.style.<value>, pen.styleHint.<value>). */
+export const PEN_STYLES: { value: PenStyle }[] = [{ value: 'ballpoint' }, { value: 'fountain' }, { value: 'marker' }, { value: 'dashed' }];
+
+/** Widths (names in the locale files: pen.width.<id>). */
+export const PEN_WIDTHS: { value: number; id: string }[] = [
+  { value: 1.5, id: 'fine' },
+  { value: 2.5, id: 'medium' },
+  { value: 4, id: 'bold' },
+  { value: 6, id: 'extra' },
 ];
 
-export const PEN_WIDTHS: { value: number; name: string }[] = [
-  { value: 1.5, name: 'Fine' },
-  { value: 2.5, name: 'Medium' },
-  { value: 4, name: 'Bold' },
-  { value: 6, name: 'Extra bold' },
-];
-
-export const INPUT_MODES: { value: InputMode; name: string; hint: string }[] = [
-  { value: 'auto', name: 'Auto', hint: 'Pen, finger and mouse draw; once a pen is used, fingers are ignored (palm rejection).' },
-  { value: 'pen', name: 'Pen only', hint: 'Only the pen (and a mouse) draws; fingers and palms are ignored.' },
-  { value: 'touch', name: 'Pen and finger', hint: 'Pen, finger and mouse always draw (large contacts such as a palm are still ignored).' },
-  { value: 'trackpad', name: 'Trackpad', hint: 'Click to start a stroke, move without pressing, click again to end it. Dragging also works.' },
-];
+/** Input modes (names in the locale files: pen.input.<value>, pen.inputHint.<value>). */
+export const INPUT_MODES: { value: InputMode }[] = [{ value: 'auto' }, { value: 'pen' }, { value: 'touch' }, { value: 'trackpad' }];
 
 export const DEFAULT_PEN: PenSettings = { colour: PEN_COLOURS[0].value, style: 'ballpoint', width: 2.5, input: 'auto' };
 

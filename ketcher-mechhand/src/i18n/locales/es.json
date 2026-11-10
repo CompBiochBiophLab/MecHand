@@ -1,0 +1,695 @@
+{
+  "_meta": {
+    "name": "Español",
+    "authors": [
+      "Jordi Villà-Freixa"
+    ]
+  },
+  "toolbar": {
+    "label": "MecHand",
+    "freehand": "A mano alzada",
+    "on": "sí",
+    "off": "no",
+    "freehandName": "Dibujo a mano alzada",
+    "recognize": "Reconocer",
+    "recognizeCount": "Reconocer ({count})",
+    "recognizeName": "Reconocer la tinta",
+    "undoInk": "Deshacer tinta",
+    "redoInk": "Rehacer tinta",
+    "clearInk": "Borrar la tinta",
+    "library": "Biblioteca",
+    "libraryName": "Biblioteca de plantillas",
+    "export": "Exportar",
+    "teach": "Enseñar",
+    "about": "Acerca de",
+    "help": "Ayuda",
+    "language": "Idioma"
+  },
+  "helpToggle": {
+    "title": "Mostrar u ocultar las etiquetas de ayuda de cada botón",
+    "level": "Nivel de detalle de la ayuda",
+    "expert": "Experto",
+    "student": "Estudiante"
+  },
+  "help": {
+    "btn-freehand": {
+      "brief": "Modo a mano alzada: dibuja sobre Ketcher con lápiz, dedo, trackpad o ratón.",
+      "student": "Actívalo y dibuja el mecanismo como en papel: enlaces como líneas (las cadenas en zigzag y los anillos pueden ser un solo trazo), átomos como letras, cargas como + o −, y flechas curvas con punta. La barra del lápiz, debajo, fija el color, la línea y la entrada. Desactívalo para volver a usar las herramientas de Ketcher."
+    },
+    "btn-recognize": {
+      "brief": "Reconoce la tinta y propone una estructura limpia.",
+      "student": "MecHand lee tus trazos en el navegador (sin servidor), muestra qué ha entendido y comprueba el flujo de electrones de las flechas curvas. Confírmalo para insertarlo en Ketcher."
+    },
+    "btn-undo-ink": {
+      "brief": "Deshace el último cambio en la tinta (trazo, borrado o limpieza).",
+      "student": "Deshace el último trazo, borrado o limpieza. La estructura de Ketcher no se toca."
+    },
+    "btn-redo-ink": {
+      "brief": "Rehace lo que se ha deshecho.",
+      "student": "Vuelve a poner el último cambio que se ha deshecho."
+    },
+    "btn-clear-ink": {
+      "brief": "Borra toda la tinta (se puede deshacer).",
+      "student": "Borra todos los trazos a mano alzada que aún no se han insertado. «Deshacer tinta» los recupera."
+    },
+    "tool-pen": {
+      "brief": "Dibuja tinta.",
+      "student": "El lápiz dibuja trazos. Elige su color, tipo de línea y grosor en esta barra."
+    },
+    "tool-eraser": {
+      "brief": "Borra trazos enteros tocándolos.",
+      "student": "Pasa por encima de los trazos que quieres quitar (se aclaran) y levanta: se borran. El extremo borrador de un lápiz (Surface, Wacom) también borra, sea cual sea la herramienta elegida."
+    },
+    "pen-colour": {
+      "brief": "Color de la tinta.",
+      "student": "Los colores ayudan a organizar un dibujo (p. ej. las flechas en rojo). El reconocimiento no depende del color."
+    },
+    "pen-style": {
+      "brief": "Tipo de línea: bolígrafo, pluma, rotulador o discontinua.",
+      "student": "El bolígrafo traza una línea uniforme; la pluma sigue la presión del lápiz (o la velocidad con ratón); el rotulador es ancho y translúcido; la discontinua es solo un aspecto. Todos se reconocen igual."
+    },
+    "pen-width": {
+      "brief": "Grosor de la línea.",
+      "student": "De fino a muy grueso. Solo cambia el aspecto; el reconocimiento usa la forma del trazo."
+    },
+    "pen-input": {
+      "brief": "Qué dibuja: automático, solo lápiz, lápiz y dedo, o trackpad.",
+      "student": "Automático: una vez usas el lápiz, los dedos y la palma se ignoran. Solo lápiz: los dedos no dibujan nunca. Lápiz y dedo: dibujan ambos. Trackpad: un clic empieza el trazo, lo mueves sin pulsar y otro clic lo termina (no hace falta mantener pulsado)."
+    },
+    "pen-device": {
+      "brief": "El dispositivo del último contacto y si ha podido dibujar.",
+      "student": "Muestra si el navegador ha visto un lápiz, un dedo o un ratón/trackpad. «Ignorado» significa que el rechazo de palma ha descartado el contacto; cambia el modo de entrada si el dedo debe dibujar."
+    },
+    "btn-library": {
+      "brief": "Biblioteca de plantillas; también dibuja una molécula a partir de su SMILES, InChI, número CAS o nombre.",
+      "student": "Anillos, grupos funcionales, biomoléculas, reactivos y mecanismos completos. Busca por nombre, fórmula o número CAS, o escribe un SMILES o un InChI para dibujarlo. Los nombres que no están en la biblioteca se pueden buscar en línea (PubChem, OPSIN) si lo pides."
+    },
+    "btn-export": {
+      "brief": "Exportar a TikZ, chemfig, ChemDraw (CDXML), MOL/RXN, KET o SMILES.",
+      "student": "Convierte el lienzo de Ketcher, flechas curvas incluidas, en código para tu documento LaTeX, o en archivos que abren ChemDraw, Marvin y otros editores."
+    },
+    "btn-teach": {
+      "brief": "Enseña a MecHand tu letra.",
+      "student": "Dibuja unos cuantos ejemplos de una letra o un signo, una flecha, un enlace o un par de electrones. Se guardan en este navegador y se usan enseguida; expórtalos para aportarlos al modelo compartido."
+    },
+    "btn-about": {
+      "brief": "Versión, modelo de reconocimiento y navegadores.",
+      "student": "Muestra la versión, el modelo de reconocimiento en uso, qué sabe leer y los problemas conocidos de los navegadores."
+    },
+    "btn-help": {
+      "brief": "Centro de ayuda: temas, consejos para lo que estás haciendo, visita guiada y atajos.",
+      "student": "Abre el centro de ayuda en el tema de lo que estás haciendo. Puedes buscar, repetir la visita guiada o ver todos los atajos de teclado."
+    },
+    "btn-language": {
+      "brief": "Idioma de la interfaz de MecHand.",
+      "student": "Elige el idioma de los botones, los diálogos y la ayuda de MecHand. Las traducciones son archivos JSON sencillos que cualquier persona puede añadir o mejorar."
+    },
+    "btn-help-toggle": {
+      "brief": "Mostrar u ocultar estas etiquetas de ayuda.",
+      "student": "Activa o desactiva las etiquetas de ayuda. Elige Experto para una línea o Estudiante para explicaciones."
+    }
+  },
+  "pen": {
+    "bar": "Lápiz",
+    "tool": "Herramienta",
+    "pen": "Lápiz",
+    "eraser": "Goma",
+    "colours": "Color de la tinta",
+    "styles": "Tipo de línea",
+    "widths": "Grosor de la línea",
+    "inputMode": "Modo de entrada",
+    "colour": {
+      "black": "Negro",
+      "blue": "Azul",
+      "red": "Rojo",
+      "green": "Verde",
+      "purple": "Morado",
+      "orange": "Naranja"
+    },
+    "style": {
+      "ballpoint": "Bolígrafo",
+      "fountain": "Pluma",
+      "marker": "Rotulador",
+      "dashed": "Discontinua"
+    },
+    "styleHint": {
+      "ballpoint": "Línea uniforme",
+      "fountain": "El grosor sigue la presión del lápiz (o la velocidad con ratón)",
+      "marker": "Línea ancha y translúcida",
+      "dashed": "Línea discontinua (solo el aspecto: se reconoce como cualquier otro trazo)"
+    },
+    "width": {
+      "fine": "Línea fina",
+      "medium": "Línea media",
+      "bold": "Línea gruesa",
+      "extra": "Línea muy gruesa"
+    },
+    "input": {
+      "auto": "Automático",
+      "pen": "Solo lápiz",
+      "touch": "Lápiz y dedo",
+      "trackpad": "Trackpad"
+    },
+    "inputHint": {
+      "auto": "Dibujan el lápiz, el dedo y el ratón; una vez se usa el lápiz, los dedos se ignoran (rechazo de palma).",
+      "pen": "Solo dibuja el lápiz (y el ratón); los dedos y la palma se ignoran.",
+      "touch": "Dibujan siempre el lápiz, el dedo y el ratón (los contactos grandes, como una palma, se ignoran igualmente).",
+      "trackpad": "Un clic empieza el trazo, lo mueves sin pulsar y otro clic lo termina. Arrastrar también funciona."
+    },
+    "device": {
+      "pen": "Lápiz",
+      "touch": "Dedo",
+      "mouse": "Ratón / trackpad",
+      "none": "Entrada: —",
+      "ignored": "{device} ignorado",
+      "last": "Última entrada: {device}",
+      "lastIgnored": "Última entrada: {device} (ignorada)",
+      "noInput": "Aún no hay ninguna entrada"
+    },
+    "openStroke": "Haz clic para terminar el trazo (Esc lo descarta)"
+  },
+  "check": {
+    "start-nothing": "La flecha {arrow} no empieza en ningún átomo ni enlace.",
+    "start-no-lone-pair": "La flecha {arrow} empieza en {at}, que no tiene ningún par solitario. Hazla empezar en un par solitario o en un enlace.",
+    "end-nothing": "La flecha {arrow} no apunta a ningún átomo ni enlace.",
+    "octet": "La flecha {arrow} da a {at} más de un octeto. ¿Se rompe a la vez un enlace con él?"
+  },
+  "dialog": {
+    "close": "Cerrar"
+  },
+  "consolidate": {
+    "title": "¿Es esto lo que querías decir?",
+    "confidence": "{pct}% de confianza",
+    "atoms_one": "{count} átomo",
+    "atoms_other": "{count} átomos",
+    "bonds_one": "{count} enlace",
+    "bonds_other": "{count} enlaces",
+    "arrows_one": "{count} flecha",
+    "arrows_other": "{count} flechas",
+    "inkColours": "Colores de la tinta:",
+    "bonds": "enlaces",
+    "labels": "etiquetas",
+    "arrows": "flechas",
+    "notUnderstood": "no entendido",
+    "discard": "Descartar la tinta",
+    "keep": "Seguir dibujando",
+    "insert": "Insertar en Ketcher",
+    "nothing": "No se ha reconocido nada",
+    "previewLabel": "Estructura reconocida",
+    "serverRead": "{engine} ha leído {smiles} ({pct}%); se insertará en lugar de la estructura del navegador.",
+    "serverInvalid": "{engine} no ha podido leer una estructura válida; se usa el resultado del navegador.",
+    "serverDown": "No se ha podido contactar con el servidor de reconocimiento ({error}); se usa el resultado del navegador.",
+    "tipsTitle": "Consejos",
+    "tipUnread_one": "{count} trazo no se ha entendido (gris). La causa habitual son letras demasiado cerca de los enlaces, o enlaces tan cortos como las letras.",
+    "tipUnread_other": "{count} trazos no se han entendido (gris). La causa habitual son letras demasiado cerca de los enlaces, o enlaces tan cortos como las letras.",
+    "tipLowConfidence": "Confianza baja: dibuja los enlaces dos o tres veces más largos que la altura de las letras, y deja un pequeño espacio entre el enlace y la etiqueta.",
+    "tipNoHead": "Un trazo curvo sin punta se lee como un enlace. Añade una punta clara (una V) al final de cada flecha.",
+    "tipTeach": "Si el mismo símbolo se lee mal una y otra vez, enséñaselo a MecHand (Enseñar)."
+  },
+  "export": {
+    "title": "Exportar",
+    "download": "Descargar",
+    "copy": "Copiar",
+    "copied": "Copiado ✓",
+    "generating": "Generando…",
+    "noClipboard": "El portapapeles no está disponible en este contexto del navegador; usa Descargar.",
+    "note": {
+      "tikz": "Estructuras y flechas curvas con coordenadas absolutas; fácil de ajustar a mano.",
+      "chemfig": "Esquema chemfig; las flechas curvas pasan a ser `\\chemmove` entre átomos con nombre.",
+      "cdxml": "Se abre en ChemDraw (y en Marvin, que lee CDXML).",
+      "mol": "Formato MDL que leen Marvin, ChemDraw, RDKit, Open Babel… (RXN si el lienzo contiene una reacción).",
+      "ket": "Formato propio de Ketcher; lo conserva todo, flechas curvas incluidas.",
+      "smiles": "Solo las estructuras (sin flechas)."
+    }
+  },
+  "about": {
+    "title": "Acerca del reconocimiento de MecHand",
+    "intro": "MecHand lee tus **trazos** (no una imagen) directamente en el navegador: sin instalación, sin servidor, nada sale de tu ordenador. Las líneas pasan a ser enlaces (las cadenas y los anillos pueden ser un solo trazo), las líneas paralelas, enlaces dobles o triples, las letras, etiquetas de átomos, + y −, cargas, y los trazos curvos con punta, flechas de flujo de electrones (punta entera = 2 e⁻, media punta = 1 e⁻). Cada flecha se ancla al átomo o enlace más cercano y se comprueba su balance de electrones.",
+    "version": "MecHand",
+    "symbolModel": "Modelo de símbolos",
+    "templates": "Plantillas en uso",
+    "templatesValue": "{total} ({contributed} aportadas, {user} tuyas)",
+    "elements": "Flechas, enlaces, electrones",
+    "elementsValue": "{total} muestras ({contributed} aportadas, {user} tuyas); {heads} plantillas de punta de flecha",
+    "classifier": "Clasificador",
+    "corners": "Detección de vértices",
+    "engine": "Motor de estructuras",
+    "engineLocked": "Solo en el navegador (modo estudio: nada sale de este navegador).",
+    "engineBrowser": "En el navegador (por defecto, funciona sin conexión)",
+    "engineServer": "Servidor DECIMER (opcional, a partir de una imagen, en tu ordenador; las flechas y las cargas siguen viniendo del reconocedor del navegador)",
+    "checking": "comprobando…",
+    "connected": "● conectado — {engine}",
+    "unreachable": "○ no accesible (véase el README, «Optional recognition server»)",
+    "browsers": "Navegadores",
+    "browsersText": "Funciona con versiones actuales de Chrome, Edge, Firefox y Safari (ordenador e iPad). Las diferencias conocidas están en la guía, en «Browser support».",
+    "translation": "Idioma de la interfaz",
+    "translationBy": "Traducción: {authors}",
+    "documentation": "Documentación",
+    "source": "Código del reconocedor"
+  },
+  "teach": {
+    "title": "Enseña a MecHand tu letra",
+    "letters": "Letras y signos",
+    "group": {
+      "arrows": "Flechas",
+      "bonds": "Enlaces",
+      "electrons": "Electrones"
+    },
+    "lettersPrompt": "Elige un símbolo, escríbelo en el recuadro y guárdalo. Unas cuantas muestras de cada símbolo marcan la diferencia.",
+    "stored": "Las muestras se quedan en este navegador; expórtalas para compartirlas con el proyecto.",
+    "circled": "{symbol} (carga en un círculo)",
+    "minus": "− (menos)",
+    "plus": "+ (más)",
+    "oneBond": "= 1 enlace",
+    "undoStroke": "Deshacer el trazo",
+    "clear": "Borrar",
+    "save": "Guardar la muestra",
+    "readAs": "Ahora se lee como:",
+    "readOk": "✓",
+    "readHelps": "— guardar esta muestra ayuda a MecHand a aprenderlo",
+    "yourSamples": "Tus muestras",
+    "exportSamples": "Exportar las muestras",
+    "import": "Importar…",
+    "deleteAll": "Borrarlas todas",
+    "confirmDelete": "¿Quieres borrar todas tus muestras (letras, flechas, enlaces y electrones)?",
+    "notSamples": "No es un archivo de muestras de MecHand.",
+    "learns": {
+      "arrowheads": "Las puntas dibujadas con un trazo aparte se añaden al modelo de puntas de flecha, de modo que a partir de ahora se reconoce tu estilo de punta.",
+      "dots": "El tamaño de tus puntos fija hasta qué tamaño una marca cuenta como punto (pares solitarios, radicales).",
+      "check": "Los enlaces se reconocen por geometría: esto comprueba que tu estilo se lee bien; las muestras compartidas ayudan a mejorar las reglas."
+    },
+    "element": {
+      "arrow-pair": {
+        "label": "Flecha curva, 2 e⁻ (punta entera)",
+        "prompt": "Dibuja una flecha curva de uno o dos enlaces de largo (la línea gris es un enlace), con la punta que usas normalmente."
+      },
+      "arrow-single": {
+        "label": "Flecha de un electrón, 1 e⁻ (media punta)",
+        "prompt": "Dibuja una flecha curva con media punta (una sola barba), como para el movimiento de un electrón."
+      },
+      "arrow-reaction": {
+        "label": "Flecha de reacción →",
+        "prompt": "Dibuja una flecha de reacción recta, de dos o tres enlaces de largo."
+      },
+      "arrow-equilibrium": {
+        "label": "Flechas de equilibrio ⇌",
+        "prompt": "Dibuja dos flechas rectas paralelas con media punta, en sentidos opuestos."
+      },
+      "bond-single": {
+        "label": "Enlace simple",
+        "prompt": "Dibuja un enlace simple de la longitud aproximada de la línea gris."
+      },
+      "bond-double": {
+        "label": "Enlace doble",
+        "prompt": "Dibuja un enlace doble de la longitud aproximada de la línea gris."
+      },
+      "bond-triple": {
+        "label": "Enlace triple",
+        "prompt": "Dibuja un enlace triple de la longitud aproximada de la línea gris."
+      },
+      "ring-benzene": {
+        "label": "Anillo de benceno",
+        "prompt": "Dibuja un anillo de benceno como un hexágono con tres enlaces dobles, con lados de la longitud aproximada de la línea gris."
+      },
+      "lone-pair": {
+        "label": "Par solitario (dos puntos)",
+        "prompt": "Dibuja los dos puntos de un par solitario junto a la O gris, del tamaño que usas."
+      },
+      "radical": {
+        "label": "Radical (un punto)",
+        "prompt": "Dibuja un solo punto de radical junto a la O gris, del tamaño que usas."
+      }
+    },
+    "read": {
+      "arrow-electron-pair_one": "flecha curva (2 e⁻)",
+      "arrow-electron-pair_other": "{count} × flecha curva (2 e⁻)",
+      "arrow-single-electron_one": "flecha de un electrón (1 e⁻)",
+      "arrow-single-electron_other": "{count} × flecha de un electrón (1 e⁻)",
+      "arrow-reaction_one": "flecha de reacción",
+      "arrow-reaction_other": "{count} × flecha de reacción",
+      "arrow-equilibrium_one": "flechas de equilibrio",
+      "arrow-equilibrium_other": "{count} × flechas de equilibrio",
+      "arrow-other_one": "flecha",
+      "arrow-other_other": "{count} × flecha",
+      "bond-1_one": "enlace simple",
+      "bond-1_other": "{count} × enlace simple",
+      "bond-2_one": "enlace doble",
+      "bond-2_other": "{count} × enlace doble",
+      "bond-3_one": "enlace triple",
+      "bond-3_other": "{count} × enlace triple",
+      "bond-4_one": "enlace aromático",
+      "bond-4_other": "{count} × enlace aromático",
+      "dots_one": "1 punto",
+      "dots_other": "{count} puntos",
+      "text": "texto «{text}»",
+      "unread_one": "1 trazo no entendido",
+      "unread_other": "{count} trazos no entendidos",
+      "nothing": "nada"
+    }
+  },
+  "library": {
+    "title": "Biblioteca de plantillas",
+    "search": "Busca, o escribe un SMILES, InChI, número CAS o nombre: benceno, Trp, CCO, 64-17-5…",
+    "searchLabel": "Buscar plantillas, o escribir un SMILES, InChI, número CAS o nombre",
+    "categoriesLabel": "Categorías de plantillas",
+    "listLabel": "Plantillas",
+    "filter": {
+      "all": "Todas",
+      "recent": "Recientes",
+      "favourites": "★ Favoritas"
+    },
+    "category": {
+      "ring": "Anillos",
+      "group": "Grupos funcionales",
+      "bio": "Biomoléculas",
+      "reagent": "Reactivos",
+      "mechanism": "Mecanismos"
+    },
+    "groupName": {
+      "carbocycles": "Carbociclos",
+      "aromatic-hydrocarbons": "Hidrocarburos aromáticos",
+      "aromatic-heterocycles": "Heterociclos aromáticos",
+      "saturated-heterocycles": "Heterociclos saturados",
+      "hydrocarbon-halide": "Hidrocarburos y haluros",
+      "oxygen-groups": "Grupos con oxígeno",
+      "carbonyl-groups": "Grupos carbonilo",
+      "nitrogen-groups": "Grupos con nitrógeno",
+      "sulfur-phosphorus-boron": "Azufre, fósforo y boro",
+      "reactive-intermediates": "Intermedios reactivos",
+      "substituents-protecting-groups": "Sustituyentes y grupos protectores",
+      "amino-acids": "Aminoácidos",
+      "nucleobases-nucleotides": "Nucleobases y nucleótidos",
+      "sugars": "Azúcares",
+      "cofactors-metabolites": "Cofactores y metabolitos",
+      "lipids": "Lípidos",
+      "water-ions": "Agua e iones",
+      "acids": "Ácidos",
+      "bases": "Bases",
+      "reducing-agents": "Reductores",
+      "oxidizing-agents": "Oxidantes",
+      "halogenating-activating-agents": "Halogenantes y activadores",
+      "carbon-nucleophiles": "Nucleófilos de carbono",
+      "solvents": "Disolventes",
+      "small-molecules-gases": "Moléculas pequeñas y gases",
+      "organic": "Orgánica",
+      "inorganic": "Inorgánica",
+      "biochemistry": "Bioquímica",
+      "smiles": "SMILES",
+      "inchi": "InChI",
+      "pubchem": "PubChem",
+      "opsin": "OPSIN"
+    },
+    "add": "Añadir al lienzo",
+    "replace": "Sustituir el lienzo",
+    "tileTitle": "{name}\nClic: {mode} · Mayús+clic: {other}",
+    "favAdd": "Añadir {name} a favoritas",
+    "favRemove": "Quitar {name} de favoritas",
+    "favAddShort": "Añadir a favoritas",
+    "favRemoveShort": "Quitar de favoritas",
+    "noMatch": "Ninguna plantilla coincide con «{query}».",
+    "noMatchOffline": "Ninguna plantilla coincide con «{query}». Los SMILES y los InChI se leen directamente.",
+    "noFavourites": "Aún no tienes favoritas. Haz clic en ☆ en una plantilla (o pulsa {mod}+D) para tenerla aquí.",
+    "noRecent": "Aquí aparecerán las plantillas que insertes.",
+    "count_one": "{count} plantilla",
+    "count_other": "{count} plantillas",
+    "insert": "insertar",
+    "otherMode": "el otro modo",
+    "lookup": "Buscar «{query}» en línea",
+    "lookingUp": "Buscando «{query}»…",
+    "lookupNone": "No se ha encontrado ninguna estructura en línea para «{query}».",
+    "lookupNote": "PubChem (NIH) y OPSIN (EMBL-EBI) reciben el texto que has escrito, nada más.",
+    "cas": "CAS {cas}"
+  },
+  "study": {
+    "title": "Estudio MecHand",
+    "startTitle": "Estudio MecHand (UVic-UCC)",
+    "codeTitle": "Tu código anónimo",
+    "codeHidden": "Tu código anónimo (se muestra al final)",
+    "teach": {
+      "title": "1. Entrenamiento (unos 10 minutos)",
+      "intro": "Enseña a MecHand tu letra. Abre **✍ Enseñar** y guarda unas 3 muestras de cada:",
+      "letters": "*{tab}*: C, O, N, H, F, l (de Cl), r (de Br), a (de Na), +, − (y ⊕, ⊖ si las escribes en un círculo)",
+      "arrows": "*{tab}*: flecha curva de 2 e⁻, flecha de reacción, equilibrio",
+      "electrons": "*{tab}*: par solitario",
+      "reading": "Debajo del recuadro verás cómo lo lee MecHand. Si acierta (✓), no hace falta insistir.",
+      "open": "Abrir ✍ Enseñar",
+      "done": "He terminado el entrenamiento"
+    },
+    "task": {
+      "position": "Bloque {block} de 2 · tarea {k} de {n}",
+      "practice": " · práctica (no cuenta)",
+      "ketcherTip": "Flechas curvas en Ketcher: herramienta de flechas → «Arrow Elliptical Arc Open Angle» (2 e⁻) o «… Open Half Angle» (1 e⁻). Cargas: herramientas «A+» y «A−».",
+      "converted": "convertida a PNG",
+      "start": "Empezar la tarea",
+      "finish": "He terminado",
+      "skip": "Omitir",
+      "confirmSkip": "¿Quieres omitir esta tarea?"
+    },
+    "condition": {
+      "freehand": "MecHand: dibujo a mano alzada (puedes corregir con las herramientas de Ketcher)",
+      "ketcher": "Solo herramientas de Ketcher (sin dibujo a mano alzada)"
+    },
+    "stimulus": {
+      "practica-acid-base": "Práctica (no cuenta): dibuja la reacción completa, con las dos flechas curvas, la flecha de reacción y los productos. Prueba las herramientas que necesitarás.",
+      "A1-paracetamol": "Dibuja el paracetamol.",
+      "A2-cafeina": "Dibuja la cafeína.",
+      "A3-sn2-walden": "Dibuja los reactivos con las flechas curvas y el producto orgánico. No hace falta dibujar el estado de transición (entre corchetes), ni la estereoquímica (cuñas), ni el Na⁺ ni el NaBr.",
+      "A4-aldol-basic": "Dibuja solo el primer paso (arriba a la izquierda): el aldehído y el ion hidróxido con las tres flechas curvas, la flecha de equilibrio y el enolato que se forma. Donde hay una R, pon un CH₃ (basta con el extremo de una línea).",
+      "B1-dopamina": "Dibuja la dopamina.",
+      "B2-serotonina": "Dibuja la serotonina.",
+      "B3-sn2-cianur": "Dibuja los reactivos con las flechas curvas y el producto orgánico. No hace falta dibujar los pares solitarios, ni el Na⁺ ni los iones Na⁺ y Cl⁻ de los productos.",
+      "B4-aldol-acid": "Dibuja solo el segundo paso (arriba, el segundo y el tercer compuesto): el aldehído protonado y el agua con las tres flechas curvas, la flecha de equilibrio y el enol que se forma. Donde hay una R, pon un CH₃ (basta con el extremo de una línea)."
+    },
+    "sus": {
+      "title": "Valoración del bloque",
+      "intro": "Piensa en cómo has trabajado en este bloque: *{condition}*. 1 = totalmente en desacuerdo, 5 = totalmente de acuerdo.",
+      "continue": "Continuar",
+      "item1": "Creo que me gustaría usar esta herramienta con frecuencia.",
+      "item2": "He encontrado la herramienta innecesariamente compleja.",
+      "item3": "He pensado que la herramienta era fácil de usar.",
+      "item4": "Creo que necesitaría la ayuda de una persona con conocimientos técnicos para poder usar la herramienta.",
+      "item5": "He encontrado que las diversas funciones de la herramienta estaban bien integradas.",
+      "item6": "He pensado que había demasiadas incoherencias en la herramienta.",
+      "item7": "Imagino que la mayoría de la gente aprendería a usar la herramienta muy rápidamente.",
+      "item8": "He encontrado la herramienta muy engorrosa de usar.",
+      "item9": "Me he sentido muy seguro/a usando la herramienta.",
+      "item10": "Necesitaría aprender muchas cosas antes de poder empezar a usar la herramienta."
+    },
+    "final": {
+      "title": "Para terminar (opcional)",
+      "noPersonal": "No escribas ningún dato personal (nombres, correos…).",
+      "freehand": "¿Qué te ha gustado y qué no del dibujo a mano alzada (MecHand)?",
+      "ketcher": "¿Qué te ha gustado y qué no de dibujar solo con las herramientas de Ketcher?",
+      "preference": "Para dibujar mecanismos, ¿qué manera prefieres?",
+      "prefNone": "Prefiero no responder",
+      "prefMechand": "Dibujo a mano alzada (MecHand)",
+      "prefKetcher": "Herramientas de Ketcher",
+      "prefSame": "Me da igual",
+      "other": "Otros comentarios",
+      "save": "Guardar la sesión"
+    },
+    "done": {
+      "thanks": "¡Muchas gracias!",
+      "instructions": "Descarga el archivo de la sesión y cópialo tú mismo/a en la memoria USB del estudio (la persona de contacto no mira el nombre del archivo). No lo envíes por correo.",
+      "download": "Descargar {file}",
+      "choices": "Tus opciones: muestras de Enseñar en el archivo: **{share}**; publicación de las muestras: **{publish}**. Deben coincidir con el consentimiento en papel; si no, díselo ahora a la persona de contacto.",
+      "yes": "sí",
+      "no": "no",
+      "downloadsCopy": "Una copia del archivo queda en la carpeta de descargas de este dispositivo; bórrala después de entregarlo.",
+      "keepCode": "Guarda tu código **{code}**: si más adelante quieres retirar tus datos, házselo llegar a la persona de contacto (o déjalo en el buzón del departamento).",
+      "clear": "Borrar los datos de este navegador",
+      "confirmClear": "Se borrarán la sesión y las muestras de entrenamiento de este navegador. ¿Ya has descargado el archivo?"
+    },
+    "recorded": {
+      "summary": "Qué se registra",
+      "text": "Código anónimo, grupo, tus respuestas, {environment}; tipos de puntero usados: {pointers}. Para cada tarea: tiempo, trazos (puntos x, y y momento de cada trazo), lo que MecHand ha reconocido, tus decisiones, el uso de los controles del lápiz (goma, deshacer, color, grosor, modo de entrada), los contactos ignorados por el rechazo de palma y el dibujo final. Nada sale de este navegador."
+    },
+    "start": {
+      "intro": "Antes de empezar debes haber leído la hoja de información y firmado el consentimiento informado. La participación es voluntaria, no tiene ningún efecto en ninguna evaluación y puedes dejarla en cualquier momento.",
+      "group": "Grupo (te lo da la persona de contacto)",
+      "role": "Participas como",
+      "roleStudent": "Estudiante del grado en Biotecnología",
+      "roleTeacher": "Profesorado de química",
+      "course": "Curso",
+      "course1": "1.er curso",
+      "course2": "2.º curso",
+      "course3": "3.er curso",
+      "course4": "4.º curso",
+      "device": "Con qué dibujarás",
+      "devices": {
+        "tauleta-llapis": "Tableta con lápiz",
+        "tauleta-dit": "Tableta con el dedo",
+        "ordinador-llapis": "Ordenador con lápiz o tableta gráfica",
+        "ordinador-tactil": "Ordenador con pantalla táctil (dedo)",
+        "ordinador-trackpad": "Ordenador con trackpad",
+        "ordinador-ratoli": "Ordenador con ratón",
+        "altre": "Otro"
+      },
+      "country": "País donde aprendiste a leer y escribir",
+      "noAnswer": "Prefiero no responder",
+      "hand": "Mano con la que escribes (opcional)",
+      "handRight": "Derecha",
+      "handLeft": "Izquierda",
+      "handBoth": "Ambas",
+      "experience": "Experiencia con programas de dibujo químico (ChemDraw, Ketcher, Marvin…)",
+      "expNone": "Ninguna",
+      "expLittle": "Poca (alguna vez)",
+      "expMuch": "Mucha (a menudo)",
+      "share": "Acepto que las muestras que dibuje en ✍ Enseñar se incluyan en el archivo de la sesión (opcional).",
+      "publish": "Acepto que estas muestras se publiquen en el repositorio abierto de MecHand, solo con el símbolo y las coordenadas x, y (opcional; debe coincidir con lo que he marcado en el consentimiento).",
+      "consent": "He leído la hoja de información y he firmado el consentimiento informado.",
+      "envNote": "De tu dispositivo solo se registra: {environment}; qué tipos de puntero usas (lápiz, dedo, ratón) y cómo usas la aplicación (véase la hoja de información). No se registra tu nombre, ni la dirección IP, ni ningún identificador del dispositivo.",
+      "teachWarning": "Este navegador ya tiene muestras de entrenamiento (quizá de otra persona): se borrarán al empezar, para que cada sesión parta del modelo compartido.",
+      "begin": "Empezar"
+    },
+    "env": {
+      "browser": "Navegador",
+      "os": "Sistema",
+      "architecture": "Arquitectura",
+      "notAvailable": "no disponible",
+      "screen": "Pantalla",
+      "touchPoints": "Puntos táctiles"
+    }
+  },
+  "helpCenter": {
+    "title": "Ayuda",
+    "search": "Buscar en la ayuda",
+    "close": "Cerrar la ayuda",
+    "now": "Qué puedes hacer ahora",
+    "tour": "Hacer la visita guiada",
+    "website": "Más información en la web",
+    "noResults": "Ningún tema de ayuda coincide con «{query}».",
+    "topics": "Temas",
+    "context": {
+      "off": "Pulsa **A mano alzada** (Alt+F) para dibujar a mano, o abre la **Biblioteca** (Ctrl/⌘+K) para empezar desde una estructura.",
+      "ketcher": "Con la mano alzada desactivada, las herramientas de Ketcher funcionan como siempre: úsalas para pulir una estructura insertada.",
+      "empty": "Dibuja como en papel: enlaces como líneas, átomos como letras, cargas arriba a la derecha, flechas curvas con punta.",
+      "strokes": "Pulsa **Espacio** (o Reconocer) para leer tus {count} trazos. Corrige un trazo con la goma (E) o deshaz (Ctrl/⌘+Z).",
+      "ignored": "El rechazo de palma ha ignorado el último contacto. Para dibujar con el dedo, elige el modo de entrada **Lápiz y dedo**.",
+      "mouse": "¿Dibujas con un trackpad? El modo de entrada **Trackpad** dibuja con clic – mover – clic.",
+      "dialog": "Revisa qué ha leído MecHand: **Insertar** (Intro), **Seguir dibujando** (Esc) para corregir trazos, o **Descartar la tinta**.",
+      "library": "Escribe un nombre, una fórmula, un número CAS o un SMILES. Intro añade la plantilla resaltada; Mayús+Intro sustituye el lienzo.",
+      "teach": "Dibuja el símbolo elegido en el recuadro y guárdalo. Unas cuantas muestras de los símbolos que MecHand lee mal marcan la diferencia.",
+      "export": "Elige un formato y cópialo o descárgalo. TikZ y chemfig conservan las flechas curvas para LaTeX.",
+      "study": "En el estudio, sigue el panel de la derecha; la persona de contacto te puede ayudar con problemas técnicos."
+    },
+    "topic": {
+      "start": {
+        "title": "Primeros pasos",
+        "body": [
+          "MecHand añade el dibujo a mano al editor químico Ketcher. Todo funciona en tu navegador.",
+          "1. Pulsa **A mano alzada** y dibuja la molécula o el mecanismo como en papel.",
+          "2. Pulsa **Reconocer** (Espacio): MecHand muestra qué ha leído y comprueba las flechas curvas.",
+          "3. **Insertar en Ketcher** y edítalo con las herramientas de Ketcher, o **Exportar** a LaTeX, ChemDraw o Marvin.",
+          "La **Biblioteca** (Ctrl/⌘+K) te da estructuras y mecanismos completos ya hechos, y dibuja cualquier molécula a partir de su SMILES, InChI, número CAS o nombre."
+        ]
+      },
+      "drawing": {
+        "title": "Cómo dibujar",
+        "body": [
+          "**Enlaces**: líneas rectas. Un zigzag o un polígono cerrado pueden ser un solo trazo; dos o tres líneas paralelas cercanas son un enlace doble o triple.",
+          "**Átomos**: escribe las letras (C, H, N, O, S, P, F, Cl, Br, I, Na…) en el extremo de un enlace, dejando un pequeño espacio.",
+          "**Cargas**: + o − (también ⊕, ⊖, 2−) arriba a la derecha del átomo. **Pares solitarios y radicales**: dos puntos o un punto junto al átomo.",
+          "**Flechas curvas**: empiezan en los electrones (un par solitario o el centro de un enlace) y terminan en el átomo o enlace que los recibe. Una punta entera (V) mueve dos electrones; una sola barba, uno.",
+          "**Reacciones**: una flecha recta larga entre reactivos y productos, y + entre moléculas.",
+          "Dibuja los enlaces dos o tres veces más largos que la altura de las letras: así MecHand los distingue."
+        ]
+      },
+      "penbar": {
+        "title": "La barra del lápiz",
+        "body": [
+          "En modo a mano alzada, una segunda barra elige el **lápiz** o la **goma** (P / E). La goma borra trazos enteros; el extremo borrador de un lápiz Surface o Wacom también borra.",
+          "El **color, el tipo de línea y el grosor** solo cambian el aspecto de la tinta; el reconocimiento usa la forma de los trazos.",
+          "**Modo de entrada**: *Automático* ignora los dedos y la palma una vez se ha usado el lápiz; *Solo lápiz* no deja dibujar nunca con el dedo; *Lápiz y dedo* deja dibujar a ambos; *Trackpad* dibuja con clic – mover – clic.",
+          "El **indicador del dispositivo** muestra si el navegador ha visto un lápiz, un dedo o un ratón/trackpad, y si el contacto se ha ignorado."
+        ]
+      },
+      "recognize": {
+        "title": "Reconocimiento y correcciones",
+        "body": [
+          "**Reconocer** colorea la tinta según cómo se ha leído: enlaces en azul, etiquetas en verde, flechas en rojo, lo no entendido en gris.",
+          "Si algo se lee mal: **Seguir dibujando** (Esc), borra el trazo (E) y vuelve a dibujarlo, más grande y con espacios más claros entre enlaces y letras.",
+          "La **comprobación del flujo de electrones** avisa cuando una flecha empieza en un átomo sin par solitario, empieza o termina en ninguna parte, o da a C, N, O o F más de un octeto.",
+          "Después de insertar, las herramientas de Ketcher corrigen el resto (tipo de átomo, carga, orden de enlace).",
+          "Si el mismo símbolo se lee mal una y otra vez, enséñaselo a MecHand (**Enseñar**)."
+        ]
+      },
+      "library": {
+        "title": "Biblioteca de plantillas y estructuras desde texto",
+        "body": [
+          "Ábrela con **Biblioteca** o Ctrl/⌘+K y escribe: nombres en inglés o catalán, abreviaturas (Trp, THF), fórmulas, números CAS. Los acentos y los pequeños errores no importan.",
+          "Intro añade la estructura resaltada junto a tu dibujo; los mecanismos sustituyen el lienzo. Mayús+Intro hace lo contrario. Ctrl/⌘+D guarda una favorita.",
+          "Escribe un **SMILES** o un **InChI** y se dibuja enseguida, sin conexión.",
+          "Para otros **nombres o números CAS**, pulsa **Buscar en línea** (Alt+Intro): solo se envía el texto que has escrito a PubChem (y OPSIN)."
+        ]
+      },
+      "teach": {
+        "title": "Enseña a MecHand tu letra",
+        "body": [
+          "**Enseñar** guarda ejemplos de tu letra en este navegador y los usa enseguida.",
+          "*Letras y signos*: unas cuantas muestras de cada símbolo que MecHand lee mal. *Flechas*: las puntas dibujadas con un trazo aparte enseñan tu estilo de punta. *Electrones*: el tamaño de tus puntos.",
+          "**Exportar las muestras** las guarda en un archivo que se puede añadir al modelo compartido."
+        ]
+      },
+      "export": {
+        "title": "Exportación",
+        "body": [
+          "**Exportar** convierte todo el lienzo: **TikZ** (flechas curvas como curvas de Bézier) y **chemfig** para LaTeX, **CDXML** para ChemDraw, **MOL/RXN** para Marvin y RDKit, **KET** y **SMILES**.",
+          "Copia el código o descárgalo como archivo."
+        ]
+      },
+      "shortcuts": {
+        "title": "Atajos de teclado",
+        "body": [
+          "`Alt+F` mano alzada sí/no · `Espacio` reconocer · `P` / `E` lápiz / goma",
+          "`Ctrl/⌘+Z` deshacer tinta · `Ctrl/⌘+Mayús+Z` rehacer tinta · `Esc` descarta un trazo de trackpad abierto, cierra un diálogo",
+          "`Ctrl/⌘+K` biblioteca · `F1` esta ayuda",
+          "En la biblioteca: las flechas mueven, `Intro` inserta, `Mayús+Intro` del otro modo, `Ctrl/⌘+D` favorita, `Alt+Intro` buscar en línea.",
+          "En el diálogo de reconocimiento: `Intro` inserta, `Esc` sigue dibujando. Con la mano alzada desactivada, funcionan los atajos de Ketcher."
+        ]
+      },
+      "privacy": {
+        "title": "Privacidad",
+        "body": [
+          "Tus dibujos y tus muestras de letra no salen nunca del navegador: no hay ningún servidor.",
+          "La configuración, las muestras de Enseñar y las favoritas se guardan solo en el almacenamiento de este navegador.",
+          "El único uso de la red después de cargar la página es la búsqueda opcional de un nombre en la biblioteca, y solo cuando la pides."
+        ]
+      },
+      "translate": {
+        "title": "Traducciones",
+        "body": [
+          "La interfaz de MecHand se traduce con un archivo JSON sencillo por idioma. Para añadir o mejorar un idioma, copia `en.json` de `src/i18n/locales/`, traduce sus textos y envíalo al proyecto (una *pull request* o un correo).",
+          "Los textos que faltan aparecen en inglés, así que una traducción parcial ya funciona. Las barras propias de Ketcher no las traduce MecHand."
+        ]
+      }
+    },
+    "tourSteps": {
+      "freehand": "**A mano alzada**: activa el dibujo a mano sobre el lienzo de Ketcher (Alt+F).",
+      "recognize": "**Reconocer** lee la tinta y muestra una estructura limpia para insertar (Espacio).",
+      "undo": "Deshaz y rehaz los cambios en la tinta, o bórrala toda.",
+      "inkbar": "La **barra del lápiz**: lápiz o goma, color, tipo de línea, grosor y modo de entrada (rechazo de palma, trackpad).",
+      "library": "La **Biblioteca**: estructuras y mecanismos ya hechos, y moléculas a partir de un SMILES, InChI, número CAS o nombre (Ctrl/⌘+K).",
+      "export": "**Exportar** a TikZ, chemfig, ChemDraw, Marvin…",
+      "teach": "**Enseña** a MecHand tu letra.",
+      "language": "Elige el idioma de la interfaz.",
+      "help": "La ayuda siempre está aquí (F1), sobre lo que estás haciendo.",
+      "next": "Siguiente",
+      "back": "Atrás",
+      "done": "Hecho",
+      "skip": "Saltar la visita",
+      "step": "{n} de {total}"
+    },
+    "tips": {
+      "welcome": "¿Primera vez en MecHand? Una visita de un minuto muestra los controles principales.",
+      "welcomeAction": "Hacer la visita",
+      "firstFreehand": "Dibuja como en papel y pulsa Espacio para reconocer. La ayuda (F1) tiene consejos para cada paso.",
+      "ignored": "Tu dedo se ignora porque se ha usado un lápiz (rechazo de palma). Para dibujar con el dedo, usa el modo de entrada Lápiz y dedo.",
+      "ignoredAction": "Usar Lápiz y dedo",
+      "trackpad": "¿Dibujas con un trackpad? El modo de entrada Trackpad dibuja con clic – mover – clic, sin tener que mantener pulsado.",
+      "trackpadAction": "Usar el modo Trackpad",
+      "dismiss": "Cerrar",
+      "openHelp": "Ayuda"
+    }
+  }
+}

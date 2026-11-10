@@ -13,9 +13,15 @@
 import type { Scene } from '../scene/types';
 import type { ArrowAnchor, RecognizedArrow } from './sketch';
 
+export type IssueCode = 'start-nothing' | 'start-no-lone-pair' | 'end-nothing' | 'octet';
+
 export interface MechanismIssue {
   arrow: number;
   severity: 'warning' | 'info';
+  /** Kind of problem; the interface shows the translation of check.<code> with `params`. */
+  code: IssueCode;
+  params: { arrow: number; at?: string };
+  /** The same in English (logs, tests). */
   message: string;
 }
 
@@ -44,7 +50,7 @@ function describe(anchor: ArrowAnchor, scene: Scene): string {
   if (anchor.type === 'atom') return `${scene.atoms[anchor.atom].symbol}${anchor.atom + 1}`;
   if (anchor.type === 'bond') {
     const b = scene.bonds[anchor.bond];
-    return `bond ${scene.atoms[b.begin].symbol}${b.begin + 1}–${scene.atoms[b.end].symbol}${b.end + 1}`;
+    return `${scene.atoms[b.begin].symbol}${b.begin + 1}–${scene.atoms[b.end].symbol}${b.end + 1}`;
   }
   return 'nothing';
 }
@@ -62,18 +68,18 @@ export function checkMechanism(scene: Scene, arrows: RecognizedArrow[]): Mechani
   arrows.forEach(({ arrow, from, to }, i) => {
     if (arrow.kind !== 'electron-pair' && arrow.kind !== 'single-electron') return;
     if (from.type === 'none') {
-      issues.push({ arrow: i, severity: 'warning', message: `Arrow ${i + 1} does not start at an atom or a bond.` });
+      issues.push({ arrow: i, severity: 'warning', code: 'start-nothing', params: { arrow: i + 1 }, message: `Arrow ${i + 1} does not start at an atom or a bond.` });
     } else if (from.type === 'atom' && arrow.kind === 'electron-pair') {
       const a = scene.atoms[from.atom];
       if (lonePairs(scene, from.atom) === 0 && a.charge >= 0) {
         issues.push({
-          arrow: i, severity: 'warning',
+          arrow: i, severity: 'warning', code: 'start-no-lone-pair', params: { arrow: i + 1, at: describe(from, scene) },
           message: `Arrow ${i + 1} starts at ${describe(from, scene)}, which has no lone pair. Start it at a lone pair or a bond.`,
         });
       }
     }
     if (to.type === 'none') {
-      issues.push({ arrow: i, severity: 'warning', message: `Arrow ${i + 1} does not point to an atom or a bond.` });
+      issues.push({ arrow: i, severity: 'warning', code: 'end-nothing', params: { arrow: i + 1 }, message: `Arrow ${i + 1} does not point to an atom or a bond.` });
     } else if (to.type === 'atom' && arrow.kind === 'electron-pair') {
       const a = scene.atoms[to.atom];
       if (OCTET_LIMITED.has(a.symbol) && a.charge <= 0 && !losing.has(to.atom)) {
@@ -82,7 +88,7 @@ export function checkMechanism(scene: Scene, arrows: RecognizedArrow[]): Mechani
         const implicitH = a.symbol === 'C' ? Math.max(0, 4 - bondOrderSum(scene, to.atom)) : 0;
         if (electrons + 2 * implicitH + 2 > 8 && ve !== undefined) {
           issues.push({
-            arrow: i, severity: 'warning',
+            arrow: i, severity: 'warning', code: 'octet', params: { arrow: i + 1, at: describe(to, scene) },
             message: `Arrow ${i + 1} gives ${describe(to, scene)} more than an octet. Is a bond to it breaking at the same time?`,
           });
         }

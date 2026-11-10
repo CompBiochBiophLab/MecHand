@@ -11,39 +11,36 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ElementSample } from '../recognition/elements';
 import type { SymbolSample } from '../recognition/dollarP';
 import type { FreehandLayer } from '../ink/FreehandLayer';
+import { Rich, type T, useT } from '../i18n/i18n';
 import { btn } from '../ui/Modal';
 import { FIRST_COUNTRY_COUNT, countryOptions } from './countries';
-import { type StudyEnvironment, describeEnvironment, detectEnvironment } from './environment';
+import { type StudyEnvironment, detectEnvironment } from './environment';
 import {
   type Device, type Participant, type Role, type StudyComments, StudyRecorder, newParticipantCode, studyState,
 } from './recorder';
-import { CONDITION_LABEL, type Condition, GROUPS, type Group, stimulus, tasksFor } from './tasks';
+import { type Condition, GROUPS, type Group, stimulus, tasksFor } from './tasks';
 
 const params = new URLSearchParams(location.search);
 
-const DEVICES: [Device, string][] = [
-  ['tauleta-llapis', 'Tauleta amb llapis'],
-  ['tauleta-dit', 'Tauleta amb el dit'],
-  ['ordinador-llapis', 'Ordinador amb llapis o tauleta gràfica'],
-  ['ordinador-tactil', 'Ordinador amb pantalla tàctil (dit)'],
-  ['ordinador-trackpad', 'Ordinador amb trackpad'],
-  ['ordinador-ratoli', 'Ordinador amb ratolí'],
-  ['altre', 'Altre'],
-];
+const DEVICES: Device[] = ['tauleta-llapis', 'tauleta-dit', 'ordinador-llapis', 'ordinador-tactil', 'ordinador-trackpad', 'ordinador-ratoli', 'altre'];
 
-/** System Usability Scale (Brooke, 1996), Catalan translation. */
-export const SUS_ITEMS = [
-  "Crec que m'agradaria utilitzar aquesta eina sovint.",
-  "He trobat l'eina innecessàriament complexa.",
-  "He trobat que l'eina era fàcil d'utilitzar.",
-  "Crec que necessitaria l'ajuda d'una persona amb coneixements tècnics per poder utilitzar l'eina.",
-  "He trobat que les diverses funcions de l'eina estaven ben integrades.",
-  "He trobat que hi havia massa incoherències en l'eina.",
-  "M'imagino que la majoria de la gent aprendria a utilitzar l'eina molt ràpidament.",
-  "He trobat l'eina molt feixuga d'utilitzar.",
-  "M'he sentit molt segur/a utilitzant l'eina.",
-  "Hauria d'aprendre moltes coses abans de poder començar a utilitzar l'eina.",
-];
+/**
+ * System Usability Scale (Brooke, 1996): the ten items, in the interface language (study.sus.item1…10;
+ * English: Brooke's wording; Catalan: the study's translation; see estudi/08-questionaris.md).
+ */
+export const susItems = (t: T) => Array.from({ length: 10 }, (_, i) => t(`study.sus.item${i + 1}`));
+
+/** Short description of the recorded environment, in the interface language. */
+function describeEnv(e: StudyEnvironment, t: T): string {
+  const v = (x: { name: string; major: number | null }) => (x.major ? `${x.name} ${x.major}` : x.name);
+  return [
+    `${t('study.env.browser')}: ${v(e.browser)}`,
+    `${t('study.env.os')}: ${v(e.os)}`,
+    `${t('study.env.architecture')}: ${e.architecture ?? t('study.env.notAvailable')}`,
+    `${t('study.env.screen')}: ${e.screen.width}×${e.screen.height} (×${e.screen.pixelRatio})`,
+    `${t('study.env.touchPoints')}: ${e.maxTouchPoints}`,
+  ].join(' · ');
+}
 
 export interface StudyStatus {
   /** Condition of the running task (null between tasks). */
@@ -75,6 +72,7 @@ export function StudyPanel({ ketcher, getLayer, appVersion, modelVersion, teach,
   onClearTeach: () => void;
   onStatus: (s: StudyStatus) => void;
 }) {
+  const { t, lang } = useT();
   const [rec, setRec] = useState<StudyRecorder | null>(() => StudyRecorder.restore());
   const [, force] = useState(0);
   const rerender = () => force((x) => x + 1);
@@ -110,7 +108,7 @@ export function StudyPanel({ ketcher, getLayer, appVersion, modelVersion, teach,
   // Task clock.
   useEffect(() => {
     if (!running) return;
-    const id = setInterval(() => setTick((t) => t + 1), 1000);
+    const id = setInterval(() => setTick((x) => x + 1), 1000);
     return () => clearInterval(id);
   }, [running]);
 
@@ -124,13 +122,13 @@ export function StudyPanel({ ketcher, getLayer, appVersion, modelVersion, teach,
   };
 
   if (!rec || !session || !progress) {
-    return <StartForm env={env} hasTeachSamples={teach.samples.length + teach.elements.length > 0} onClearTeach={onClearTeach}
+    return <StartForm env={env} hasTeachSamples={teach.samples.length + teach.elements.length > 0}
       onStart={(group, participant, share, publish) => {
         if (!env) return;
         // Samples already in this browser may be someone else's: each session starts from the shared model.
         onClearTeach();
         const r = StudyRecorder.create({
-          appVersion, modelVersion, code: newParticipantCode(), group, participant,
+          appVersion, modelVersion, uiLanguage: lang, code: newParticipantCode(), group, participant,
           environment: { ...env, pointerTypes: [] }, tasks: tasksFor(group),
           shareTeachSamples: share, publishTeachSamples: share && publish,
         });
@@ -169,11 +167,11 @@ export function StudyPanel({ ketcher, getLayer, appVersion, modelVersion, teach,
   return (
     <aside data-testid="mechand-study" style={{ width: 360, flexShrink: 0, overflowY: 'auto', background: '#f9fafb', borderLeft: '1px solid #e5e7eb', padding: 10, fontSize: 13, fontFamily: 'system-ui, sans-serif' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
-        <b>Estudi MecHand</b>
+        <b>{t('study.title')}</b>
         {progress.phase === 'done' ? (
-          <span style={{ fontFamily: 'monospace', fontSize: 14 }} title="El teu codi anònim">{session.code}</span>
+          <span style={{ fontFamily: 'monospace', fontSize: 14 }} title={t('study.codeTitle')}>{session.code}</span>
         ) : (
-          <button type="button" onClick={() => setShowCode((v) => !v)} title="El teu codi anònim (es mostra al final)"
+          <button type="button" onClick={() => setShowCode((v) => !v)} title={t('study.codeHidden')}
             style={{ fontFamily: 'monospace', fontSize: 13, border: '1px solid #e5e7eb', background: '#fff', borderRadius: 6, cursor: 'pointer', padding: '1px 6px' }}>
             {showCode ? session.code : 'MH-•••••'}
           </button>
@@ -182,64 +180,63 @@ export function StudyPanel({ ketcher, getLayer, appVersion, modelVersion, teach,
 
       {progress.phase === 'teach' && (
         <div style={box}>
-          <b>1. Entrenament (uns 10 minuts)</b>
-          <p>Ensenya a MecHand la teva lletra. Obre <b>✍ Teach</b> i desa unes 3 mostres de cada:</p>
+          <b>{t('study.teach.title')}</b>
+          <p><Rich text={t('study.teach.intro')} /></p>
           <ul style={{ paddingLeft: 18, margin: '4px 0' }}>
-            <li><i>Letters &amp; signs</i>: C, O, N, H, F, l (de Cl), r (de Br), a (de Na), +, − (i ⊕, ⊖ si les escrius encerclades)</li>
-            <li><i>Arrows</i>: fletxa corba de 2 e⁻, fletxa de reacció, equilibri</li>
-            <li><i>Electrons</i>: parell solitari</li>
+            <li><Rich text={t('study.teach.letters', { tab: t('teach.letters') })} /></li>
+            <li><Rich text={t('study.teach.arrows', { tab: t('teach.group.arrows') })} /></li>
+            <li><Rich text={t('study.teach.electrons', { tab: t('teach.group.electrons') })} /></li>
           </ul>
-          <p style={{ color: '#4b5563' }}>Sota el requadre veuràs com ho llegeix MecHand. Si encerta (✓), no cal insistir-hi.</p>
+          <p style={{ color: '#4b5563' }}>{t('study.teach.reading')}</p>
           <div style={{ display: 'flex', gap: 6 }}>
-            <button style={btn('#1d4ed8', '#fff')} onClick={() => { rec.log('teach-open'); onOpenTeach(); }}>Obre ✍ Teach</button>
+            <button style={btn('#1d4ed8', '#fff')} onClick={() => { rec.log('teach-open'); onOpenTeach(); }}>{t('study.teach.open')}</button>
             <button style={btn('#16a34a', '#fff')} data-testid="study-teach-done" onClick={() => {
               rec.log('teach-end', undefined, { letters: teach.samples.length, elements: teach.elements.length });
               go('tasks', 0);
-            }}>He acabat l'entrenament</button>
+            }}>{t('study.teach.done')}</button>
           </div>
         </div>
       )}
 
       {progress.phase === 'tasks' && task && (() => {
         const s = stimulus(task.stimulus);
-        const inBlock = session.tasks.filter((t) => t.block === task.block);
-        const k = inBlock.findIndex((t) => t.id === task.id);
+        const inBlock = session.tasks.filter((x) => x.block === task.block);
+        const k = inBlock.findIndex((x) => x.id === task.id);
         const secs = running ? rec.elapsed(task.id) : 0;
         void tick;
         return (
           <div style={box}>
-            <div style={{ fontSize: 12, color: '#4b5563' }}>Bloc {task.block} de 2 · tasca {k + 1} de {inBlock.length}{task.practice ? ' · pràctica (no compta)' : ''}</div>
+            <div style={{ fontSize: 12, color: '#4b5563' }}>{t('study.task.position', { block: task.block, k: k + 1, n: inBlock.length })}{task.practice ? t('study.task.practice') : ''}</div>
             <div data-testid="study-condition" style={{
               margin: '6px 0', padding: '4px 8px', borderRadius: 6, fontWeight: 600,
               background: task.condition === 'freehand' ? '#dbeafe' : '#fef3c7', color: task.condition === 'freehand' ? '#1e3a8a' : '#78350f',
-            }}>{CONDITION_LABEL[task.condition]}</div>
-            <p style={{ margin: '6px 0' }}>{s.task}</p>
+            }}>{t(`study.condition.${task.condition}`)}</div>
+            <p style={{ margin: '6px 0' }} data-testid="study-task-text">{t(`study.stimulus.${s.id}`) === `study.stimulus.${s.id}` ? s.task : t(`study.stimulus.${s.id}`)}</p>
             {task.condition === 'ketcher' && (
               <p style={{ fontSize: 11, color: '#6b7280', margin: '0 0 6px' }} data-testid="study-ketcher-tip">
-                Fletxes corbes a Ketcher: eina de fletxes → «Arrow Elliptical Arc Open Angle» (2 e⁻) o «… Open Half
-                Angle» (1 e⁻). Càrregues: eines «A+» i «A−».
+                {t('study.task.ketcherTip')}
               </p>
             )}
             <img src={`${import.meta.env.BASE_URL}study/${s.file}`} alt={s.source.title}
               onClick={() => setZoom(true)} style={{ width: '100%', cursor: 'zoom-in', border: '1px solid #e5e7eb', borderRadius: 4, background: '#fff' }} />
             <div style={{ fontSize: 10, color: '#6b7280', marginTop: 2 }}>
               {s.source.title.replace(/^File:/, '')} · {s.source.author} · {s.source.license}
-              {s.source.license.startsWith('CC') ? ' · convertida a PNG' : ''}
+              {s.source.license.startsWith('CC') ? ` · ${t('study.task.converted')}` : ''}
             </div>
             {!running ? (
               <button style={{ ...btn('#1d4ed8', '#fff'), marginTop: 8, width: '100%' }} data-testid="study-start-task" onClick={async () => {
                 await clearCanvas();
                 rec.startTask(task.id);
                 setRunning(true);
-              }}>Comença la tasca</button>
+              }}>{t('study.task.start')}</button>
             ) : (
               <div style={{ marginTop: 8 }}>
                 <div style={{ fontSize: 20, fontVariantNumeric: 'tabular-nums', textAlign: 'center' }}>
                   {Math.floor(secs / 60)}:{String(secs % 60).padStart(2, '0')}
                 </div>
                 <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
-                  <button style={{ ...btn('#16a34a', '#fff'), flex: 1 }} data-testid="study-finish-task" onClick={() => finishTask(false)}>He acabat</button>
-                  <button style={btn('#f3f4f6', '#374151')} onClick={() => confirm('Vols ometre aquesta tasca?') && finishTask(true)}>Omet</button>
+                  <button style={{ ...btn('#16a34a', '#fff'), flex: 1 }} data-testid="study-finish-task" onClick={() => finishTask(false)}>{t('study.task.finish')}</button>
+                  <button style={btn('#f3f4f6', '#374151')} onClick={() => confirm(t('study.task.confirmSkip')) && finishTask(true)}>{t('study.task.skip')}</button>
                 </div>
               </div>
             )}
@@ -271,52 +268,43 @@ export function StudyPanel({ ketcher, getLayer, appVersion, modelVersion, teach,
 
       {progress.phase === 'done' && (
         <div style={box}>
-          <b>Moltes gràcies!</b>
-          <p>Descarrega el fitxer de la sessió i copia'l tu mateix/a a la memòria USB de l'estudi (la persona de contacte no mira el nom del fitxer). No l'enviïs per correu.</p>
+          <b>{t('study.done.thanks')}</b>
+          <p>{t('study.done.instructions')}</p>
           <button style={{ ...btn('#1d4ed8', '#fff'), width: '100%' }} data-testid="study-download" onClick={() => {
             const text = fileText ?? rec.finish(teach);
             setFileText(text);
             download(`mechand-estudi-${session.code}.json`, text);
-          }}>Descarrega {`mechand-estudi-${session.code}.json`}</button>
+          }}>{t('study.done.download', { file: `mechand-estudi-${session.code}.json` })}</button>
           <p style={{ fontSize: 12, background: '#f3f4f6', padding: 6, borderRadius: 6 }} data-testid="study-choices">
-            Les teves opcions: mostres de ✍ Teach al fitxer: <b>{session.shareTeachSamples ? 'sí' : 'no'}</b>;
-            publicació de les mostres: <b>{session.publishTeachSamples ? 'sí' : 'no'}</b>. Han de coincidir amb el
-            consentiment en paper; si no, digues-ho ara a la persona de contacte.
+            <Rich text={t('study.done.choices', {
+              share: session.shareTeachSamples ? t('study.done.yes') : t('study.done.no'),
+              publish: session.publishTeachSamples ? t('study.done.yes') : t('study.done.no'),
+            })} />
           </p>
-          <p style={{ fontSize: 12, color: '#4b5563' }}>
-            Una còpia del fitxer queda a la carpeta de baixades d'aquest dispositiu; esborra-la després de lliurar-lo.
-          </p>
-          <p style={{ fontSize: 12, color: '#4b5563' }}>
-            Guarda el teu codi <b>{session.code}</b>: si més endavant vols retirar les teves dades, només cal que l'enviïs
-            a l'equip investigador.
-          </p>
+          <p style={{ fontSize: 12, color: '#4b5563' }}>{t('study.done.downloadsCopy')}</p>
+          <p style={{ fontSize: 12, color: '#4b5563' }}><Rich text={t('study.done.keepCode', { code: session.code })} /></p>
           <button style={{ ...btn('#fef2f2', '#b91c1c'), width: '100%' }} data-testid="study-clear" onClick={() => {
-            if (!confirm("S'esborraran la sessió i les mostres d'entrenament d'aquest navegador. Ja has descarregat el fitxer?")) return;
+            if (!confirm(t('study.done.confirmClear'))) return;
             StudyRecorder.clearStorage();
             onClearTeach();
             studyState.recorder = null;
             setFileText(null);
             setRec(null);
-          }}>Esborra les dades d'aquest navegador</button>
+          }}>{t('study.done.clear')}</button>
         </div>
       )}
 
       <details style={{ fontSize: 11, color: '#6b7280' }}>
-        <summary>Què es registra</summary>
-        <p>Codi anònim, grup, les teves respostes, {describeEnvironment(session.environment)}; tipus de punter usats:
-          {' '}{session.environment.pointerTypes.join(', ') || '—'}. Per a cada tasca: temps, traços (punts x, y i moment
-          de cada traç), el que MecHand ha reconegut, les teves decisions, l'ús dels controls del llapis (goma, desfer,
-          color, gruix, mode d'entrada), els contactes ignorats pel rebuig de palmell i el dibuix final. Res no surt
-          d'aquest navegador.</p>
+        <summary>{t('study.recorded.summary')}</summary>
+        <p>{t('study.recorded.text', { environment: describeEnv(session.environment, t), pointers: session.environment.pointerTypes.join(', ') || '—' })}</p>
       </details>
     </aside>
   );
 }
 
-function StartForm({ env, hasTeachSamples, onClearTeach, onStart }: {
+function StartForm({ env, hasTeachSamples, onStart }: {
   env: StudyEnvironment | null;
   hasTeachSamples: boolean;
-  onClearTeach: () => void;
   onStart: (group: Group, participant: Participant, shareTeach: boolean, publishTeach: boolean) => void;
 }) {
   const fromUrl = params.get('group') as Group | null;
@@ -330,81 +318,79 @@ function StartForm({ env, hasTeachSamples, onClearTeach, onStart }: {
   const [share, setShare] = useState(false);
   const [publish, setPublish] = useState(false);
   const [consent, setConsent] = useState(false);
-  const countries = useMemo(() => countryOptions(), []);
+  const { t, lang } = useT();
+  const countries = useMemo(() => countryOptions(lang), [lang]);
   const ready = group && role && (role === 'professorat' || course) && device && country !== null && experience && consent && env;
   const ref = useRef<HTMLDivElement>(null);
 
   return (
     <aside data-testid="mechand-study" style={{ width: 360, flexShrink: 0, overflowY: 'auto', background: '#f9fafb', borderLeft: '1px solid #e5e7eb', padding: 10, fontSize: 13, fontFamily: 'system-ui, sans-serif' }}>
       <div ref={ref} style={box}>
-        <b>Estudi MecHand (UVic-UCC)</b>
-        <p style={{ margin: '6px 0' }}>Abans de començar has d'haver llegit el full d'informació i signat el consentiment informat.
-          La participació és voluntària, no té cap efecte en cap avaluació i la pots deixar en qualsevol moment.</p>
-        <label style={label}>Grup (te'l dona la persona de contacte)</label>
+        <b>{t('study.startTitle')}</b>
+        <p style={{ margin: '6px 0' }}>{t('study.start.intro')}</p>
+        <label style={label}>{t('study.start.group')}</label>
         <select style={field} value={group} onChange={(e) => setGroup(e.target.value as Group)} data-testid="study-group">
           <option value="">—</option>
           {GROUPS.map((g) => <option key={g}>{g}</option>)}
         </select>
-        <label style={label}>Participes com a</label>
+        <label style={label}>{t('study.start.role')}</label>
         <select style={field} value={role} onChange={(e) => setRole(e.target.value as Role)} data-testid="study-role">
           <option value="">—</option>
-          <option value="estudiant">Estudiant del grau en Biotecnologia</option>
-          <option value="professorat">Professorat de química</option>
+          <option value="estudiant">{t('study.start.roleStudent')}</option>
+          <option value="professorat">{t('study.start.roleTeacher')}</option>
         </select>
         {role === 'estudiant' && (<>
-          <label style={label}>Curs</label>
+          <label style={label}>{t('study.start.course')}</label>
           <select style={field} value={course} onChange={(e) => setCourse(e.target.value)} data-testid="study-course">
             <option value="">—</option>
-            {['1r', '2n', '3r', '4t'].map((c, i) => <option key={c} value={i + 1}>{c} curs</option>)}
+            {[1, 2, 3, 4].map((c) => <option key={c} value={c}>{t(`study.start.course${c}`)}</option>)}
           </select>
         </>)}
-        <label style={label}>Amb què dibuixaràs</label>
+        <label style={label}>{t('study.start.device')}</label>
         <select style={field} value={device} onChange={(e) => setDevice(e.target.value as Device)} data-testid="study-device">
           <option value="">—</option>
-          {DEVICES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+          {DEVICES.map((v) => <option key={v} value={v}>{t(`study.start.devices.${v}`)}</option>)}
         </select>
-        <label style={label}>País on vas aprendre a llegir i escriure</label>
+        <label style={label}>{t('study.start.country')}</label>
         <select style={field} value={country ?? '?'} onChange={(e) => setCountry(e.target.value === '?' ? null : e.target.value)} data-testid="study-country">
           <option value="?">—</option>
-          <option value="">Prefereixo no respondre</option>
+          <option value="">{t('study.start.noAnswer')}</option>
           {countries.map((c, i) => (
             <option key={c.code} value={c.code} style={i === FIRST_COUNTRY_COUNT - 1 ? { borderBottom: '1px solid #999' } : undefined}>{c.name}</option>
           ))}
         </select>
-        <label style={label}>Mà amb què escrius (opcional)</label>
+        <label style={label}>{t('study.start.hand')}</label>
         <select style={field} value={hand} onChange={(e) => setHand(e.target.value)}>
-          <option value="">Prefereixo no respondre</option>
-          <option value="dreta">Dreta</option>
-          <option value="esquerra">Esquerra</option>
-          <option value="ambidextra">Totes dues</option>
+          <option value="">{t('study.start.noAnswer')}</option>
+          <option value="dreta">{t('study.start.handRight')}</option>
+          <option value="esquerra">{t('study.start.handLeft')}</option>
+          <option value="ambidextra">{t('study.start.handBoth')}</option>
         </select>
-        <label style={label}>Experiència amb programes de dibuix químic (ChemDraw, Ketcher, Marvin…)</label>
+        <label style={label}>{t('study.start.experience')}</label>
         <select style={field} value={experience} onChange={(e) => setExperience(e.target.value)} data-testid="study-experience">
           <option value="">—</option>
-          <option value="cap">Cap</option>
-          <option value="poca">Poca (alguna vegada)</option>
-          <option value="molta">Molta (sovint)</option>
+          <option value="cap">{t('study.start.expNone')}</option>
+          <option value="poca">{t('study.start.expLittle')}</option>
+          <option value="molta">{t('study.start.expMuch')}</option>
         </select>
         <label style={{ display: 'flex', gap: 6, marginTop: 10, alignItems: 'flex-start' }}>
           <input type="checkbox" checked={share} onChange={(e) => { setShare(e.target.checked); if (!e.target.checked) setPublish(false); }} data-testid="study-share" />
-          <span>Accepto que les mostres que dibuixi a ✍ Teach s'incloguin al fitxer de la sessió (opcional).</span>
+          <span>{t('study.start.share')}</span>
         </label>
         <label style={{ display: 'flex', gap: 6, marginTop: 6, alignItems: 'flex-start', opacity: share ? 1 : 0.5 }}>
           <input type="checkbox" checked={publish} disabled={!share} onChange={(e) => setPublish(e.target.checked)} data-testid="study-publish" />
-          <span>Accepto que aquestes mostres es publiquin al repositori obert de MecHand, només amb el símbol i les coordenades x, y (opcional; ha de coincidir amb el que he marcat al consentiment).</span>
+          <span>{t('study.start.publish')}</span>
         </label>
         <label style={{ display: 'flex', gap: 6, marginTop: 6, alignItems: 'flex-start' }}>
           <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} data-testid="study-consent" />
-          <span>He llegit el full d'informació i he signat el consentiment informat.</span>
+          <span>{t('study.start.consent')}</span>
         </label>
         <p style={{ fontSize: 11, color: '#6b7280', margin: '8px 0' }}>
-          Del teu dispositiu només es registra: {env ? describeEnvironment(env) : '…'}; quins tipus de punter fas servir (llapis, dit, ratolí) i com fas servir l'aplicació (vegeu el full d'informació).
-          No es registra el teu nom, ni l'adreça IP, ni cap identificador del dispositiu.
+          {t('study.start.envNote', { environment: env ? describeEnv(env, t) : '…' })}
         </p>
         {hasTeachSamples && (
           <p style={{ fontSize: 12, background: '#fef3c7', padding: 6, borderRadius: 6 }} data-testid="study-teach-warning">
-            Aquest navegador ja té mostres d'entrenament (potser d'una altra persona): s'esborraran en començar,
-            perquè cada sessió parteixi del model compartit.
+            {t('study.start.teachWarning')}
           </p>
         )}
         <button style={{ ...btn(ready ? '#1d4ed8' : '#9ca3af', '#fff'), width: '100%', marginTop: 4 }} disabled={!ready} data-testid="study-begin"
@@ -415,20 +401,21 @@ function StartForm({ env, hasTeachSamples, onClearTeach, onStart }: {
             literacyCountry: country ?? '',
             handedness: (hand || null) as Participant['handedness'],
             experience: experience as Participant['experience'],
-          }, share, publish)}>Comença</button>
+          }, share, publish)}>{t('study.start.begin')}</button>
       </div>
     </aside>
   );
 }
 
 function SusForm({ condition, onDone }: { condition: Condition; onDone: (answers: number[]) => void }) {
-  const [a, setA] = useState<(number | null)[]>(SUS_ITEMS.map(() => null));
+  const { t } = useT();
+  const items = susItems(t);
+  const [a, setA] = useState<(number | null)[]>(items.map(() => null));
   return (
     <div style={box} data-testid="study-sus">
-      <b>Valoració del bloc</b>
-      <p style={{ margin: '6px 0' }}>Pensa en com has treballat en aquest bloc: <i>{CONDITION_LABEL[condition]}</i>.
-        1 = totalment en desacord, 5 = totalment d'acord.</p>
-      {SUS_ITEMS.map((q, i) => (
+      <b>{t('study.sus.title')}</b>
+      <p style={{ margin: '6px 0' }}><Rich text={t('study.sus.intro', { condition: t(`study.condition.${condition}`) })} /></p>
+      {items.map((q, i) => (
         <div key={i} style={{ margin: '8px 0' }}>
           <div>{i + 1}. {q}</div>
           <div style={{ display: 'flex', gap: 10, marginTop: 3 }}>
@@ -441,12 +428,13 @@ function SusForm({ condition, onDone }: { condition: Condition; onDone: (answers
         </div>
       ))}
       <button style={{ ...btn('#1d4ed8', '#fff'), width: '100%' }} disabled={a.some((x) => x === null)} data-testid="study-sus-done"
-        onClick={() => onDone(a as number[])}>Continua</button>
+        onClick={() => onDone(a as number[])}>{t('study.sus.continue')}</button>
     </div>
   );
 }
 
 function FinalForm({ onDone }: { onDone: (c: StudyComments) => void }) {
+  const { t } = useT();
   const [c, setC] = useState<StudyComments>({ freehand: '', ketcher: '', preference: '', other: '' });
   const area = (k: 'freehand' | 'ketcher' | 'other', q: string) => (
     <>
@@ -456,19 +444,19 @@ function FinalForm({ onDone }: { onDone: (c: StudyComments) => void }) {
   );
   return (
     <div style={box}>
-      <b>Per acabar (opcional)</b>
-      <p style={{ fontSize: 12, color: '#4b5563' }}>No hi escriguis cap dada personal (noms, correus…).</p>
-      {area('freehand', 'Què t\'ha agradat i què no del dibuix a mà alçada (MecHand)?')}
-      {area('ketcher', 'Què t\'ha agradat i què no de dibuixar només amb les eines de Ketcher?')}
-      <label style={label}>Per dibuixar mecanismes, quina manera prefereixes?</label>
+      <b>{t('study.final.title')}</b>
+      <p style={{ fontSize: 12, color: '#4b5563' }}>{t('study.final.noPersonal')}</p>
+      {area('freehand', t('study.final.freehand'))}
+      {area('ketcher', t('study.final.ketcher'))}
+      <label style={label}>{t('study.final.preference')}</label>
       <select style={field} value={c.preference} onChange={(e) => setC({ ...c, preference: e.target.value as StudyComments['preference'] })} data-testid="study-preference">
-        <option value="">Prefereixo no respondre</option>
-        <option value="mechand">Dibuix a mà alçada (MecHand)</option>
-        <option value="ketcher">Eines de Ketcher</option>
-        <option value="igual">M'és igual</option>
+        <option value="">{t('study.final.prefNone')}</option>
+        <option value="mechand">{t('study.final.prefMechand')}</option>
+        <option value="ketcher">{t('study.final.prefKetcher')}</option>
+        <option value="igual">{t('study.final.prefSame')}</option>
       </select>
-      {area('other', 'Altres comentaris')}
-      <button style={{ ...btn('#16a34a', '#fff'), width: '100%', marginTop: 8 }} data-testid="study-final-done" onClick={() => onDone(c)}>Desa la sessió</button>
+      {area('other', t('study.final.other'))}
+      <button style={{ ...btn('#16a34a', '#fff'), width: '100%', marginTop: 8 }} data-testid="study-final-done" onClick={() => onDone(c)}>{t('study.final.save')}</button>
     </div>
   );
 }

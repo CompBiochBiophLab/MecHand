@@ -35,6 +35,7 @@ electron-flow arrows into Ketcher.
 - [Export](#export)
 - [Browser support](#browser-support)
 - [Privacy](#privacy)
+- [Help and translations](#help-and-translations)
 - [User study](#user-study)
 - [Optional recognition server (DECIMER)](#optional-recognition-server-decimer)
 - [Ideas taken from ChemDraw and Marvin](#ideas-taken-from-chemdraw-and-marvin)
@@ -298,6 +299,16 @@ makes **no network request**, no data is sent, and no cookie is set.
   avoid even that, run MecHand locally (`make dev`).
 
 ---
+
+## Help and translations
+
+**Help** (F1) opens a help centre beside the canvas: tips for what you are doing now, searchable topics,
+the keyboard shortcuts and a guided tour of the controls; small tips also appear once when they can
+help (a finger ignored by palm rejection, drawing with a trackpad). The whole interface is
+translated with one JSON file per language in
+[`ketcher-mechhand/src/i18n/locales/`](ketcher-mechhand/src/i18n/locales/) — English, Català and
+Español so far; copy `en.json`, translate the values and send it to add a language (see the
+[translation guide](https://compbiochbiophlab.github.io/MecHand/guide/translating)).
 
 ## User study
 

@@ -1,5 +1,6 @@
 /** Minimal SVG rendering of a Scene (used to preview what was recognized). */
 
+import { t } from '../i18n/i18n';
 import type { Scene } from '../scene/types';
 
 export function ScenePreview({ scene, width = 300, height = 190 }: { scene: Scene; width?: number; height?: number }) {
@@ -9,7 +10,7 @@ export function ScenePreview({ scene, width = 300, height = 190 }: { scene: Scen
     ...scene.arrows.flatMap((a) => [a.start, a.end]),
   ];
   if (pts.length === 0) {
-    return <div style={{ width, height, display: 'grid', placeItems: 'center', color: '#9ca3af', fontSize: 13 }}>Nothing recognized</div>;
+    return <div style={{ width, height, display: 'grid', placeItems: 'center', color: '#9ca3af', fontSize: 13 }}>{t('consolidate.nothing')}</div>;
   }
   const minX = Math.min(...pts.map((p) => p.x)) - 0.6, maxX = Math.max(...pts.map((p) => p.x)) + 0.6;
   const minY = Math.min(...pts.map((p) => p.y)) - 0.8, maxY = Math.max(...pts.map((p) => p.y)) + 0.8;
@@ -20,7 +21,7 @@ export function ScenePreview({ scene, width = 300, height = 190 }: { scene: Scen
   const labelled = (i: number) => scene.atoms[i].symbol !== 'C' || scene.atoms[i].charge !== 0;
 
   return (
-    <svg width={width} height={height} role="img" aria-label="Recognized structure">
+    <svg width={width} height={height} role="img" aria-label={t('consolidate.previewLabel')}>
       <defs>
         <marker id="mh-full" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M0,1 L10,5 L0,9" fill="none" stroke="#dc2626" strokeWidth="1.6" />

@@ -16,9 +16,14 @@ import { type InsertMode, type LibraryEntry, insertTemplate } from './templates/
 import { AboutPanel, type Engine } from './ui/AboutPanel';
 import { ConsolidateDialog } from './ui/ConsolidateDialog';
 import { ExportDialog } from './ui/ExportDialog';
+import { t } from './i18n/i18n';
 import { HelpProvider } from './ui/HelpSystem';
+import { HelpCenter } from './ui/HelpCenter';
+import { type TipId, TipToast, markTip, tipShown } from './ui/TipToast';
+import { Tour, tourSeen } from './ui/Tour';
 import { InkBar, type LastInput } from './ui/InkBar';
 import { MecHandBar } from './ui/MecHandBar';
+import { useCompact } from './ui/useCompact';
 import { TeachPanel } from './ui/TeachPanel';
 import { TemplateLibrary } from './ui/TemplateLibrary';
 import { StudyPanel, type StudyStatus } from './study/StudyPanel';
@@ -70,8 +75,24 @@ export default function App() {
   const [pen, setPen] = useState<PenSettings>(loadPenSettings);
   const [tool, setTool] = useState<InkTool>('pen');
   const [lastInput, setLastInput] = useState<LastInput | null>(null);
+  const lastInputRef = useRef('');
   const [openStroke, setOpenStroke] = useState(false);
   const [dialog, setDialog] = useState<Dialog>({ kind: 'none' });
+  const [helpOpen, setHelpOpen] = useState(false);
+  /** Width of the editor column decides whether the toolbars show text (both bars at once). */
+  const [columnRef, compact] = useCompact();
+  const [tourOpen, setTourOpen] = useState(false);
+  const [tip, setTip] = useState<TipId | null>(null);
+  /** Show a contextual tip once per browser (never in study mode, never over another tip or the tour). */
+  const offerTip = useCallback((id: TipId) => {
+    if (STUDY || tipShown(id)) return;
+    markTip(id);
+    setTip((cur) => cur ?? id);
+  }, []);
+  const closeTour = useCallback(() => setTourOpen(false), []);
+  const ignoredRef = useRef(0);
+  const tapsRef = useRef(0);
+  const inkCountRef = useRef(0);
   const [userSamples, setUserSamples] = useState<SymbolSample[]>(loadUserSamples);
   const [userElements, setUserElements] = useState<ElementSample[]>(loadElementSamples);
   const model = useMemo(() => buildModel({ userSamples, userElements }), [userSamples, userElements]);
@@ -90,6 +111,17 @@ export default function App() {
     if (!freehandAllowed) setFreehand(false);
   }, [freehandAllowed]);
   useEffect(() => studyLog('freehand', { on: freehand }), [freehand]);
+  /** The tour turns freehand on for the pen-bar step (and off again after it). */
+  const tourFreehand = useCallback((on: boolean) => {
+    if (freehandAllowed) setFreehand(on);
+  }, [freehandAllowed]);
+  useEffect(() => {
+    if (freehand && !tourOpen) offerTip('firstFreehand');
+  }, [freehand, tourOpen, offerTip]);
+  // First visit: offer the guided tour once Ketcher is ready.
+  useEffect(() => {
+    if (ketcher && !tourSeen()) offerTip('welcome');
+  }, [ketcher, offerTip]);
   // Pen settings: kept in this browser, applied to the ink layer, and logged in study tasks.
   const penRef = useRef(pen);
   const toolRef = useRef(tool);
@@ -123,10 +155,25 @@ export default function App() {
     waitForCanvasHost().then((host) => {
       layer = new FreehandLayer(
         host,
-        (l) => setInk({ count: l.strokes.length, canUndo: l.canUndo, canRedo: l.canRedo }),
+        (l) => {
+          // Several taps in a row from a mouse-type pointer: probably a trackpad without click-and-drag.
+          if (l.strokes.length > inkCountRef.current) {
+            const s = l.strokes[l.strokes.length - 1].points;
+            const len = s.reduce((a, p, i) => (i ? a + Math.hypot(p.x - s[i - 1].x, p.y - s[i - 1].y) : 0), 0);
+            tapsRef.current = len < 3 && lastInputRef.current === 'mouse' ? tapsRef.current + 1 : 0;
+            if (tapsRef.current >= 3) offerTip('trackpad');
+          }
+          inkCountRef.current = l.strokes.length;
+          setInk({ count: l.strokes.length, canUndo: l.canUndo, canRedo: l.canRedo });
+        },
         {
           onErase: (strokes, source) => studyLog('erase', { strokes, source }),
-          onInput: (type, accepted) => setLastInput((p) => ({ type, accepted, n: (p?.n ?? 0) + 1 })),
+          onInput: (type, accepted) => {
+            lastInputRef.current = type;
+            setLastInput((p) => ({ type, accepted, n: (p?.n ?? 0) + 1 }));
+            ignoredRef.current = accepted || type !== 'touch' ? 0 : ignoredRef.current + 1;
+            if (ignoredRef.current >= 3 && penRef.current.input === 'auto') offerTip('ignored');
+          },
           onOpenStroke: setOpenStroke,
         },
       );
@@ -176,13 +223,13 @@ export default function App() {
       try {
         const r = await new RecognitionServer(backendUrl).recognize(await layer.toPng());
         if (r.valid) {
-          setDialog({ kind: 'consolidate', result, issues, smiles: r.smiles, note: `${r.engine} read ${r.smiles} (${Math.round(r.confidence * 100)}%); it will be inserted instead of the in-browser structure.` });
+          setDialog({ kind: 'consolidate', result, issues, smiles: r.smiles, note: t('consolidate.serverRead', { engine: r.engine, smiles: r.smiles, pct: Math.round(r.confidence * 100) }) });
         } else {
-          setDialog({ kind: 'consolidate', result, issues, note: `${r.engine} could not read a valid structure; using the in-browser result.` });
+          setDialog({ kind: 'consolidate', result, issues, note: t('consolidate.serverInvalid', { engine: r.engine }) });
         }
         return;
       } catch (e) {
-        setDialog({ kind: 'consolidate', result, issues, note: `Recognition server not reachable (${String(e)}); using the in-browser result.` });
+        setDialog({ kind: 'consolidate', result, issues, note: t('consolidate.serverDown', { error: String(e) }) });
         return;
       }
     }
@@ -218,6 +265,12 @@ export default function App() {
   // (instead of Ketcher's undo), Esc drops an open trackpad stroke.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'F1') {
+        e.preventDefault();
+        e.stopPropagation();
+        setHelpOpen((o) => !o);
+        return;
+      }
       if (dialog.kind !== 'none' || isEditable(e.target)) return;
       const mod = e.ctrlKey || e.metaKey;
       const take = () => {
@@ -271,7 +324,7 @@ export default function App() {
   return (
     <HelpProvider>
       <div style={{ display: 'flex', height: '100%' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', flex: 1, minWidth: 0 }}>
+      <div ref={columnRef} style={{ display: 'flex', flexDirection: 'column', height: '100%', flex: 1, minWidth: 0 }}>
         <MecHandBar
           freehand={freehand}
           strokeCount={strokeCount}
@@ -287,9 +340,11 @@ export default function App() {
           onExport={() => setDialog({ kind: 'export' })}
           onTeach={() => setDialog({ kind: 'teach' })}
           onAbout={() => setDialog({ kind: 'about' })}
+          onHelp={() => setHelpOpen((o) => !o)}
+          compact={compact}
         />
         {freehand && (
-          <InkBar pen={pen} tool={tool} lastInput={lastInput} openStroke={openStroke} onPen={setPen} onTool={setTool} />
+          <InkBar pen={pen} tool={tool} lastInput={lastInput} openStroke={openStroke} onPen={setPen} onTool={setTool} compact={compact} />
         )}
         <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
           <Editor
@@ -304,6 +359,13 @@ export default function App() {
           />
         </div>
       </div>
+      {helpOpen && (
+        <HelpCenter
+          context={{ dialog: dialog.kind, freehand, strokes: strokeCount, lastInput, study: STUDY }}
+          onClose={() => setHelpOpen(false)}
+          onTour={() => { setHelpOpen(false); setTourOpen(true); }}
+        />
+      )}
       {STUDY && (
         <StudyPanel
           ketcher={ketcher}
@@ -367,6 +429,20 @@ export default function App() {
           serverAllowed={!STUDY}
           version={`${pkg.version} (commit ${__MECHAND_COMMIT__})`}
           onClose={() => setDialog({ kind: 'none' })}
+        />
+      )}
+      {tourOpen && <Tour onClose={closeTour} onFreehand={tourFreehand} />}
+      {tip && !tourOpen && (
+        <TipToast
+          id={tip}
+          onClose={() => setTip(null)}
+          onHelp={() => { setTip(null); setHelpOpen(true); }}
+          onAction={() => {
+            if (tip === 'welcome') setTourOpen(true);
+            if (tip === 'ignored') setPen((p) => ({ ...p, input: 'touch' }));
+            if (tip === 'trackpad') setPen((p) => ({ ...p, input: 'trackpad' }));
+            setTip(null);
+          }}
         />
       )}
     </HelpProvider>

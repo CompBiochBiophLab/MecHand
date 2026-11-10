@@ -3,6 +3,7 @@
  * interchange formats that ChemDraw, Marvin and other editors open.
  */
 
+import { Rich, useT } from '../i18n/i18n';
 import type { Ketcher } from 'ketcher-core';
 import { useEffect, useState } from 'react';
 import { CHEMFIG_PREAMBLE, toChemfig } from '../export/chemfig';
@@ -12,13 +13,14 @@ import { Modal, btn } from './Modal';
 
 type Format = 'tikz' | 'chemfig' | 'cdxml' | 'mol' | 'ket' | 'smiles';
 
-const FORMATS: { id: Format; label: string; file: string; note: string }[] = [
-  { id: 'tikz', label: 'TikZ', file: 'mechanism.tex', note: 'Structures and curved arrows with absolute coordinates; easy to fine-tune by hand.' },
-  { id: 'chemfig', label: 'chemfig', file: 'mechanism-chemfig.tex', note: 'chemfig scheme; curved arrows become \\chemmove between named atoms.' },
-  { id: 'cdxml', label: 'ChemDraw (CDXML)', file: 'mechanism.cdxml', note: 'Opens in ChemDraw (and Marvin, which reads CDXML).' },
-  { id: 'mol', label: 'MOL / RXN', file: 'mechanism.mol', note: 'MDL format read by Marvin, ChemDraw, RDKit, Open Babel… (RXN if the canvas holds a reaction).' },
-  { id: 'ket', label: 'KET', file: 'mechanism.ket', note: 'Ketcher\'s native format; keeps everything, including curved arrows.' },
-  { id: 'smiles', label: 'SMILES', file: 'mechanism.smi', note: 'Structures only (no arrows).' },
+/** Formats (the note of each is export.note.<id> in the locale files). */
+const FORMATS: { id: Format; label: string; file: string }[] = [
+  { id: 'tikz', label: 'TikZ', file: 'mechanism.tex' },
+  { id: 'chemfig', label: 'chemfig', file: 'mechanism-chemfig.tex' },
+  { id: 'cdxml', label: 'ChemDraw (CDXML)', file: 'mechanism.cdxml' },
+  { id: 'mol', label: 'MOL / RXN', file: 'mechanism.mol' },
+  { id: 'ket', label: 'KET', file: 'mechanism.ket' },
+  { id: 'smiles', label: 'SMILES', file: 'mechanism.smi' },
 ];
 
 async function produce(ketcher: Ketcher, f: Format): Promise<string> {
@@ -33,6 +35,7 @@ async function produce(ketcher: Ketcher, f: Format): Promise<string> {
 }
 
 export function ExportDialog({ ketcher, onClose }: { ketcher: Ketcher; onClose: () => void }) {
+  const { t } = useT();
   const [format, setFormat] = useState<Format>('tikz');
   const [text, setText] = useState('');
   const [error, setError] = useState('');
@@ -44,7 +47,7 @@ export function ExportDialog({ ketcher, onClose }: { ketcher: Ketcher; onClose: 
     setText('');
     setError('');
     produce(ketcher, format)
-      .then((t) => alive && setText(t))
+      .then((out) => alive && setText(out))
       .catch((e: unknown) => alive && setError(e instanceof Error ? e.message : String(e)));
     return () => { alive = false; };
   }, [ketcher, format]);
@@ -55,7 +58,7 @@ export function ExportDialog({ ketcher, onClose }: { ketcher: Ketcher; onClose: 
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {
-      setError('Clipboard not available in this browser context; use Download instead.');
+      setError(t('export.noClipboard'));
     }
   };
   const download = () => {
@@ -66,7 +69,7 @@ export function ExportDialog({ ketcher, onClose }: { ketcher: Ketcher; onClose: 
   };
 
   return (
-    <Modal title="Export" onClose={onClose} width={720} testId="mechand-export">
+    <Modal title={t('export.title')} onClose={onClose} width={720} testId="mechand-export">
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
         {FORMATS.map((f) => (
           <button key={f.id} onClick={() => setFormat(f.id)}
@@ -75,16 +78,16 @@ export function ExportDialog({ ketcher, onClose }: { ketcher: Ketcher; onClose: 
           </button>
         ))}
       </div>
-      <p style={{ fontSize: 12, color: '#6b7280', margin: '0 0 6px' }}>{meta.note}</p>
+      <p style={{ fontSize: 12, color: '#6b7280', margin: '0 0 6px' }}><Rich text={t(`export.note.${format}`)} /></p>
       {error ? (
         <pre style={{ color: '#b91c1c', whiteSpace: 'pre-wrap', fontSize: 12 }}>{error}</pre>
       ) : (
-        <textarea data-testid="mechand-export-text" readOnly value={text || 'Generating…'}
+        <textarea data-testid="mechand-export-text" readOnly value={text || t('export.generating')}
           style={{ width: '100%', height: 320, fontFamily: 'ui-monospace, Menlo, monospace', fontSize: 12, boxSizing: 'border-box' }} />
       )}
       <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 8 }}>
-        <button style={btn('#f3f4f6', '#374151')} onClick={download} disabled={!text}>Download</button>
-        <button style={btn('#1d4ed8', '#fff')} onClick={copy} disabled={!text}>{copied ? 'Copied ✓' : 'Copy'}</button>
+        <button style={btn('#f3f4f6', '#374151')} onClick={download} disabled={!text}>{t('export.download')}</button>
+        <button style={btn('#1d4ed8', '#fff')} onClick={copy} disabled={!text}>{copied ? t('export.copied') : t('export.copy')}</button>
       </div>
     </Modal>
   );

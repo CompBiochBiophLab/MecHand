@@ -6,7 +6,11 @@ lang: ca
 
 Les preguntes es responen a l'aplicació (mode estudi) i queden al fitxer de sessió. Aquesta còpia
 serveix per al CER i com a reserva en paper si un dispositiu falla (en aquest cas, el full en paper
-porta només el codi de participant, mai el nom). L'aplicació i els qüestionaris són en català.
+porta només el codi de participant, mai el nom). L'aplicació i els qüestionaris són en català. Els
+textos de l'aplicació són a `ketcher-mechhand/src/i18n/locales/ca.json` (apartat `study`); l'aplicació
+també té versions en castellà i anglès (`&lang=es`, `&lang=en`), que només s'han de fer servir si el
+CER aprova incloure persones que no entenen el català, i l'idioma de cada sessió queda registrat
+(`uiLanguage`).
 
 # 1. Qüestionari inicial
 
@@ -19,7 +23,7 @@ porta només el codi de participant, mai el nom). L'aplicació i els qüestionar
 | País on vas aprendre a llegir i escriure | Llista de països (codi ISO 3166-1) · Prefereixo no respondre | `participant.literacyCountry` |
 | Mà amb què escrius (opcional) | Dreta · Esquerra · Totes dues · Prefereixo no respondre | `participant.handedness` |
 | Experiència amb programes de dibuix químic (ChemDraw, Ketcher, Marvin…) | Cap · Poca (alguna vegada) · Molta (sovint) | `participant.experience` |
-| Accepto que les mostres de ✍ Teach s'incloguin al fitxer (opcional) | Sí / No | `shareTeachSamples` |
+| Accepto que les mostres d'✍ Ensenya s'incloguin al fitxer (opcional) | Sí / No | `shareTeachSamples` |
 | Accepto que aquestes mostres es publiquin, només amb el símbol i les coordenades (opcional) | Sí / No | `publishTeachSamples` |
 | He llegit el full d'informació i he signat el consentiment | Obligatori | — |
 
@@ -31,7 +35,9 @@ l'aplicació: vegeu els documents 05 i 07.
 
 Després de cada bloc: «Pensa en com has treballat en aquest bloc: [condició]. 1 = totalment en
 desacord, 5 = totalment d'acord.» Traducció pròpia al català de l'escala de Brooke (1996), d'ús
-lliure; no és una versió validada, i la prova pilot en comprova la comprensió.
+lliure; no és una versió validada, i la prova pilot en comprova la comprensió. La versió anglesa de
+l'aplicació fa servir els ítems originals de Brooke; la castellana és també una traducció pròpia, no
+validada.
 
 | # | Ítem | 1 | 2 | 3 | 4 | 5 |
 | --- | --- | --- | --- | --- | --- | --- |

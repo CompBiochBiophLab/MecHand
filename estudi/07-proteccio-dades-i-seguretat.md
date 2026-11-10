@@ -37,7 +37,8 @@ de càmera.
 Esquema `mechand-study-session/3` (codi: `ketcher-mechhand/src/study/recorder.ts`):
 
 - `code` (aleatori, `crypto.getRandomValues`), `group`, `year` (només l'any), `appVersion` (versió i
-  *commit*, p. ex. `0.1.0+44cdba2`), `modelVersion`;
+  *commit*, p. ex. `0.1.0+44cdba2`), `modelVersion`, `uiLanguage` (idioma de la interfície: `ca` per
+  defecte a l'estudi);
 - `participant`: `role`, `course`, `device`, `literacyCountry` (codi ISO 3166-1 alfa-2 o buit),
   `handedness` (o nul), `experience`;
 - `environment`: `browser` (nom i versió principal), `os` (nom i versió principal si es coneix),

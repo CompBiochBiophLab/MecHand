@@ -1,0 +1,695 @@
+{
+  "_meta": {
+    "name": "Català",
+    "authors": [
+      "Jordi Villà-Freixa"
+    ]
+  },
+  "toolbar": {
+    "label": "MecHand",
+    "freehand": "Mà alçada",
+    "on": "sí",
+    "off": "no",
+    "freehandName": "Dibuix a mà alçada",
+    "recognize": "Reconeix",
+    "recognizeCount": "Reconeix ({count})",
+    "recognizeName": "Reconeix la tinta",
+    "undoInk": "Desfés la tinta",
+    "redoInk": "Refés la tinta",
+    "clearInk": "Esborra la tinta",
+    "library": "Biblioteca",
+    "libraryName": "Biblioteca de plantilles",
+    "export": "Exporta",
+    "teach": "Ensenya",
+    "about": "Quant a",
+    "help": "Ajuda",
+    "language": "Idioma"
+  },
+  "helpToggle": {
+    "title": "Mostra o amaga les etiquetes d'ajuda de cada botó",
+    "level": "Nivell de detall de l'ajuda",
+    "expert": "Expert",
+    "student": "Estudiant"
+  },
+  "help": {
+    "btn-freehand": {
+      "brief": "Mode de mà alçada: dibuixa sobre Ketcher amb llapis, dit, trackpad o ratolí.",
+      "student": "Activa'l i dibuixa el mecanisme com en paper: enllaços com a línies (les cadenes en ziga-zaga i els anells poden ser un sol traç), àtoms com a lletres, càrregues com a + o −, i fletxes corbes amb punta. La barra del llapis, a sota, fixa el color, la línia i l'entrada. Desactiva'l per tornar a fer servir les eines de Ketcher."
+    },
+    "btn-recognize": {
+      "brief": "Reconeix la tinta i proposa una estructura neta.",
+      "student": "MecHand llegeix els teus traços al navegador (sense servidor), mostra què ha entès i comprova el flux d'electrons de les fletxes corbes. Confirma-ho per inserir-ho a Ketcher."
+    },
+    "btn-undo-ink": {
+      "brief": "Desfà l'últim canvi a la tinta (traç, esborrat o neteja).",
+      "student": "Desfà l'últim traç, esborrat o neteja. L'estructura de Ketcher no es toca."
+    },
+    "btn-redo-ink": {
+      "brief": "Refà el que s'ha desfet.",
+      "student": "Torna a posar l'últim canvi que s'ha desfet."
+    },
+    "btn-clear-ink": {
+      "brief": "Esborra tota la tinta (es pot desfer).",
+      "student": "Esborra tots els traços a mà alçada que encara no s'han inserit. «Desfés la tinta» els recupera."
+    },
+    "tool-pen": {
+      "brief": "Dibuixa tinta.",
+      "student": "El llapis dibuixa traços. Tria'n el color, el tipus de línia i el gruix en aquesta barra."
+    },
+    "tool-eraser": {
+      "brief": "Esborra traços sencers tocant-los.",
+      "student": "Passa per sobre dels traços que vols treure (s'aclareixen) i aixeca: s'esborren. La punta d'esborrar d'un llapis (Surface, Wacom) també esborra, sigui quina sigui l'eina triada."
+    },
+    "pen-colour": {
+      "brief": "Color de la tinta.",
+      "student": "Els colors ajuden a organitzar un dibuix (p. ex. les fletxes en vermell). El reconeixement no en depèn."
+    },
+    "pen-style": {
+      "brief": "Tipus de línia: bolígraf, ploma, retolador o discontínua.",
+      "student": "El bolígraf fa una línia uniforme; la ploma segueix la pressió del llapis (o la velocitat amb ratolí); el retolador és ample i translúcid; la discontínua només és un aspecte. Tots es reconeixen igual."
+    },
+    "pen-width": {
+      "brief": "Gruix de la línia.",
+      "student": "De fi a molt gruixut. Només canvia l'aspecte; el reconeixement fa servir la forma del traç."
+    },
+    "pen-input": {
+      "brief": "Què dibuixa: automàtic, només llapis, llapis i dit, o trackpad.",
+      "student": "Automàtic: un cop fas servir el llapis, els dits i el palmell s'ignoren. Només llapis: els dits no dibuixen mai. Llapis i dit: dibuixen tots dos. Trackpad: un clic comença el traç, el mous sense prémer i un altre clic l'acaba (no cal mantenir premut)."
+    },
+    "pen-device": {
+      "brief": "El dispositiu de l'últim contacte i si ha pogut dibuixar.",
+      "student": "Mostra si el navegador ha vist un llapis, un dit o un ratolí/trackpad. «Ignorat» vol dir que el rebuig de palmell ha descartat el contacte; canvia el mode d'entrada si el dit ha de dibuixar."
+    },
+    "btn-library": {
+      "brief": "Biblioteca de plantilles; també dibuixa una molècula a partir del SMILES, l'InChI, el número CAS o el nom.",
+      "student": "Anells, grups funcionals, biomolècules, reactius i mecanismes complets. Cerca per nom, fórmula o número CAS, o escriu un SMILES o un InChI per dibuixar-lo. Els noms que no són a la biblioteca es poden cercar en línia (PubChem, OPSIN) si ho demanes."
+    },
+    "btn-export": {
+      "brief": "Exporta a TikZ, chemfig, ChemDraw (CDXML), MOL/RXN, KET o SMILES.",
+      "student": "Converteix el llenç de Ketcher, fletxes corbes incloses, en codi per al teu document LaTeX, o en fitxers que obren ChemDraw, Marvin i altres editors."
+    },
+    "btn-teach": {
+      "brief": "Ensenya a MecHand la teva lletra.",
+      "student": "Dibuixa uns quants exemples d'una lletra o un signe, una fletxa, un enllaç o un parell d'electrons. Es guarden en aquest navegador i es fan servir de seguida; exporta'ls per aportar-los al model compartit."
+    },
+    "btn-about": {
+      "brief": "Versió, model de reconeixement i navegadors.",
+      "student": "Mostra la versió, el model de reconeixement que es fa servir, què sap llegir i els problemes coneguts dels navegadors."
+    },
+    "btn-help": {
+      "brief": "Centre d'ajuda: temes, consells per al que estàs fent, visita guiada i dreceres.",
+      "student": "Obre el centre d'ajuda pel tema del que estàs fent. Hi pots cercar, tornar a fer la visita guiada o veure totes les dreceres de teclat."
+    },
+    "btn-language": {
+      "brief": "Idioma de la interfície de MecHand.",
+      "student": "Tria l'idioma dels botons, els diàlegs i l'ajuda de MecHand. Les traduccions són fitxers JSON senzills que qualsevol persona pot afegir o millorar."
+    },
+    "btn-help-toggle": {
+      "brief": "Mostra o amaga aquestes etiquetes d'ajuda.",
+      "student": "Activa o desactiva les etiquetes d'ajuda. Tria Expert per a una línia o Estudiant per a explicacions."
+    }
+  },
+  "pen": {
+    "bar": "Llapis",
+    "tool": "Eina",
+    "pen": "Llapis",
+    "eraser": "Goma",
+    "colours": "Color de la tinta",
+    "styles": "Tipus de línia",
+    "widths": "Gruix de la línia",
+    "inputMode": "Mode d'entrada",
+    "colour": {
+      "black": "Negre",
+      "blue": "Blau",
+      "red": "Vermell",
+      "green": "Verd",
+      "purple": "Lila",
+      "orange": "Taronja"
+    },
+    "style": {
+      "ballpoint": "Bolígraf",
+      "fountain": "Ploma",
+      "marker": "Retolador",
+      "dashed": "Discontínua"
+    },
+    "styleHint": {
+      "ballpoint": "Línia uniforme",
+      "fountain": "El gruix segueix la pressió del llapis (o la velocitat amb ratolí)",
+      "marker": "Línia ampla i translúcida",
+      "dashed": "Línia discontínua (només l'aspecte: es reconeix com qualsevol altre traç)"
+    },
+    "width": {
+      "fine": "Línia fina",
+      "medium": "Línia mitjana",
+      "bold": "Línia gruixuda",
+      "extra": "Línia molt gruixuda"
+    },
+    "input": {
+      "auto": "Automàtic",
+      "pen": "Només llapis",
+      "touch": "Llapis i dit",
+      "trackpad": "Trackpad"
+    },
+    "inputHint": {
+      "auto": "Dibuixen el llapis, el dit i el ratolí; un cop es fa servir el llapis, els dits s'ignoren (rebuig de palmell).",
+      "pen": "Només dibuixa el llapis (i el ratolí); els dits i el palmell s'ignoren.",
+      "touch": "Dibuixen sempre el llapis, el dit i el ratolí (els contactes grans, com un palmell, s'ignoren igualment).",
+      "trackpad": "Un clic comença el traç, el mous sense prémer i un altre clic l'acaba. Arrossegar també funciona."
+    },
+    "device": {
+      "pen": "Llapis",
+      "touch": "Dit",
+      "mouse": "Ratolí / trackpad",
+      "none": "Entrada: —",
+      "ignored": "{device} ignorat",
+      "last": "Última entrada: {device}",
+      "lastIgnored": "Última entrada: {device} (ignorada)",
+      "noInput": "Encara no hi ha cap entrada"
+    },
+    "openStroke": "Fes clic per acabar el traç (Esc el descarta)"
+  },
+  "check": {
+    "start-nothing": "La fletxa {arrow} no comença en cap àtom ni enllaç.",
+    "start-no-lone-pair": "La fletxa {arrow} comença a {at}, que no té cap parell solitari. Fes-la començar en un parell solitari o en un enllaç.",
+    "end-nothing": "La fletxa {arrow} no apunta a cap àtom ni enllaç.",
+    "octet": "La fletxa {arrow} dona a {at} més d'un octet. S'hi trenca un enllaç alhora?"
+  },
+  "dialog": {
+    "close": "Tanca"
+  },
+  "consolidate": {
+    "title": "És això el que volies dir?",
+    "confidence": "{pct}% de confiança",
+    "atoms_one": "{count} àtom",
+    "atoms_other": "{count} àtoms",
+    "bonds_one": "{count} enllaç",
+    "bonds_other": "{count} enllaços",
+    "arrows_one": "{count} fletxa",
+    "arrows_other": "{count} fletxes",
+    "inkColours": "Colors de la tinta:",
+    "bonds": "enllaços",
+    "labels": "etiquetes",
+    "arrows": "fletxes",
+    "notUnderstood": "no entès",
+    "discard": "Descarta la tinta",
+    "keep": "Continua dibuixant",
+    "insert": "Insereix a Ketcher",
+    "nothing": "No s'ha reconegut res",
+    "previewLabel": "Estructura reconeguda",
+    "serverRead": "{engine} ha llegit {smiles} ({pct}%); s'inserirà en lloc de l'estructura del navegador.",
+    "serverInvalid": "{engine} no ha pogut llegir una estructura vàlida; es fa servir el resultat del navegador.",
+    "serverDown": "No s'ha pogut contactar amb el servidor de reconeixement ({error}); es fa servir el resultat del navegador.",
+    "tipsTitle": "Consells",
+    "tipUnread_one": "{count} traç no s'ha entès (gris). La causa habitual són lletres massa a prop dels enllaços, o enllaços tan curts com les lletres.",
+    "tipUnread_other": "{count} traços no s'han entès (gris). La causa habitual són lletres massa a prop dels enllaços, o enllaços tan curts com les lletres.",
+    "tipLowConfidence": "Confiança baixa: dibuixa els enllaços dues o tres vegades més llargs que l'alçada de les lletres, i deixa un petit espai entre l'enllaç i l'etiqueta.",
+    "tipNoHead": "Un traç corb sense punta es llegeix com un enllaç. Afegeix una punta clara (una V) al final de cada fletxa.",
+    "tipTeach": "Si el mateix símbol es llegeix malament una vegada i una altra, ensenya'l a MecHand (Ensenya)."
+  },
+  "export": {
+    "title": "Exporta",
+    "download": "Descarrega",
+    "copy": "Copia",
+    "copied": "Copiat ✓",
+    "generating": "S'està generant…",
+    "noClipboard": "El porta-retalls no està disponible en aquest context del navegador; fes servir Descarrega.",
+    "note": {
+      "tikz": "Estructures i fletxes corbes amb coordenades absolutes; fàcil d'ajustar a mà.",
+      "chemfig": "Esquema chemfig; les fletxes corbes passen a ser `\\chemmove` entre àtoms amb nom.",
+      "cdxml": "S'obre a ChemDraw (i a Marvin, que llegeix CDXML).",
+      "mol": "Format MDL que llegeixen Marvin, ChemDraw, RDKit, Open Babel… (RXN si el llenç té una reacció).",
+      "ket": "Format propi de Ketcher; ho conserva tot, fletxes corbes incloses.",
+      "smiles": "Només les estructures (sense fletxes)."
+    }
+  },
+  "about": {
+    "title": "Quant al reconeixement de MecHand",
+    "intro": "MecHand llegeix els teus **traços** (no una imatge) directament al navegador: sense instal·lació, sense servidor, res no surt del teu ordinador. Les línies passen a ser enllaços (les cadenes i els anells poden ser un sol traç), les línies paral·leles, enllaços dobles o triples, les lletres, etiquetes d'àtoms, + i −, càrregues, i els traços corbs amb punta, fletxes de flux d'electrons (punta sencera = 2 e⁻, mitja punta = 1 e⁻). Cada fletxa s'ancora a l'àtom o l'enllaç més proper i se'n comprova el balanç d'electrons.",
+    "version": "MecHand",
+    "symbolModel": "Model de símbols",
+    "templates": "Plantilles en ús",
+    "templatesValue": "{total} ({contributed} aportades, {user} teves)",
+    "elements": "Fletxes, enllaços, electrons",
+    "elementsValue": "{total} mostres ({contributed} aportades, {user} teves); {heads} plantilles de punta de fletxa",
+    "classifier": "Classificador",
+    "corners": "Detecció de vèrtexs",
+    "engine": "Motor d'estructures",
+    "engineLocked": "Només al navegador (mode estudi: res no surt d'aquest navegador).",
+    "engineBrowser": "Al navegador (per defecte, funciona sense connexió)",
+    "engineServer": "Servidor DECIMER (opcional, a partir d'una imatge, al teu ordinador; les fletxes i les càrregues continuen venint del reconeixedor del navegador)",
+    "checking": "s'està comprovant…",
+    "connected": "● connectat — {engine}",
+    "unreachable": "○ no s'hi pot accedir (vegeu el README, «Optional recognition server»)",
+    "browsers": "Navegadors",
+    "browsersText": "Funciona amb versions actuals de Chrome, Edge, Firefox i Safari (ordinador i iPad). Les diferències conegudes són a la guia, a «Browser support».",
+    "translation": "Idioma de la interfície",
+    "translationBy": "Traducció: {authors}",
+    "documentation": "Documentació",
+    "source": "Codi del reconeixedor"
+  },
+  "teach": {
+    "title": "Ensenya a MecHand la teva lletra",
+    "letters": "Lletres i signes",
+    "group": {
+      "arrows": "Fletxes",
+      "bonds": "Enllaços",
+      "electrons": "Electrons"
+    },
+    "lettersPrompt": "Tria un símbol, escriu-lo al requadre i desa'l. Unes quantes mostres de cada símbol hi fan molt.",
+    "stored": "Les mostres es queden en aquest navegador; exporta-les per compartir-les amb el projecte.",
+    "circled": "{symbol} (càrrega encerclada)",
+    "minus": "− (menys)",
+    "plus": "+ (més)",
+    "oneBond": "= 1 enllaç",
+    "undoStroke": "Desfés el traç",
+    "clear": "Esborra",
+    "save": "Desa la mostra",
+    "readAs": "Ara es llegeix com:",
+    "readOk": "✓",
+    "readHelps": "— desar aquesta mostra ajuda MecHand a aprendre-ho",
+    "yourSamples": "Les teves mostres",
+    "exportSamples": "Exporta les mostres",
+    "import": "Importa…",
+    "deleteAll": "Esborra-les totes",
+    "confirmDelete": "Vols esborrar totes les teves mostres (lletres, fletxes, enllaços i electrons)?",
+    "notSamples": "No és un fitxer de mostres de MecHand.",
+    "learns": {
+      "arrowheads": "Les puntes dibuixades amb un traç a part s'afegeixen al model de puntes de fletxa, de manera que a partir d'ara es reconeix el teu estil de punta.",
+      "dots": "La mida dels teus punts fixa fins a quina mida una marca compta com a punt (parells solitaris, radicals).",
+      "check": "Els enllaços es reconeixen per geometria: això comprova que el teu estil es llegeix bé; les mostres compartides ajuden a millorar les regles."
+    },
+    "element": {
+      "arrow-pair": {
+        "label": "Fletxa corba, 2 e⁻ (punta sencera)",
+        "prompt": "Dibuixa una fletxa corba d'un o dos enllaços de llargada (la línia grisa és un enllaç), amb la punta que fas servir normalment."
+      },
+      "arrow-single": {
+        "label": "Fletxa d'un electró, 1 e⁻ (mitja punta)",
+        "prompt": "Dibuixa una fletxa corba amb mitja punta (una sola barba), com per al moviment d'un electró."
+      },
+      "arrow-reaction": {
+        "label": "Fletxa de reacció →",
+        "prompt": "Dibuixa una fletxa de reacció recta, de dos o tres enllaços de llargada."
+      },
+      "arrow-equilibrium": {
+        "label": "Fletxes d'equilibri ⇌",
+        "prompt": "Dibuixa dues fletxes rectes paral·leles amb mitja punta, en sentits oposats."
+      },
+      "bond-single": {
+        "label": "Enllaç simple",
+        "prompt": "Dibuixa un enllaç simple de la llargada aproximada de la línia grisa."
+      },
+      "bond-double": {
+        "label": "Enllaç doble",
+        "prompt": "Dibuixa un enllaç doble de la llargada aproximada de la línia grisa."
+      },
+      "bond-triple": {
+        "label": "Enllaç triple",
+        "prompt": "Dibuixa un enllaç triple de la llargada aproximada de la línia grisa."
+      },
+      "ring-benzene": {
+        "label": "Anell de benzè",
+        "prompt": "Dibuixa un anell de benzè com un hexàgon amb tres enllaços dobles, amb costats de la llargada aproximada de la línia grisa."
+      },
+      "lone-pair": {
+        "label": "Parell solitari (dos punts)",
+        "prompt": "Dibuixa els dos punts d'un parell solitari al costat de la O grisa, de la mida que fas servir."
+      },
+      "radical": {
+        "label": "Radical (un punt)",
+        "prompt": "Dibuixa un sol punt de radical al costat de la O grisa, de la mida que fas servir."
+      }
+    },
+    "read": {
+      "arrow-electron-pair_one": "fletxa corba (2 e⁻)",
+      "arrow-electron-pair_other": "{count} × fletxa corba (2 e⁻)",
+      "arrow-single-electron_one": "fletxa d'un electró (1 e⁻)",
+      "arrow-single-electron_other": "{count} × fletxa d'un electró (1 e⁻)",
+      "arrow-reaction_one": "fletxa de reacció",
+      "arrow-reaction_other": "{count} × fletxa de reacció",
+      "arrow-equilibrium_one": "fletxes d'equilibri",
+      "arrow-equilibrium_other": "{count} × fletxes d'equilibri",
+      "arrow-other_one": "fletxa",
+      "arrow-other_other": "{count} × fletxa",
+      "bond-1_one": "enllaç simple",
+      "bond-1_other": "{count} × enllaç simple",
+      "bond-2_one": "enllaç doble",
+      "bond-2_other": "{count} × enllaç doble",
+      "bond-3_one": "enllaç triple",
+      "bond-3_other": "{count} × enllaç triple",
+      "bond-4_one": "enllaç aromàtic",
+      "bond-4_other": "{count} × enllaç aromàtic",
+      "dots_one": "1 punt",
+      "dots_other": "{count} punts",
+      "text": "text «{text}»",
+      "unread_one": "1 traç no entès",
+      "unread_other": "{count} traços no entesos",
+      "nothing": "res"
+    }
+  },
+  "library": {
+    "title": "Biblioteca de plantilles",
+    "search": "Cerca, o escriu un SMILES, InChI, número CAS o nom: benzè, Trp, CCO, 64-17-5…",
+    "searchLabel": "Cerca plantilles, o escriu un SMILES, InChI, número CAS o nom",
+    "categoriesLabel": "Categories de plantilles",
+    "listLabel": "Plantilles",
+    "filter": {
+      "all": "Totes",
+      "recent": "Recents",
+      "favourites": "★ Preferides"
+    },
+    "category": {
+      "ring": "Anells",
+      "group": "Grups funcionals",
+      "bio": "Biomolècules",
+      "reagent": "Reactius",
+      "mechanism": "Mecanismes"
+    },
+    "groupName": {
+      "carbocycles": "Carbocicles",
+      "aromatic-hydrocarbons": "Hidrocarburs aromàtics",
+      "aromatic-heterocycles": "Heterocicles aromàtics",
+      "saturated-heterocycles": "Heterocicles saturats",
+      "hydrocarbon-halide": "Hidrocarburs i halurs",
+      "oxygen-groups": "Grups amb oxigen",
+      "carbonyl-groups": "Grups carbonil",
+      "nitrogen-groups": "Grups amb nitrogen",
+      "sulfur-phosphorus-boron": "Sofre, fòsfor i bor",
+      "reactive-intermediates": "Intermedis reactius",
+      "substituents-protecting-groups": "Substituents i grups protectors",
+      "amino-acids": "Aminoàcids",
+      "nucleobases-nucleotides": "Nucleobases i nucleòtids",
+      "sugars": "Sucres",
+      "cofactors-metabolites": "Cofactors i metabòlits",
+      "lipids": "Lípids",
+      "water-ions": "Aigua i ions",
+      "acids": "Àcids",
+      "bases": "Bases",
+      "reducing-agents": "Reductors",
+      "oxidizing-agents": "Oxidants",
+      "halogenating-activating-agents": "Halogenants i activadors",
+      "carbon-nucleophiles": "Nucleòfils de carboni",
+      "solvents": "Dissolvents",
+      "small-molecules-gases": "Molècules petites i gasos",
+      "organic": "Orgànica",
+      "inorganic": "Inorgànica",
+      "biochemistry": "Bioquímica",
+      "smiles": "SMILES",
+      "inchi": "InChI",
+      "pubchem": "PubChem",
+      "opsin": "OPSIN"
+    },
+    "add": "Afegeix al llenç",
+    "replace": "Substitueix el llenç",
+    "tileTitle": "{name}\nClic: {mode} · Maj+clic: {other}",
+    "favAdd": "Afegeix {name} a les preferides",
+    "favRemove": "Treu {name} de les preferides",
+    "favAddShort": "Afegeix a les preferides",
+    "favRemoveShort": "Treu de les preferides",
+    "noMatch": "Cap plantilla coincideix amb «{query}».",
+    "noMatchOffline": "Cap plantilla coincideix amb «{query}». Els SMILES i els InChI es llegeixen directament.",
+    "noFavourites": "Encara no tens preferides. Fes clic a ☆ en una plantilla (o prem {mod}+D) per tenir-la aquí.",
+    "noRecent": "Aquí apareixeran les plantilles que insereixis.",
+    "count_one": "{count} plantilla",
+    "count_other": "{count} plantilles",
+    "insert": "insereix",
+    "otherMode": "l'altre mode",
+    "lookup": "Cerca «{query}» en línia",
+    "lookingUp": "S'està cercant «{query}»…",
+    "lookupNone": "No s'ha trobat cap estructura en línia per a «{query}».",
+    "lookupNote": "PubChem (NIH) i OPSIN (EMBL-EBI) reben el text que has escrit, res més.",
+    "cas": "CAS {cas}"
+  },
+  "study": {
+    "title": "Estudi MecHand",
+    "startTitle": "Estudi MecHand (UVic-UCC)",
+    "codeTitle": "El teu codi anònim",
+    "codeHidden": "El teu codi anònim (es mostra al final)",
+    "teach": {
+      "title": "1. Entrenament (uns 10 minuts)",
+      "intro": "Ensenya a MecHand la teva lletra. Obre **✍ Ensenya** i desa unes 3 mostres de cada:",
+      "letters": "*{tab}*: C, O, N, H, F, l (de Cl), r (de Br), a (de Na), +, − (i ⊕, ⊖ si les escrius encerclades)",
+      "arrows": "*{tab}*: fletxa corba de 2 e⁻, fletxa de reacció, equilibri",
+      "electrons": "*{tab}*: parell solitari",
+      "reading": "Sota el requadre veuràs com ho llegeix MecHand. Si encerta (✓), no cal insistir-hi.",
+      "open": "Obre ✍ Ensenya",
+      "done": "He acabat l'entrenament"
+    },
+    "task": {
+      "position": "Bloc {block} de 2 · tasca {k} de {n}",
+      "practice": " · pràctica (no compta)",
+      "ketcherTip": "Fletxes corbes a Ketcher: eina de fletxes → «Arrow Elliptical Arc Open Angle» (2 e⁻) o «… Open Half Angle» (1 e⁻). Càrregues: eines «A+» i «A−».",
+      "converted": "convertida a PNG",
+      "start": "Comença la tasca",
+      "finish": "He acabat",
+      "skip": "Omet",
+      "confirmSkip": "Vols ometre aquesta tasca?"
+    },
+    "condition": {
+      "freehand": "MecHand: dibuix a mà alçada (pots corregir amb les eines de Ketcher)",
+      "ketcher": "Només eines de Ketcher (sense dibuix a mà alçada)"
+    },
+    "stimulus": {
+      "practica-acid-base": "Pràctica (no compta): dibuixa la reacció sencera, amb les dues fletxes corbes, la fletxa de reacció i els productes. Prova-hi les eines que necessitaràs.",
+      "A1-paracetamol": "Dibuixa el paracetamol.",
+      "A2-cafeina": "Dibuixa la cafeïna.",
+      "A3-sn2-walden": "Dibuixa els reactius amb les fletxes corbes i el producte orgànic. No cal dibuixar l'estat de transició (entre claudàtors), ni l'estereoquímica (falques), ni el Na⁺ ni el NaBr.",
+      "A4-aldol-basic": "Dibuixa només el primer pas (a dalt a l'esquerra): l'aldehid i l'ió hidròxid amb les tres fletxes corbes, la fletxa d'equilibri i l'enolat que es forma. On hi ha R, posa-hi un CH₃ (n'hi ha prou amb l'extrem d'una línia).",
+      "B1-dopamina": "Dibuixa la dopamina.",
+      "B2-serotonina": "Dibuixa la serotonina.",
+      "B3-sn2-cianur": "Dibuixa els reactius amb les fletxes corbes i el producte orgànic. No cal dibuixar els parells d'electrons solitaris, ni el Na⁺ ni els ions Na⁺ i Cl⁻ dels productes.",
+      "B4-aldol-acid": "Dibuixa només el segon pas (a dalt, el segon i el tercer compost): l'aldehid protonat i l'aigua amb les tres fletxes corbes, la fletxa d'equilibri i l'enol que es forma. On hi ha R, posa-hi un CH₃ (n'hi ha prou amb l'extrem d'una línia)."
+    },
+    "sus": {
+      "title": "Valoració del bloc",
+      "intro": "Pensa en com has treballat en aquest bloc: *{condition}*. 1 = totalment en desacord, 5 = totalment d'acord.",
+      "continue": "Continua",
+      "item1": "Crec que m'agradaria utilitzar aquesta eina sovint.",
+      "item2": "He trobat l'eina innecessàriament complexa.",
+      "item3": "He trobat que l'eina era fàcil d'utilitzar.",
+      "item4": "Crec que necessitaria l'ajuda d'una persona amb coneixements tècnics per poder utilitzar l'eina.",
+      "item5": "He trobat que les diverses funcions de l'eina estaven ben integrades.",
+      "item6": "He trobat que hi havia massa incoherències en l'eina.",
+      "item7": "M'imagino que la majoria de la gent aprendria a utilitzar l'eina molt ràpidament.",
+      "item8": "He trobat l'eina molt feixuga d'utilitzar.",
+      "item9": "M'he sentit molt segur/a utilitzant l'eina.",
+      "item10": "Hauria d'aprendre moltes coses abans de poder començar a utilitzar l'eina."
+    },
+    "final": {
+      "title": "Per acabar (opcional)",
+      "noPersonal": "No hi escriguis cap dada personal (noms, correus…).",
+      "freehand": "Què t'ha agradat i què no del dibuix a mà alçada (MecHand)?",
+      "ketcher": "Què t'ha agradat i què no de dibuixar només amb les eines de Ketcher?",
+      "preference": "Per dibuixar mecanismes, quina manera prefereixes?",
+      "prefNone": "Prefereixo no respondre",
+      "prefMechand": "Dibuix a mà alçada (MecHand)",
+      "prefKetcher": "Eines de Ketcher",
+      "prefSame": "M'és igual",
+      "other": "Altres comentaris",
+      "save": "Desa la sessió"
+    },
+    "done": {
+      "thanks": "Moltes gràcies!",
+      "instructions": "Descarrega el fitxer de la sessió i copia'l tu mateix/a a la memòria USB de l'estudi (la persona de contacte no mira el nom del fitxer). No l'enviïs per correu.",
+      "download": "Descarrega {file}",
+      "choices": "Les teves opcions: mostres d'Ensenya al fitxer: **{share}**; publicació de les mostres: **{publish}**. Han de coincidir amb el consentiment en paper; si no, digues-ho ara a la persona de contacte.",
+      "yes": "sí",
+      "no": "no",
+      "downloadsCopy": "Una còpia del fitxer queda a la carpeta de baixades d'aquest dispositiu; esborra-la després de lliurar-lo.",
+      "keepCode": "Guarda el teu codi **{code}**: si més endavant vols retirar les teves dades, fes-lo arribar a la persona de contacte (o deixa'l a la bústia del departament).",
+      "clear": "Esborra les dades d'aquest navegador",
+      "confirmClear": "S'esborraran la sessió i les mostres d'entrenament d'aquest navegador. Ja has descarregat el fitxer?"
+    },
+    "recorded": {
+      "summary": "Què es registra",
+      "text": "Codi anònim, grup, les teves respostes, {environment}; tipus de punter usats: {pointers}. Per a cada tasca: temps, traços (punts x, y i moment de cada traç), el que MecHand ha reconegut, les teves decisions, l'ús dels controls del llapis (goma, desfer, color, gruix, mode d'entrada), els contactes ignorats pel rebuig de palmell i el dibuix final. Res no surt d'aquest navegador."
+    },
+    "start": {
+      "intro": "Abans de començar has d'haver llegit el full d'informació i signat el consentiment informat. La participació és voluntària, no té cap efecte en cap avaluació i la pots deixar en qualsevol moment.",
+      "group": "Grup (te'l dona la persona de contacte)",
+      "role": "Participes com a",
+      "roleStudent": "Estudiant del grau en Biotecnologia",
+      "roleTeacher": "Professorat de química",
+      "course": "Curs",
+      "course1": "1r curs",
+      "course2": "2n curs",
+      "course3": "3r curs",
+      "course4": "4t curs",
+      "device": "Amb què dibuixaràs",
+      "devices": {
+        "tauleta-llapis": "Tauleta amb llapis",
+        "tauleta-dit": "Tauleta amb el dit",
+        "ordinador-llapis": "Ordinador amb llapis o tauleta gràfica",
+        "ordinador-tactil": "Ordinador amb pantalla tàctil (dit)",
+        "ordinador-trackpad": "Ordinador amb trackpad",
+        "ordinador-ratoli": "Ordinador amb ratolí",
+        "altre": "Altre"
+      },
+      "country": "País on vas aprendre a llegir i escriure",
+      "noAnswer": "Prefereixo no respondre",
+      "hand": "Mà amb què escrius (opcional)",
+      "handRight": "Dreta",
+      "handLeft": "Esquerra",
+      "handBoth": "Totes dues",
+      "experience": "Experiència amb programes de dibuix químic (ChemDraw, Ketcher, Marvin…)",
+      "expNone": "Cap",
+      "expLittle": "Poca (alguna vegada)",
+      "expMuch": "Molta (sovint)",
+      "share": "Accepto que les mostres que dibuixi a ✍ Ensenya s'incloguin al fitxer de la sessió (opcional).",
+      "publish": "Accepto que aquestes mostres es publiquin al repositori obert de MecHand, només amb el símbol i les coordenades x, y (opcional; ha de coincidir amb el que he marcat al consentiment).",
+      "consent": "He llegit el full d'informació i he signat el consentiment informat.",
+      "envNote": "Del teu dispositiu només es registra: {environment}; quins tipus de punter fas servir (llapis, dit, ratolí) i com fas servir l'aplicació (vegeu el full d'informació). No es registra el teu nom, ni l'adreça IP, ni cap identificador del dispositiu.",
+      "teachWarning": "Aquest navegador ja té mostres d'entrenament (potser d'una altra persona): s'esborraran en començar, perquè cada sessió parteixi del model compartit.",
+      "begin": "Comença"
+    },
+    "env": {
+      "browser": "Navegador",
+      "os": "Sistema",
+      "architecture": "Arquitectura",
+      "notAvailable": "no disponible",
+      "screen": "Pantalla",
+      "touchPoints": "Punts tàctils"
+    }
+  },
+  "helpCenter": {
+    "title": "Ajuda",
+    "search": "Cerca a l'ajuda",
+    "close": "Tanca l'ajuda",
+    "now": "Què pots fer ara",
+    "tour": "Fes la visita guiada",
+    "website": "Més informació al web",
+    "noResults": "Cap tema d'ajuda coincideix amb «{query}».",
+    "topics": "Temes",
+    "context": {
+      "off": "Prem **Mà alçada** (Alt+F) per dibuixar a mà, o obre la **Biblioteca** (Ctrl/⌘+K) per començar des d'una estructura.",
+      "ketcher": "Amb la mà alçada desactivada, les eines de Ketcher funcionen com sempre: fes-les servir per polir una estructura inserida.",
+      "empty": "Dibuixa com en paper: enllaços com a línies, àtoms com a lletres, càrregues a dalt a la dreta, fletxes corbes amb punta.",
+      "strokes": "Prem **Espai** (o Reconeix) per llegir els teus {count} traços. Corregeix un traç amb la goma (E) o desfés (Ctrl/⌘+Z).",
+      "ignored": "El rebuig de palmell ha ignorat l'últim contacte. Per dibuixar amb el dit, tria el mode d'entrada **Llapis i dit**.",
+      "mouse": "Dibuixes amb un trackpad? El mode d'entrada **Trackpad** dibuixa amb clic – moure – clic.",
+      "dialog": "Revisa què ha llegit MecHand: **Insereix** (Retorn), **Continua dibuixant** (Esc) per corregir traços, o **Descarta la tinta**.",
+      "library": "Escriu un nom, una fórmula, un número CAS o un SMILES. Retorn afegeix la plantilla ressaltada; Maj+Retorn substitueix el llenç.",
+      "teach": "Dibuixa el símbol triat al requadre i desa'l. Unes quantes mostres dels símbols que MecHand llegeix malament hi fan molt.",
+      "export": "Tria un format i copia'l o descarrega'l. TikZ i chemfig conserven les fletxes corbes per a LaTeX.",
+      "study": "A l'estudi, segueix el panell de la dreta; la persona de contacte et pot ajudar amb problemes tècnics."
+    },
+    "topic": {
+      "start": {
+        "title": "Primers passos",
+        "body": [
+          "MecHand afegeix el dibuix a mà a l'editor químic Ketcher. Tot funciona al teu navegador.",
+          "1. Prem **Mà alçada** i dibuixa la molècula o el mecanisme com en paper.",
+          "2. Prem **Reconeix** (Espai): MecHand mostra què ha llegit i comprova les fletxes corbes.",
+          "3. **Insereix a Ketcher** i edita-ho amb les eines de Ketcher, o **Exporta**-ho a LaTeX, ChemDraw o Marvin.",
+          "La **Biblioteca** (Ctrl/⌘+K) et dona estructures i mecanismes complets fets, i dibuixa qualsevol molècula a partir del SMILES, l'InChI, el número CAS o el nom."
+        ]
+      },
+      "drawing": {
+        "title": "Com dibuixar",
+        "body": [
+          "**Enllaços**: línies rectes. Una ziga-zaga o un polígon tancat poden ser un sol traç; dues o tres línies paral·leles properes són un enllaç doble o triple.",
+          "**Àtoms**: escriu les lletres (C, H, N, O, S, P, F, Cl, Br, I, Na…) a l'extrem d'un enllaç, deixant-hi un petit espai.",
+          "**Càrregues**: + o − (també ⊕, ⊖, 2−) a dalt a la dreta de l'àtom. **Parells solitaris i radicals**: dos punts o un punt al costat de l'àtom.",
+          "**Fletxes corbes**: comencen als electrons (un parell solitari o el mig d'un enllaç) i acaben a l'àtom o l'enllaç que els rep. Una punta sencera (V) mou dos electrons; una sola barba, un.",
+          "**Reaccions**: una fletxa recta llarga entre reactius i productes, i + entre molècules.",
+          "Dibuixa els enllaços dues o tres vegades més llargs que l'alçada de les lletres: així MecHand els distingeix."
+        ]
+      },
+      "penbar": {
+        "title": "La barra del llapis",
+        "body": [
+          "En mode de mà alçada, una segona barra tria el **llapis** o la **goma** (P / E). La goma esborra traços sencers; la punta d'esborrar d'un llapis Surface o Wacom també esborra.",
+          "El **color, el tipus de línia i el gruix** només canvien l'aspecte de la tinta; el reconeixement fa servir la forma dels traços.",
+          "**Mode d'entrada**: *Automàtic* ignora els dits i el palmell un cop s'ha fet servir el llapis; *Només llapis* no deixa dibuixar mai amb el dit; *Llapis i dit* deixa dibuixar tots dos; *Trackpad* dibuixa amb clic – moure – clic.",
+          "L'**indicador del dispositiu** mostra si el navegador ha vist un llapis, un dit o un ratolí/trackpad, i si el contacte s'ha ignorat."
+        ]
+      },
+      "recognize": {
+        "title": "Reconeixement i correccions",
+        "body": [
+          "**Reconeix** acoloreix la tinta segons com s'ha llegit: enllaços en blau, etiquetes en verd, fletxes en vermell, el que no s'ha entès en gris.",
+          "Si alguna cosa es llegeix malament: **Continua dibuixant** (Esc), esborra el traç (E) i torna'l a dibuixar, més gran i amb espais més clars entre enllaços i lletres.",
+          "La **comprovació del flux d'electrons** avisa quan una fletxa comença en un àtom sense parell solitari, comença o acaba enlloc, o dona a C, N, O o F més d'un octet.",
+          "Després d'inserir, les eines de Ketcher corregeixen la resta (tipus d'àtom, càrrega, ordre d'enllaç).",
+          "Si el mateix símbol es llegeix malament una vegada i una altra, ensenya'l a MecHand (**Ensenya**)."
+        ]
+      },
+      "library": {
+        "title": "Biblioteca de plantilles i estructures des de text",
+        "body": [
+          "Obre-la amb **Biblioteca** o Ctrl/⌘+K i escriu: noms en català o anglès, abreviatures (Trp, THF), fórmules, números CAS. Els accents i les petites errades no importen.",
+          "Retorn afegeix l'estructura ressaltada al costat del teu dibuix; els mecanismes substitueixen el llenç. Maj+Retorn fa el contrari. Ctrl/⌘+D en desa una com a preferida.",
+          "Escriu un **SMILES** o un **InChI** i es dibuixa de seguida, sense connexió.",
+          "Per a altres **noms o números CAS**, prem **Cerca en línia** (Alt+Retorn): només s'envia el text que has escrit a PubChem (i OPSIN)."
+        ]
+      },
+      "teach": {
+        "title": "Ensenya a MecHand la teva lletra",
+        "body": [
+          "**Ensenya** guarda exemples de la teva lletra en aquest navegador i els fa servir de seguida.",
+          "*Lletres i signes*: unes quantes mostres de cada símbol que MecHand llegeix malament. *Fletxes*: les puntes dibuixades amb un traç a part ensenyen el teu estil de punta. *Electrons*: la mida dels teus punts.",
+          "**Exporta les mostres** les desa en un fitxer que es pot afegir al model compartit."
+        ]
+      },
+      "export": {
+        "title": "Exportació",
+        "body": [
+          "**Exporta** converteix tot el llenç: **TikZ** (fletxes corbes com a corbes de Bézier) i **chemfig** per a LaTeX, **CDXML** per a ChemDraw, **MOL/RXN** per a Marvin i RDKit, **KET** i **SMILES**.",
+          "Copia el codi o descarrega'l com a fitxer."
+        ]
+      },
+      "shortcuts": {
+        "title": "Dreceres de teclat",
+        "body": [
+          "`Alt+F` mà alçada sí/no · `Espai` reconeix · `P` / `E` llapis / goma",
+          "`Ctrl/⌘+Z` desfés la tinta · `Ctrl/⌘+Maj+Z` refés la tinta · `Esc` descarta un traç de trackpad obert, tanca un diàleg",
+          "`Ctrl/⌘+K` biblioteca · `F1` aquesta ajuda",
+          "A la biblioteca: les fletxes es mouen, `Retorn` insereix, `Maj+Retorn` de l'altra manera, `Ctrl/⌘+D` preferida, `Alt+Retorn` cerca en línia.",
+          "Al diàleg de reconeixement: `Retorn` insereix, `Esc` continua dibuixant. Amb la mà alçada desactivada, funcionen les dreceres de Ketcher."
+        ]
+      },
+      "privacy": {
+        "title": "Privadesa",
+        "body": [
+          "Els teus dibuixos i les teves mostres de lletra no surten mai del navegador: no hi ha cap servidor.",
+          "La configuració, les mostres d'Ensenya i les preferides es guarden només a l'emmagatzematge d'aquest navegador.",
+          "L'únic ús de la xarxa després de carregar la pàgina és la cerca opcional d'un nom a la biblioteca, i només quan la demanes."
+        ]
+      },
+      "translate": {
+        "title": "Traduccions",
+        "body": [
+          "La interfície de MecHand es tradueix amb un fitxer JSON senzill per idioma. Per afegir o millorar un idioma, copia `en.json` de `src/i18n/locales/`, tradueix-ne els textos i envia'l al projecte (una *pull request* o un correu).",
+          "Els textos que falten surten en anglès, de manera que una traducció parcial ja funciona. Les barres pròpies de Ketcher no les tradueix MecHand."
+        ]
+      }
+    },
+    "tourSteps": {
+      "freehand": "**Mà alçada**: activa el dibuix a mà sobre el llenç de Ketcher (Alt+F).",
+      "recognize": "**Reconeix** llegeix la tinta i mostra una estructura neta per inserir (Espai).",
+      "undo": "Desfés i refés els canvis a la tinta, o esborra-la tota.",
+      "inkbar": "La **barra del llapis**: llapis o goma, color, tipus de línia, gruix i mode d'entrada (rebuig de palmell, trackpad).",
+      "library": "La **Biblioteca**: estructures i mecanismes fets, i molècules a partir d'un SMILES, InChI, número CAS o nom (Ctrl/⌘+K).",
+      "export": "**Exporta** a TikZ, chemfig, ChemDraw, Marvin…",
+      "teach": "**Ensenya** a MecHand la teva lletra.",
+      "language": "Tria l'idioma de la interfície.",
+      "help": "L'ajuda sempre és aquí (F1), sobre el que estàs fent.",
+      "next": "Següent",
+      "back": "Enrere",
+      "done": "Fet",
+      "skip": "Salta la visita",
+      "step": "{n} de {total}"
+    },
+    "tips": {
+      "welcome": "Primera vegada a MecHand? Una visita d'un minut mostra els controls principals.",
+      "welcomeAction": "Fes la visita",
+      "firstFreehand": "Dibuixa com en paper i prem Espai per reconèixer. L'ajuda (F1) té consells per a cada pas.",
+      "ignored": "El teu dit s'ignora perquè s'ha fet servir un llapis (rebuig de palmell). Per dibuixar amb el dit, fes servir el mode d'entrada Llapis i dit.",
+      "ignoredAction": "Fes servir Llapis i dit",
+      "trackpad": "Dibuixes amb un trackpad? El mode d'entrada Trackpad dibuixa amb clic – moure – clic, sense haver de mantenir premut.",
+      "trackpadAction": "Fes servir el mode Trackpad",
+      "dismiss": "Tanca",
+      "openHelp": "Ajuda"
+    }
+  }
+}

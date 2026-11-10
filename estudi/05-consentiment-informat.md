@@ -79,7 +79,7 @@ L'aplicació (en «mode estudi») genera un **codi aleatori** (per exemple, `MH-
 | Dada | Exemple | Per què |
 | --- | --- | --- |
 | Codi aleatori i grup de l'estudi | `MH-7K3Q9`, `A1` | Ordenar les dades sense saber qui ets |
-| Versió de l'aplicació (amb el codi del *commit*) i del model | 0.1.0+44cdba2, 1.3.0 | Saber amb quina versió s'ha fet la sessió |
+| Versió de l'aplicació (amb el codi del *commit*) i del model, i idioma de la interfície | 0.1.0+44cdba2, 1.3.0, ca | Saber amb quina versió i en quin idioma s'ha fet la sessió |
 | Any de la sessió (sense dia ni hora) | 2026 | Organitzar les dades |
 | Rol i curs | estudiant, 2n curs | Comparar grups |
 | Dispositiu amb què dibuixes | tauleta amb llapis | La precisió depèn del dispositiu |

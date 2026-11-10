@@ -109,7 +109,7 @@ describe('Teach mode for arrows, bonds and electrons', () => {
     const model = buildModel();
     const bond = [[{ x: 50, y: 100 }, { x: 50 + L, y: 100 }], [{ x: 55, y: 110 }, { x: 45 + L, y: 110 }]];
     const r = recognizeSketch(bond.map((points) => ({ points })), model.recognizer, { bondPx: L });
-    expect(checkElement('bond-double', r)).toEqual({ ok: true, read: 'double bond' });
+    expect(checkElement('bond-double', r)).toMatchObject({ ok: true, read: 'double bond', parts: [{ key: 'bond-2', count: 1 }] });
     expect(checkElement('bond-single', r).ok).toBe(false);
   });
 

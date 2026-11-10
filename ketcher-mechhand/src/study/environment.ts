@@ -99,13 +99,3 @@ export async function detectEnvironment(): Promise<StudyEnvironment> {
 }
 
 /** One line for the start screen, so participants see exactly what is recorded. */
-export function describeEnvironment(e: StudyEnvironment): string {
-  const v = (x: { name: string; major: number | null }) => (x.major ? `${x.name} ${x.major}` : x.name);
-  return [
-    `Navegador: ${v(e.browser)}`,
-    `Sistema: ${v(e.os)}`,
-    `Arquitectura: ${e.architecture ?? 'no disponible'}`,
-    `Pantalla: ${e.screen.width}×${e.screen.height} (×${e.screen.pixelRatio})`,
-    `Punts tàctils: ${e.maxTouchPoints}`,
-  ].join(' · ');
-}

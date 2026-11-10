@@ -28,7 +28,7 @@ que van aprendre a escriure en països diferents i que dibuixen amb dispositius 
 4. Mesurar la precisió del reconeixement amb escriptura real, i com varia segons el dispositiu
    (llapis, dit, ratolí, ratolí tàctil o *trackpad*) i el país on cada persona va aprendre a llegir i escriure (com a
    indicador de l'estil de cal·ligrafia).
-5. Explorar la relació entre l'entrenament personal del model (mode *Teach*) i la precisió.
+5. Explorar la relació entre l'entrenament personal del model (*Ensenya*, en anglès *Teach*) i la precisió.
 6. Obtenir, amb consentiment explícit, mostres d'escriptura per millorar el model obert de MecHand.
 
 # 2. Hipòtesis
@@ -118,7 +118,7 @@ condicions practiquin les fletxes corbes i les càrregues abans de les tasques c
 2. **Demostració** (3 min), igual per a tothom, de les dues maneres de dibuixar (document 03, §4).
 3. **Qüestionari inicial** a l'aplicació (2 min): rol, curs, dispositiu, país on va aprendre a llegir
    i escriure, mà dominant (opcional), experiència prèvia amb programes de dibuix químic.
-4. **Entrenament** (10 min): mode *Teach*, unes 3 mostres de cada lletra, signe, fletxa i parell
+4. **Entrenament** (10 min): *Ensenya*, unes 3 mostres de cada lletra, signe, fletxa i parell
    d'electrons, menys si MecHand ja les llegeix bé (document 04).
 5. **Bloc 1** (15–20 min): pràctica + 4 tasques en la condició assignada; SUS de la condició.
 6. Pausa opcional (2–3 min).

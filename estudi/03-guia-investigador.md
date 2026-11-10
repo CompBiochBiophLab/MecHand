@@ -45,8 +45,8 @@ lang: ca
 - [ ] **Memòria USB-C xifrada per maquinari** (amb teclat o PIN), que es pugui fer servir des de
   tauletes, per recollir els fitxers.
 - [ ] Dispositius de la facultat: navegador actualitzat; comproveu que el llapis dibuixa amb
-  **Freehand** i que l'indicador de dispositiu de la barra de tinta diu «Pen» quan es dibuixa amb el
-  llapis (alguns llapis d'Android es declaren com a «Finger»: en aquest cas, mode **Pen and finger**).
+  **Mà alçada** i que l'indicador de dispositiu de la barra de tinta diu «Llapis» quan es dibuixa amb el
+  llapis (alguns llapis d'Android es declaren com a «Dit»: en aquest cas, mode **Llapis i dit**).
 - [ ] Taula d'assignació de grups (§3).
 
 # 2. Material per sessió
@@ -75,8 +75,9 @@ el número d'ordre, el rol i el grup (mai el nom, el codi ni la data):
    queda la persona participant, a la pantalla final.
 3. **Demostració (3 min), igual per a tothom.** Amb el projector: (a) a Ketcher, dibuixar un enllaç,
    canviar un àtom, posar una càrrega (A+/A−) i una fletxa corba (eina de fletxes → «Arrow Elliptical
-   Arc Open Angle»); (b) a MecHand, activar **Freehand**, dibuixar un enllaç i una O, **Recognize** i
-   **Insert**, la goma i el mode **Trackpad**. No feu servir cap estímul de l'estudi.
+   Arc Open Angle»); (b) a MecHand, activar **Mà alçada**, dibuixar un enllaç i una O, **Reconeix** i
+   **Insereix a Ketcher**, la goma i el mode **Trackpad**. No feu servir cap estímul de l'estudi. La
+   interfície de MecHand es mostra en català (les barres pròpies de Ketcher són en anglès).
 4. **Inici a l'aplicació (3 min).** Qüestionari i **Comença**. Comproveu que el panell mostra el grup
    correcte.
 5. **Entrenament (10 min).** Seguiu el document 04. No corregiu la manera d'escriure de les persones participants:
@@ -106,7 +107,7 @@ el número d'ordre, el rol i el grup (mai el nom, el codi ni la data):
   torna a començar (queda registrat i l'anàlisi ho marca). Si s'ha perdut tota la sessió, comenceu-ne
   una de nova i anoteu-ho.
 - **Navegació privada:** l'emmagatzematge local pot no persistir; demaneu una finestra normal.
-- **No es pot dibuixar:** comproveu **Freehand**, el mode d'entrada i l'indicador de dispositiu (document
+- **No es pot dibuixar:** comproveu **Mà alçada**, el mode d'entrada i l'indicador de dispositiu (document
   02, «Si alguna cosa no va»). Amb trackpad, mode **Trackpad**.
 - **Problemes de reconeixement:** és part del que mesurem; no intervingueu més enllà de recordar els
   consells de dibuix del document 02.
