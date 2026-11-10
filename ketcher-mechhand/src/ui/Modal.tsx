@@ -1,4 +1,5 @@
 import { type CSSProperties, type ReactNode, useEffect } from 'react';
+import { useT } from '../i18n/i18n';
 
 export function btn(bg: string, color: string): CSSProperties {
   return {
@@ -10,6 +11,7 @@ export function btn(bg: string, color: string): CSSProperties {
 export function Modal({ title, children, onClose, testId, width = 520 }: {
   title: string; children: ReactNode; onClose: () => void; testId?: string; width?: number;
 }) {
+  const { t } = useT();
   useEffect(() => {
     // Capture phase: Ketcher handles Escape itself and stops it before it bubbles to window.
     const onKey = (e: KeyboardEvent) => {
@@ -32,7 +34,7 @@ export function Modal({ title, children, onClose, testId, width = 520 }: {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
           <h2 style={{ fontSize: 17, margin: 0, flex: 1 }}>{title}</h2>
-          <button aria-label="Close" onClick={onClose} style={{ border: 'none', background: 'none', fontSize: 20, cursor: 'pointer', color: '#6b7280' }}>×</button>
+          <button aria-label={t('dialog.close')} onClick={onClose} style={{ border: 'none', background: 'none', fontSize: 20, cursor: 'pointer', color: '#6b7280' }}>×</button>
         </div>
         {children}
       </div>

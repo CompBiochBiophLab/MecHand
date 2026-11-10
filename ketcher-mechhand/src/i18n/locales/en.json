@@ -1,0 +1,695 @@
+{
+  "_meta": {
+    "name": "English",
+    "authors": [
+      "Jordi Villà-Freixa"
+    ]
+  },
+  "toolbar": {
+    "label": "MecHand",
+    "freehand": "Freehand",
+    "on": "on",
+    "off": "off",
+    "freehandName": "Freehand drawing",
+    "recognize": "Recognize",
+    "recognizeCount": "Recognize ({count})",
+    "recognizeName": "Recognize the ink",
+    "undoInk": "Undo ink",
+    "redoInk": "Redo ink",
+    "clearInk": "Clear ink",
+    "library": "Library",
+    "libraryName": "Template library",
+    "export": "Export",
+    "teach": "Teach",
+    "about": "About",
+    "help": "Help",
+    "language": "Language"
+  },
+  "helpToggle": {
+    "title": "Show or hide help labels on every button",
+    "level": "Help detail level",
+    "expert": "Expert",
+    "student": "Student"
+  },
+  "help": {
+    "btn-freehand": {
+      "brief": "Freehand mode: draw on top of Ketcher with a pen, finger, trackpad or mouse.",
+      "student": "Turn this on and draw the mechanism as on paper: bonds as lines (zig-zag chains and rings can be one stroke), atom labels as letters, charges as + or −, and curved arrows with a head. The pen bar below sets colour, line and input. Turn it off to use Ketcher's own tools again."
+    },
+    "btn-recognize": {
+      "brief": "Recognize the ink and propose a clean structure.",
+      "student": "MecHand reads your strokes in the browser (no server), shows what it understood and checks the electron flow of the curved arrows. Confirm to insert it into Ketcher."
+    },
+    "btn-undo-ink": {
+      "brief": "Undo the last change to the ink (stroke, erasure or clear).",
+      "student": "Undoes the last stroke, erasure or clear. Ketcher's structure is not touched."
+    },
+    "btn-redo-ink": {
+      "brief": "Redo what Undo ink undid.",
+      "student": "Puts back the last change that Undo ink removed."
+    },
+    "btn-clear-ink": {
+      "brief": "Remove all ink (can be undone).",
+      "student": "Deletes all freehand strokes that have not been inserted yet. Undo ink brings them back."
+    },
+    "tool-pen": {
+      "brief": "Draw ink.",
+      "student": "The pen draws strokes. Choose its colour, kind of line and width on this bar."
+    },
+    "tool-eraser": {
+      "brief": "Erase whole strokes by touching them.",
+      "student": "Drag over the strokes you want to remove (they fade) and lift: they are erased. The eraser end of a pen (Surface, Wacom) erases too, whatever tool is selected."
+    },
+    "pen-colour": {
+      "brief": "Ink colour.",
+      "student": "Colours help you organise a drawing (e.g. arrows in red). Recognition ignores colour."
+    },
+    "pen-style": {
+      "brief": "Kind of line: ballpoint, fountain pen, marker or dashed.",
+      "student": "Ballpoint draws an even line; the fountain pen follows pen pressure (or speed with a mouse); the marker is broad and translucent; dashed is only a look. All are recognized the same way."
+    },
+    "pen-width": {
+      "brief": "Line width.",
+      "student": "From fine to extra bold. Only the look changes; recognition uses the shape of the stroke."
+    },
+    "pen-input": {
+      "brief": "Which inputs draw: auto, pen only, pen and finger, or trackpad.",
+      "student": "Auto: once you use a pen, fingers and palms are ignored. Pen only: fingers never draw. Pen and finger: both draw. Trackpad: click to start a stroke, move without pressing, click to end it (no click-and-drag needed)."
+    },
+    "pen-device": {
+      "brief": "The device of the last contact, and whether it could draw.",
+      "student": "Shows whether the browser saw a pen, a finger or a mouse/trackpad. \"Ignored\" means palm rejection discarded the contact; change the input mode if your finger should draw."
+    },
+    "btn-library": {
+      "brief": "Template library; also draws a molecule from its SMILES, InChI, CAS number or name.",
+      "student": "Rings, functional groups, biomolecules, reagents and complete mechanisms. Search by name, formula or CAS number, or type a SMILES or InChI to draw it. Names that are not in the library can be looked up online (PubChem, OPSIN) if you ask."
+    },
+    "btn-export": {
+      "brief": "Export to TikZ, chemfig, ChemDraw (CDXML), MOL/RXN, KET or SMILES.",
+      "student": "Converts the Ketcher canvas, including curved arrows, into code for your LaTeX document, or into files that ChemDraw, Marvin and other editors open."
+    },
+    "btn-teach": {
+      "brief": "Teach MecHand your handwriting.",
+      "student": "Draw a few examples of a letter or sign, an arrow, a bond or a lone pair. They are stored in this browser and used immediately; export them to contribute them to the shared model."
+    },
+    "btn-about": {
+      "brief": "Version, recognition model and browser support.",
+      "student": "Shows the version, the recognition model in use, what it can read, and known browser issues."
+    },
+    "btn-help": {
+      "brief": "Help centre: topics, tips for what you are doing, a guided tour and shortcuts.",
+      "student": "Opens the help centre on the topic of what you are doing now. You can search it, replay the guided tour or see all the keyboard shortcuts."
+    },
+    "btn-language": {
+      "brief": "Language of MecHand's interface.",
+      "student": "Choose the language of MecHand's buttons, dialogs and help. Translations are plain JSON files that anyone can add or improve."
+    },
+    "btn-help-toggle": {
+      "brief": "Show or hide these help labels.",
+      "student": "Toggle the help labels. Choose Expert for one-liners or Student for explanations."
+    }
+  },
+  "pen": {
+    "bar": "Pen",
+    "tool": "Tool",
+    "pen": "Pen",
+    "eraser": "Eraser",
+    "colours": "Ink colour",
+    "styles": "Kind of line",
+    "widths": "Line width",
+    "inputMode": "Input mode",
+    "colour": {
+      "black": "Black",
+      "blue": "Blue",
+      "red": "Red",
+      "green": "Green",
+      "purple": "Purple",
+      "orange": "Orange"
+    },
+    "style": {
+      "ballpoint": "Ballpoint",
+      "fountain": "Fountain pen",
+      "marker": "Marker",
+      "dashed": "Dashed"
+    },
+    "styleHint": {
+      "ballpoint": "Even line",
+      "fountain": "Line width follows pen pressure (or speed with a mouse)",
+      "marker": "Broad, translucent line",
+      "dashed": "Dashed line (only the look: it is recognized like any other stroke)"
+    },
+    "width": {
+      "fine": "Fine line",
+      "medium": "Medium line",
+      "bold": "Bold line",
+      "extra": "Extra bold line"
+    },
+    "input": {
+      "auto": "Auto",
+      "pen": "Pen only",
+      "touch": "Pen and finger",
+      "trackpad": "Trackpad"
+    },
+    "inputHint": {
+      "auto": "Pen, finger and mouse draw; once a pen is used, fingers are ignored (palm rejection).",
+      "pen": "Only the pen (and a mouse) draws; fingers and palms are ignored.",
+      "touch": "Pen, finger and mouse always draw (large contacts such as a palm are still ignored).",
+      "trackpad": "Click to start a stroke, move without pressing, click again to end it. Dragging also works."
+    },
+    "device": {
+      "pen": "Pen",
+      "touch": "Finger",
+      "mouse": "Mouse / trackpad",
+      "none": "Input: —",
+      "ignored": "{device} ignored",
+      "last": "Last input: {device}",
+      "lastIgnored": "Last input: {device} (ignored)",
+      "noInput": "No input yet"
+    },
+    "openStroke": "Click to end the stroke (Esc cancels)"
+  },
+  "check": {
+    "start-nothing": "Arrow {arrow} does not start at an atom or a bond.",
+    "start-no-lone-pair": "Arrow {arrow} starts at {at}, which has no lone pair. Start it at a lone pair or a bond.",
+    "end-nothing": "Arrow {arrow} does not point to an atom or a bond.",
+    "octet": "Arrow {arrow} gives {at} more than an octet. Is a bond to it breaking at the same time?"
+  },
+  "dialog": {
+    "close": "Close"
+  },
+  "consolidate": {
+    "title": "Is this what you meant?",
+    "confidence": "{pct}% confidence",
+    "atoms_one": "{count} atom",
+    "atoms_other": "{count} atoms",
+    "bonds_one": "{count} bond",
+    "bonds_other": "{count} bonds",
+    "arrows_one": "{count} arrow",
+    "arrows_other": "{count} arrows",
+    "inkColours": "Ink colours:",
+    "bonds": "bonds",
+    "labels": "labels",
+    "arrows": "arrows",
+    "notUnderstood": "not understood",
+    "discard": "Discard ink",
+    "keep": "Keep drawing",
+    "insert": "Insert into Ketcher",
+    "nothing": "Nothing recognized",
+    "previewLabel": "Recognized structure",
+    "serverRead": "{engine} read {smiles} ({pct}%); it will be inserted instead of the in-browser structure.",
+    "serverInvalid": "{engine} could not read a valid structure; using the in-browser result.",
+    "serverDown": "Recognition server not reachable ({error}); using the in-browser result.",
+    "tipsTitle": "Tips",
+    "tipUnread_one": "{count} stroke was not understood (grey). Letters too close to bonds, or bonds as short as letters, are the usual cause.",
+    "tipUnread_other": "{count} strokes were not understood (grey). Letters too close to bonds, or bonds as short as letters, are the usual cause.",
+    "tipLowConfidence": "Low confidence: draw bonds two or three times longer than letters are tall, and leave a small gap between a bond and its label.",
+    "tipNoHead": "A curved stroke without a head is read as a bond. Add a clear head (a V) at the end of each arrow.",
+    "tipTeach": "If the same symbol is misread again and again, teach it to MecHand (Teach)."
+  },
+  "export": {
+    "title": "Export",
+    "download": "Download",
+    "copy": "Copy",
+    "copied": "Copied ✓",
+    "generating": "Generating…",
+    "noClipboard": "Clipboard not available in this browser context; use Download instead.",
+    "note": {
+      "tikz": "Structures and curved arrows with absolute coordinates; easy to fine-tune by hand.",
+      "chemfig": "chemfig scheme; curved arrows become `\\chemmove` between named atoms.",
+      "cdxml": "Opens in ChemDraw (and Marvin, which reads CDXML).",
+      "mol": "MDL format read by Marvin, ChemDraw, RDKit, Open Babel… (RXN if the canvas holds a reaction).",
+      "ket": "Ketcher's native format; keeps everything, including curved arrows.",
+      "smiles": "Structures only (no arrows)."
+    }
+  },
+  "about": {
+    "title": "About MecHand recognition",
+    "intro": "MecHand reads your **strokes** (not a picture of them) directly in the browser: no installation, no server, nothing leaves your computer. Lines become bonds (chains and rings can be one stroke), parallel lines become double/triple bonds, letters become atom labels, + and − become charges, and curved strokes with a head become electron-flow arrows (full head = 2 e⁻, single barb = 1 e⁻). Each arrow is anchored to the nearest atom or bond and checked for electron bookkeeping.",
+    "version": "MecHand",
+    "symbolModel": "Symbol model",
+    "templates": "Templates in use",
+    "templatesValue": "{total} ({contributed} contributed, {user} yours)",
+    "elements": "Arrows, bonds, electrons",
+    "elementsValue": "{total} samples ({contributed} contributed, {user} yours); {heads} arrowhead templates",
+    "classifier": "Classifier",
+    "corners": "Corner finding",
+    "engine": "Structure engine",
+    "engineLocked": "In-browser only (study mode: nothing leaves this browser).",
+    "engineBrowser": "In-browser (default, works offline)",
+    "engineServer": "DECIMER server (optional, image-based, runs on your computer; arrows and charges still come from the in-browser recognizer)",
+    "checking": "checking…",
+    "connected": "● connected — {engine}",
+    "unreachable": "○ not reachable (see README, \"Optional recognition server\")",
+    "browsers": "Browsers",
+    "browsersText": "Works in current Chrome, Edge, Firefox and Safari (desktop and iPad). Known differences are listed in the guide under “Browser support”.",
+    "translation": "Interface language",
+    "translationBy": "Translation: {authors}",
+    "documentation": "Documentation",
+    "source": "Recognizer source"
+  },
+  "teach": {
+    "title": "Teach MecHand your handwriting",
+    "letters": "Letters & signs",
+    "group": {
+      "arrows": "Arrows",
+      "bonds": "Bonds",
+      "electrons": "Electrons"
+    },
+    "lettersPrompt": "Pick a symbol, write it in the box, and save. A few samples per symbol make a difference.",
+    "stored": "Samples stay in this browser; export them to share with the project.",
+    "circled": "{symbol} (circled charge)",
+    "minus": "− (minus)",
+    "plus": "+ (plus)",
+    "oneBond": "= 1 bond",
+    "undoStroke": "Undo stroke",
+    "clear": "Clear",
+    "save": "Save sample",
+    "readAs": "Currently read as:",
+    "readOk": "✓",
+    "readHelps": "— saving this sample helps MecHand learn it",
+    "yourSamples": "Your samples",
+    "exportSamples": "Export samples",
+    "import": "Import…",
+    "deleteAll": "Delete all",
+    "confirmDelete": "Delete all your samples (letters, arrows, bonds and electrons)?",
+    "notSamples": "Not a MecHand samples file.",
+    "learns": {
+      "arrowheads": "Heads drawn with a separate stroke are added to the arrowhead model, so your style of head is recognized from now on.",
+      "dots": "The size of your dots sets how large a dot may be (lone pairs, radicals).",
+      "check": "Bonds are recognized by geometry: this checks that your style is read correctly; shared samples help improve the rules."
+    },
+    "element": {
+      "arrow-pair": {
+        "label": "Curved arrow, 2 e⁻ (full head)",
+        "prompt": "Draw a curved arrow one or two bonds long (the grey line is one bond), with the head you normally use."
+      },
+      "arrow-single": {
+        "label": "Fishhook arrow, 1 e⁻ (half head)",
+        "prompt": "Draw a curved arrow with a half head (one barb), as for the movement of one electron."
+      },
+      "arrow-reaction": {
+        "label": "Reaction arrow →",
+        "prompt": "Draw a straight reaction arrow, two or three bonds long."
+      },
+      "arrow-equilibrium": {
+        "label": "Equilibrium arrows ⇌",
+        "prompt": "Draw two parallel straight arrows with half heads pointing in opposite directions."
+      },
+      "bond-single": {
+        "label": "Single bond",
+        "prompt": "Draw a single bond about as long as the grey line."
+      },
+      "bond-double": {
+        "label": "Double bond",
+        "prompt": "Draw a double bond about as long as the grey line."
+      },
+      "bond-triple": {
+        "label": "Triple bond",
+        "prompt": "Draw a triple bond about as long as the grey line."
+      },
+      "ring-benzene": {
+        "label": "Benzene ring",
+        "prompt": "Draw a benzene ring as a hexagon with three double bonds, sides about as long as the grey line."
+      },
+      "lone-pair": {
+        "label": "Lone pair (two dots)",
+        "prompt": "Draw the two dots of a lone pair beside the grey O, at the size you use."
+      },
+      "radical": {
+        "label": "Radical (one dot)",
+        "prompt": "Draw a single radical dot beside the grey O, at the size you use."
+      }
+    },
+    "read": {
+      "arrow-electron-pair_one": "curved arrow (2 e⁻)",
+      "arrow-electron-pair_other": "{count} × curved arrow (2 e⁻)",
+      "arrow-single-electron_one": "fishhook arrow (1 e⁻)",
+      "arrow-single-electron_other": "{count} × fishhook arrow (1 e⁻)",
+      "arrow-reaction_one": "reaction arrow",
+      "arrow-reaction_other": "{count} × reaction arrow",
+      "arrow-equilibrium_one": "equilibrium arrows",
+      "arrow-equilibrium_other": "{count} × equilibrium arrows",
+      "arrow-other_one": "arrow",
+      "arrow-other_other": "{count} × arrow",
+      "bond-1_one": "single bond",
+      "bond-1_other": "{count} × single bond",
+      "bond-2_one": "double bond",
+      "bond-2_other": "{count} × double bond",
+      "bond-3_one": "triple bond",
+      "bond-3_other": "{count} × triple bond",
+      "bond-4_one": "aromatic bond",
+      "bond-4_other": "{count} × aromatic bond",
+      "dots_one": "1 dot",
+      "dots_other": "{count} dots",
+      "text": "text “{text}”",
+      "unread_one": "1 stroke not understood",
+      "unread_other": "{count} strokes not understood",
+      "nothing": "nothing"
+    }
+  },
+  "library": {
+    "title": "Template library",
+    "search": "Search, or type a SMILES, InChI, CAS number or name: benzene, Trp, CCO, 64-17-5…",
+    "searchLabel": "Search templates, or type a SMILES, InChI, CAS number or name",
+    "categoriesLabel": "Template categories",
+    "listLabel": "Templates",
+    "filter": {
+      "all": "All",
+      "recent": "Recent",
+      "favourites": "★ Favourites"
+    },
+    "category": {
+      "ring": "Rings",
+      "group": "Functional groups",
+      "bio": "Biomolecules",
+      "reagent": "Reagents",
+      "mechanism": "Mechanisms"
+    },
+    "groupName": {
+      "carbocycles": "Carbocycles",
+      "aromatic-hydrocarbons": "Aromatic hydrocarbons",
+      "aromatic-heterocycles": "Aromatic heterocycles",
+      "saturated-heterocycles": "Saturated heterocycles",
+      "hydrocarbon-halide": "Hydrocarbon & halide",
+      "oxygen-groups": "Oxygen groups",
+      "carbonyl-groups": "Carbonyl groups",
+      "nitrogen-groups": "Nitrogen groups",
+      "sulfur-phosphorus-boron": "Sulfur, phosphorus & boron",
+      "reactive-intermediates": "Reactive intermediates",
+      "substituents-protecting-groups": "Substituents & protecting groups",
+      "amino-acids": "Amino acids",
+      "nucleobases-nucleotides": "Nucleobases & nucleotides",
+      "sugars": "Sugars",
+      "cofactors-metabolites": "Cofactors & metabolites",
+      "lipids": "Lipids",
+      "water-ions": "Water & ions",
+      "acids": "Acids",
+      "bases": "Bases",
+      "reducing-agents": "Reducing agents",
+      "oxidizing-agents": "Oxidizing agents",
+      "halogenating-activating-agents": "Halogenating & activating agents",
+      "carbon-nucleophiles": "Carbon nucleophiles",
+      "solvents": "Solvents",
+      "small-molecules-gases": "Small molecules & gases",
+      "organic": "Organic",
+      "inorganic": "Inorganic",
+      "biochemistry": "Biochemistry",
+      "smiles": "SMILES",
+      "inchi": "InChI",
+      "pubchem": "PubChem",
+      "opsin": "OPSIN"
+    },
+    "add": "Add to canvas",
+    "replace": "Replace canvas",
+    "tileTitle": "{name}\nClick: {mode} · Shift+click: {other}",
+    "favAdd": "Add {name} to favourites",
+    "favRemove": "Remove {name} from favourites",
+    "favAddShort": "Add to favourites",
+    "favRemoveShort": "Remove from favourites",
+    "noMatch": "No templates match “{query}”.",
+    "noMatchOffline": "No templates match “{query}”. SMILES and InChI are read directly.",
+    "noFavourites": "No favourites yet. Click ☆ on a template (or press {mod}+D) to keep it here.",
+    "noRecent": "Templates you insert will appear here.",
+    "count_one": "{count} template",
+    "count_other": "{count} templates",
+    "insert": "insert",
+    "otherMode": "other mode",
+    "lookup": "Look up “{query}” online",
+    "lookingUp": "Looking up “{query}”…",
+    "lookupNone": "No structure found online for “{query}”.",
+    "lookupNote": "PubChem (NIH) and OPSIN (EMBL-EBI) receive the text you typed, nothing else.",
+    "cas": "CAS {cas}"
+  },
+  "study": {
+    "title": "MecHand study",
+    "startTitle": "MecHand study (UVic-UCC)",
+    "codeTitle": "Your anonymous code",
+    "codeHidden": "Your anonymous code (shown at the end)",
+    "teach": {
+      "title": "1. Training (about 10 minutes)",
+      "intro": "Teach MecHand your handwriting. Open **✍ Teach** and save about 3 samples of each:",
+      "letters": "*{tab}*: C, O, N, H, F, l (of Cl), r (of Br), a (of Na), +, − (and ⊕, ⊖ if you write them circled)",
+      "arrows": "*{tab}*: curved 2 e⁻ arrow, reaction arrow, equilibrium",
+      "electrons": "*{tab}*: lone pair",
+      "reading": "Under the box you will see how MecHand reads it. If it gets it right (✓), there is no need to insist.",
+      "open": "Open ✍ Teach",
+      "done": "I have finished the training"
+    },
+    "task": {
+      "position": "Block {block} of 2 · task {k} of {n}",
+      "practice": " · practice (does not count)",
+      "ketcherTip": "Curved arrows in Ketcher: arrow tool → “Arrow Elliptical Arc Open Angle” (2 e⁻) or “… Open Half Angle” (1 e⁻). Charges: the “A+” and “A−” tools.",
+      "converted": "converted to PNG",
+      "start": "Start the task",
+      "finish": "I have finished",
+      "skip": "Skip",
+      "confirmSkip": "Do you want to skip this task?"
+    },
+    "condition": {
+      "freehand": "MecHand: freehand drawing (you can correct with Ketcher's tools)",
+      "ketcher": "Ketcher's tools only (no freehand drawing)"
+    },
+    "stimulus": {
+      "practica-acid-base": "Practice (does not count): draw the whole reaction, with both curved arrows, the reaction arrow and the products. Try out the tools you will need.",
+      "A1-paracetamol": "Draw paracetamol.",
+      "A2-cafeina": "Draw caffeine.",
+      "A3-sn2-walden": "Draw the reactants with the curved arrows and the organic product. You do not need to draw the transition state (in brackets), the stereochemistry (wedges), the Na⁺ or the NaBr.",
+      "A4-aldol-basic": "Draw only the first step (top left): the aldehyde and the hydroxide ion with the three curved arrows, the equilibrium arrow and the enolate that forms. Where there is an R, put a CH₃ (the end of a line is enough).",
+      "B1-dopamina": "Draw dopamine.",
+      "B2-serotonina": "Draw serotonin.",
+      "B3-sn2-cianur": "Draw the reactants with the curved arrows and the organic product. You do not need to draw the lone pairs, the Na⁺ or the Na⁺ and Cl⁻ ions of the products.",
+      "B4-aldol-acid": "Draw only the second step (top, the second and third compounds): the protonated aldehyde and water with the three curved arrows, the equilibrium arrow and the enol that forms. Where there is an R, put a CH₃ (the end of a line is enough)."
+    },
+    "sus": {
+      "title": "Rating of the block",
+      "intro": "Think about how you worked in this block: *{condition}*. 1 = strongly disagree, 5 = strongly agree.",
+      "continue": "Continue",
+      "item1": "I think that I would like to use this system frequently.",
+      "item2": "I found the system unnecessarily complex.",
+      "item3": "I thought the system was easy to use.",
+      "item4": "I think that I would need the support of a technical person to be able to use this system.",
+      "item5": "I found the various functions in this system were well integrated.",
+      "item6": "I thought there was too much inconsistency in this system.",
+      "item7": "I would imagine that most people would learn to use this system very quickly.",
+      "item8": "I found the system very cumbersome to use.",
+      "item9": "I felt very confident using the system.",
+      "item10": "I needed to learn a lot of things before I could get going with this system."
+    },
+    "final": {
+      "title": "To finish (optional)",
+      "noPersonal": "Do not write any personal data (names, e-mail addresses…).",
+      "freehand": "What did you like and dislike about freehand drawing (MecHand)?",
+      "ketcher": "What did you like and dislike about drawing with Ketcher's tools only?",
+      "preference": "For drawing mechanisms, which way do you prefer?",
+      "prefNone": "I prefer not to answer",
+      "prefMechand": "Freehand drawing (MecHand)",
+      "prefKetcher": "Ketcher's tools",
+      "prefSame": "I don't mind",
+      "other": "Other comments",
+      "save": "Save the session"
+    },
+    "done": {
+      "thanks": "Thank you very much!",
+      "instructions": "Download the session file and copy it yourself to the study's USB stick (the contact person does not look at the file name). Do not send it by e-mail.",
+      "download": "Download {file}",
+      "choices": "Your choices: Teach samples in the file: **{share}**; publication of the samples: **{publish}**. They must match the paper consent form; if they do not, tell the contact person now.",
+      "yes": "yes",
+      "no": "no",
+      "downloadsCopy": "A copy of the file stays in this device's downloads folder; delete it after handing it in.",
+      "keepCode": "Keep your code **{code}**: if you later want to withdraw your data, give it to the contact person (or leave it in the department's letterbox).",
+      "clear": "Delete the data from this browser",
+      "confirmClear": "The session and the training samples will be deleted from this browser. Have you downloaded the file?"
+    },
+    "recorded": {
+      "summary": "What is recorded",
+      "text": "Anonymous code, group, your answers, {environment}; pointer types used: {pointers}. For each task: time, strokes (x, y points and when each stroke was drawn), what MecHand recognized, your decisions, the use of the pen controls (eraser, undo, colour, width, input mode), the contacts ignored by palm rejection and the final drawing. Nothing leaves this browser."
+    },
+    "start": {
+      "intro": "Before starting you must have read the information sheet and signed the informed consent. Taking part is voluntary, has no effect on any assessment and you can stop at any time.",
+      "group": "Group (the contact person gives it to you)",
+      "role": "You take part as",
+      "roleStudent": "Student of the Biotechnology degree",
+      "roleTeacher": "Chemistry teaching staff",
+      "course": "Year",
+      "course1": "1st year",
+      "course2": "2nd year",
+      "course3": "3rd year",
+      "course4": "4th year",
+      "device": "What you will draw with",
+      "devices": {
+        "tauleta-llapis": "Tablet with a pen",
+        "tauleta-dit": "Tablet with a finger",
+        "ordinador-llapis": "Computer with a pen or graphics tablet",
+        "ordinador-tactil": "Computer with a touch screen (finger)",
+        "ordinador-trackpad": "Computer with a trackpad",
+        "ordinador-ratoli": "Computer with a mouse",
+        "altre": "Other"
+      },
+      "country": "Country where you learned to read and write",
+      "noAnswer": "I prefer not to answer",
+      "hand": "Hand you write with (optional)",
+      "handRight": "Right",
+      "handLeft": "Left",
+      "handBoth": "Both",
+      "experience": "Experience with chemical drawing software (ChemDraw, Ketcher, Marvin…)",
+      "expNone": "None",
+      "expLittle": "Little (now and then)",
+      "expMuch": "A lot (often)",
+      "share": "I agree that the samples I draw in ✍ Teach are included in the session file (optional).",
+      "publish": "I agree that these samples are published in MecHand's open repository, with only the symbol and the x, y coordinates (optional; it must match what I ticked on the consent form).",
+      "consent": "I have read the information sheet and signed the informed consent.",
+      "envNote": "From your device only this is recorded: {environment}; which pointer types you use (pen, finger, mouse) and how you use the application (see the information sheet). Your name, IP address and any device identifier are not recorded.",
+      "teachWarning": "This browser already has training samples (perhaps someone else's): they will be deleted when you start, so that every session starts from the shared model.",
+      "begin": "Start"
+    },
+    "env": {
+      "browser": "Browser",
+      "os": "System",
+      "architecture": "Architecture",
+      "notAvailable": "not available",
+      "screen": "Screen",
+      "touchPoints": "Touch points"
+    }
+  },
+  "helpCenter": {
+    "title": "Help",
+    "search": "Search help",
+    "close": "Close help",
+    "now": "What you can do now",
+    "tour": "Take the guided tour",
+    "website": "More on the website",
+    "noResults": "No help topic matches “{query}”.",
+    "topics": "Topics",
+    "context": {
+      "off": "Press **Freehand** (Alt+F) to draw by hand, or open the **Library** (Ctrl/⌘+K) to start from a structure.",
+      "ketcher": "With Freehand off, Ketcher's own tools work as usual: use them to tidy an inserted structure.",
+      "empty": "Draw as on paper: bonds as lines, atoms as letters, charges up and to the right, curved arrows with a head.",
+      "strokes": "Press **Space** (or Recognize) to read your {count} strokes. Fix a stroke with the eraser (E) or undo (Ctrl/⌘+Z).",
+      "ignored": "Your last contact was ignored by palm rejection. To draw with a finger, choose the input mode **Pen and finger**.",
+      "mouse": "Drawing with a trackpad? The input mode **Trackpad** draws by click – move – click.",
+      "dialog": "Check what MecHand read: **Insert** (Enter), **Keep drawing** (Esc) to fix strokes, or **Discard ink**.",
+      "library": "Type a name, formula, CAS number or SMILES. Enter adds the highlighted template; Shift+Enter replaces the canvas.",
+      "teach": "Draw the selected symbol in the box and save it. A few samples of the symbols MecHand misreads make a difference.",
+      "export": "Pick a format and copy or download it. TikZ and chemfig keep the curved arrows for LaTeX.",
+      "study": "In the study, follow the panel on the right; the contact person can help with technical problems."
+    },
+    "topic": {
+      "start": {
+        "title": "Getting started",
+        "body": [
+          "MecHand adds hand drawing to the Ketcher chemical editor. Everything runs in your browser.",
+          "1. Press **Freehand** and draw the molecule or mechanism as on paper.",
+          "2. Press **Recognize** (Space): MecHand shows what it read and checks the curved arrows.",
+          "3. **Insert into Ketcher**, then edit with Ketcher's tools, or **Export** to LaTeX, ChemDraw or Marvin.",
+          "The **Library** (Ctrl/⌘+K) gives you ready-made structures and complete mechanisms, and draws any molecule from its SMILES, InChI, CAS number or name."
+        ]
+      },
+      "drawing": {
+        "title": "How to draw",
+        "body": [
+          "**Bonds**: straight lines. A zig-zag or a closed polygon can be one stroke; two or three close parallel lines are a double or triple bond.",
+          "**Atoms**: write the letters (C, H, N, O, S, P, F, Cl, Br, I, Na…) at the end of a bond, leaving a small gap.",
+          "**Charges**: + or − (also ⊕, ⊖, 2−) up and to the right of the atom. **Lone pairs and radicals**: two dots or one dot next to the atom.",
+          "**Curved arrows**: start at the electrons (a lone pair or the middle of a bond) and end at the atom or bond that receives them. A full head (V) moves two electrons, a single barb one.",
+          "**Reactions**: a long straight arrow between reactants and products, and + between molecules.",
+          "Draw bonds two or three times longer than letters are tall: that is how MecHand tells them apart."
+        ]
+      },
+      "penbar": {
+        "title": "The pen bar",
+        "body": [
+          "In freehand mode, a second toolbar sets the **pen** or the **eraser** (P / E). The eraser removes whole strokes; the eraser end of a Surface or Wacom pen erases too.",
+          "**Colour, kind of line and width** only change the look of the ink; recognition uses the shape of the strokes.",
+          "**Input mode**: *Auto* ignores fingers and palms once a pen has been used; *Pen only* never lets a finger draw; *Pen and finger* lets both draw; *Trackpad* draws by click – move – click.",
+          "The **device chip** shows whether the browser saw a pen, a finger or a mouse/trackpad, and whether the contact was ignored."
+        ]
+      },
+      "recognize": {
+        "title": "Recognition and corrections",
+        "body": [
+          "**Recognize** colours your ink by how it was read: blue bonds, green labels, red arrows, grey not understood.",
+          "If something is misread: **Keep drawing** (Esc), erase the stroke (E) and draw it again, larger and with clearer gaps between bonds and letters.",
+          "The **electron-flow check** warns when an arrow starts at an atom without a lone pair, starts or ends on nothing, or gives C, N, O or F more than an octet.",
+          "After inserting, Ketcher's tools fix anything else (atom type, charge, bond order).",
+          "If the same symbol is misread again and again, teach it to MecHand (**Teach**)."
+        ]
+      },
+      "library": {
+        "title": "Template library and structures from text",
+        "body": [
+          "Open it with **Library** or Ctrl/⌘+K and type: names in English or Catalan, abbreviations (Trp, THF), formulas, CAS numbers. Accents and small typos do not matter.",
+          "Enter adds the highlighted structure next to your drawing; mechanisms replace the canvas. Shift+Enter does the opposite. Ctrl/⌘+D keeps a favourite.",
+          "Type a **SMILES** or an **InChI** and it is drawn at once, offline.",
+          "For other **names or CAS numbers**, press **Look up online** (Alt+Enter): only the text you typed is sent to PubChem (and OPSIN)."
+        ]
+      },
+      "teach": {
+        "title": "Teach MecHand your handwriting",
+        "body": [
+          "**Teach** stores examples of your own handwriting in this browser and uses them at once.",
+          "*Letters & signs*: a few samples of each symbol MecHand misreads. *Arrows*: arrowheads drawn as a separate stroke teach your style of head. *Electrons*: the size of your dots.",
+          "**Export samples** saves them as a file that can be added to the shared model."
+        ]
+      },
+      "export": {
+        "title": "Export",
+        "body": [
+          "**Export** converts the whole canvas: **TikZ** (curved arrows as Bézier curves) and **chemfig** for LaTeX, **CDXML** for ChemDraw, **MOL/RXN** for Marvin and RDKit, **KET** and **SMILES**.",
+          "Copy the code, or download it as a file."
+        ]
+      },
+      "shortcuts": {
+        "title": "Keyboard shortcuts",
+        "body": [
+          "`Alt+F` Freehand on/off · `Space` Recognize · `P` / `E` pen / eraser",
+          "`Ctrl/⌘+Z` undo ink · `Ctrl/⌘+Shift+Z` redo ink · `Esc` drop an open trackpad stroke, close a dialog",
+          "`Ctrl/⌘+K` library · `F1` this help",
+          "In the library: arrows move, `Enter` inserts, `Shift+Enter` the other way, `Ctrl/⌘+D` favourite, `Alt+Enter` look up online.",
+          "In the recognition dialog: `Enter` inserts, `Esc` keeps drawing. With Freehand off, Ketcher's own shortcuts work."
+        ]
+      },
+      "privacy": {
+        "title": "Privacy",
+        "body": [
+          "Your drawings and handwriting samples never leave your browser: there is no server.",
+          "Settings, Teach samples and favourites are kept in this browser's storage only.",
+          "The only network use after loading is the optional online look-up of a name in the library, and only when you ask for it."
+        ]
+      },
+      "translate": {
+        "title": "Translations",
+        "body": [
+          "MecHand's interface is translated with one plain JSON file per language. To add or improve a language, copy `en.json` from `src/i18n/locales/`, translate the texts and send it to the project (a pull request or an e-mail).",
+          "Missing texts appear in English, so a partial translation already works. Ketcher's own toolbars are not translated by MecHand."
+        ]
+      }
+    },
+    "tourSteps": {
+      "freehand": "**Freehand**: turn on hand drawing over the Ketcher canvas (Alt+F).",
+      "recognize": "**Recognize** reads your ink and shows a clean structure to insert (Space).",
+      "undo": "Undo and redo changes to the ink, or clear it.",
+      "inkbar": "The **pen bar**: pen or eraser, colour, kind of line, width and the input mode (palm rejection, trackpad).",
+      "library": "The **Library**: ready-made structures and mechanisms, and molecules from a SMILES, InChI, CAS number or name (Ctrl/⌘+K).",
+      "export": "**Export** to TikZ, chemfig, ChemDraw, Marvin…",
+      "teach": "**Teach** MecHand your own handwriting.",
+      "language": "Choose the language of the interface.",
+      "help": "Help is always here (F1), on the topic of what you are doing.",
+      "next": "Next",
+      "back": "Back",
+      "done": "Done",
+      "skip": "Skip tour",
+      "step": "{n} of {total}"
+    },
+    "tips": {
+      "welcome": "New to MecHand? A one-minute tour shows the main controls.",
+      "welcomeAction": "Take the tour",
+      "firstFreehand": "Draw as on paper, then press Space to recognize. Help (F1) has tips for every step.",
+      "ignored": "Your finger is being ignored because a pen was used (palm rejection). To draw with a finger, use the input mode Pen and finger.",
+      "ignoredAction": "Use Pen and finger",
+      "trackpad": "Drawing with a trackpad? The Trackpad input mode draws by click – move – click, with no need to hold the click.",
+      "trackpadAction": "Use Trackpad mode",
+      "dismiss": "Dismiss",
+      "openHelp": "Help"
+    }
+  }
+}

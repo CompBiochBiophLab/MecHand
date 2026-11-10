@@ -1,6 +1,7 @@
 /** About: how recognition works, the model in use, the engine and browser notes. */
 
 import type { SymbolModel } from '../recognition/model';
+import { LOCALES, Rich, useT } from '../i18n/i18n';
 import { Modal } from './Modal';
 
 export type Engine = 'browser' | 'server';
@@ -19,52 +20,50 @@ export function AboutPanel({ model, engine, backendUrl, backendOk, backendEngine
   onBackendUrl: (u: string) => void;
   onClose: () => void;
 }) {
+  const { t, lang } = useT();
+  const locale = LOCALES.find((l) => l.code === lang);
   return (
-    <Modal title="About MecHand recognition" onClose={onClose} width={640} testId="mechand-about">
+    <Modal title={t('about.title')} onClose={onClose} width={640} testId="mechand-about">
       <div style={{ fontSize: 13, lineHeight: 1.5 }}>
-        <p style={{ marginTop: 0 }}>
-          MecHand reads your <b>strokes</b> (not a picture of them) directly in the browser: no installation, no
-          server, nothing leaves your computer. Lines become bonds (chains and rings can be one stroke), parallel
-          lines become double/triple bonds, letters become atom labels, + and − become charges, and curved strokes
-          with a head become electron-flow arrows (full head = 2 e⁻, single barb = 1 e⁻). Each arrow is anchored
-          to the nearest atom or bond and checked for electron bookkeeping.
-        </p>
+        <p style={{ marginTop: 0 }}><Rich text={t('about.intro')} /></p>
         <table style={{ fontSize: 12, borderCollapse: 'collapse' }}>
           <tbody>
-            {version && <tr><td style={{ paddingRight: 12 }}>MecHand</td><td data-testid="mechand-version">{version}</td></tr>}
-            <tr><td style={{ paddingRight: 12 }}>Symbol model</td><td><b>{model.name}</b> v{model.version}</td></tr>
-            <tr><td>Templates in use</td><td>{model.templateCount} ({model.contributedCount} contributed, {model.userCount} yours)</td></tr>
-            <tr><td>Arrows, bonds, electrons</td><td>{model.contributedElementCount + model.userElementCount} samples ({model.contributedElementCount} contributed, {model.userElementCount} yours); {model.heads.size} arrowhead templates</td></tr>
-            <tr><td>Classifier</td><td>$P point-cloud recognizer (Vatavu, Anthony &amp; Wobbrock, ICMI 2012)</td></tr>
-            <tr><td>Corner finding</td><td>ShortStraw (Wolin, Eoff &amp; Hammond, 2008)</td></tr>
+            {version && <tr><td style={{ paddingRight: 12 }}>{t('about.version')}</td><td data-testid="mechand-version">{version}</td></tr>}
+            <tr><td style={{ paddingRight: 12 }}>{t('about.symbolModel')}</td><td><b>{model.name}</b> v{model.version}</td></tr>
+            <tr><td>{t('about.templates')}</td><td>{t('about.templatesValue', { total: model.templateCount, contributed: model.contributedCount, user: model.userCount })}</td></tr>
+            <tr><td>{t('about.elements')}</td><td>{t('about.elementsValue', {
+              total: model.contributedElementCount + model.userElementCount, contributed: model.contributedElementCount,
+              user: model.userElementCount, heads: model.heads.size,
+            })}</td></tr>
+            <tr><td>{t('about.classifier')}</td><td>$P point-cloud recognizer (Vatavu, Anthony &amp; Wobbrock, ICMI 2012)</td></tr>
+            <tr><td>{t('about.corners')}</td><td>ShortStraw (Wolin, Eoff &amp; Hammond, 2008)</td></tr>
+            {locale && lang !== 'en' && locale.authors.length > 0 && (
+              <tr><td>{t('about.translation')}</td><td>{locale.name} · {t('about.translationBy', { authors: locale.authors.join(', ') })}</td></tr>
+            )}
           </tbody>
         </table>
-        <h3 style={{ fontSize: 14, marginBottom: 4 }}>Structure engine</h3>
+        <h3 style={{ fontSize: 14, marginBottom: 4 }}>{t('about.engine')}</h3>
         {!serverAllowed ? (
-          <p style={{ margin: 0 }} data-testid="mechand-engine-locked">In-browser only (study mode: nothing leaves this browser).</p>
+          <p style={{ margin: 0 }} data-testid="mechand-engine-locked">{t('about.engineLocked')}</p>
         ) : (<>
           <label style={{ display: 'block' }}>
-            <input type="radio" checked={engine === 'browser'} onChange={() => onEngine('browser')} /> In-browser (default, works offline)
+            <input type="radio" checked={engine === 'browser'} onChange={() => onEngine('browser')} /> {t('about.engineBrowser')}
           </label>
           <label style={{ display: 'block' }}>
-            <input type="radio" checked={engine === 'server'} onChange={() => onEngine('server')} /> DECIMER server (optional,
-            image-based, runs on your computer; arrows and charges still come from the in-browser recognizer)
+            <input type="radio" checked={engine === 'server'} onChange={() => onEngine('server')} /> {t('about.engineServer')}
           </label>
           {engine === 'server' && (
             <div style={{ marginTop: 4 }}>
               <input value={backendUrl} onChange={(e) => onBackendUrl(e.target.value)} style={{ width: 260 }} />{' '}
-              {backendOk === null ? 'checking…' : backendOk ? `● connected — ${backendEngine ?? 'server'}` : '○ not reachable (see README, "Optional recognition server")'}
+              {backendOk === null ? t('about.checking') : backendOk ? t('about.connected', { engine: backendEngine ?? 'server' }) : t('about.unreachable')}
             </div>
           )}
         </>)}
-        <h3 style={{ fontSize: 14, marginBottom: 4 }}>Browsers</h3>
-        <p style={{ margin: 0 }}>
-          Works in current Chrome, Edge, Firefox and Safari (desktop and iPad). Known differences are listed in
-          the README under “Browser support”.
-        </p>
+        <h3 style={{ fontSize: 14, marginBottom: 4 }}>{t('about.browsers')}</h3>
+        <p style={{ margin: 0 }}>{t('about.browsersText')}</p>
         <p>
-          <a href="https://github.com/CompBiochBiophLab/MecHand#readme" target="_blank" rel="noreferrer">Documentation</a> ·{' '}
-          <a href="https://github.com/CompBiochBiophLab/MecHand/tree/main/ketcher-mechhand/src/recognition" target="_blank" rel="noreferrer">Recognizer source</a>
+          <a href="https://compbiochbiophlab.github.io/MecHand/guide/getting-started" target="_blank" rel="noreferrer">{t('about.documentation')}</a> ·{' '}
+          <a href="https://github.com/CompBiochBiophLab/MecHand/tree/main/ketcher-mechhand/src/recognition" target="_blank" rel="noreferrer">{t('about.source')}</a>
         </p>
       </div>
     </Modal>

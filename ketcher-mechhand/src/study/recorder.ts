@@ -64,6 +64,8 @@ export interface StudySession {
   schema: typeof SESSION_SCHEMA;
   appVersion: string;
   modelVersion: string;
+  /** Language of the interface during the session (en, ca, es…). */
+  uiLanguage: string;
   /** Random code such as "MH-7K3Q9", with no link to the participant's identity. */
   code: string;
   group: Group;

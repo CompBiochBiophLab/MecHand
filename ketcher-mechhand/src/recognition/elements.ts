@@ -156,7 +156,14 @@ const ARROW_NAME: Record<string, string> = {
 const BOND_NAME = { 1: 'single bond', 2: 'double bond', 3: 'triple bond', 4: 'aromatic bond' } as const;
 
 /** What the recognizer read in an element sample, and whether it is what was asked for. */
-export function checkElement(id: ElementId, r: SketchResult): { ok: boolean; read: string } {
+/** One item of what was read: a key of teach.read.* in the locale files, with a count or a text. */
+export interface ReadPart {
+  key: string;
+  count?: number;
+  text?: string;
+}
+
+export function checkElement(id: ElementId, r: SketchResult): { ok: boolean; read: string; parts: ReadPart[] } {
   const { arrows, bonds, atoms } = r.scene;
   const dots = r.roles.filter((x) => x === 'dot').length;
   const parts: string[] = [];
@@ -172,6 +179,18 @@ export function checkElement(id: ElementId, r: SketchResult): { ok: boolean; rea
   const unread = r.roles.filter((x) => x === 'ignored').length;
   if (unread) parts.push(`${unread} stroke${unread > 1 ? 's' : ''} not understood`);
   const read = parts.length ? parts.join(', ') : 'nothing';
+  const tally = (keys: string[]) => {
+    const m = new Map<string, number>();
+    keys.forEach((k) => m.set(k, (m.get(k) ?? 0) + 1));
+    return [...m].map(([key, count]) => ({ key, count }));
+  };
+  const readParts: ReadPart[] = [
+    ...tally(arrows.map((a) => `arrow-${a.kind}`)),
+    ...tally(bonds.map((b) => `bond-${b.order}`)),
+    ...(dots ? [{ key: 'dots', count: dots }] : []),
+    ...(r.labels.length ? [{ key: 'text', text: r.labels.map((l) => l.text).join(' ') }] : []),
+    ...(unread ? [{ key: 'unread', count: unread }] : []),
+  ];
 
   const onlyArrow = (kind: string) => arrows.length === 1 && arrows[0].kind === kind && bonds.length === 0 && !unread;
   const onlyBond = (order: number) => arrows.length === 0 && bonds.length === 1 && bonds[0].order === order && !unread && !r.labels.length;
@@ -187,7 +206,7 @@ export function checkElement(id: ElementId, r: SketchResult): { ok: boolean; rea
     'lone-pair': dots === 2 && dots === r.roles.length,
     radical: dots === 1 && dots === r.roles.length,
   };
-  return { ok: ok[id], read };
+  return { ok: ok[id], read, parts: readParts };
 }
 
 // ── Storage (this browser only) ─────────────────────────────────────────────

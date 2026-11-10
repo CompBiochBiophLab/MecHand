@@ -84,8 +84,3 @@ export function tasksFor(group: Group, random: () => number = cryptoRandom): Stu
 }
 
 export const stimulus = (id: string): Stimulus => STIMULI.find((s) => s.id === id)!;
-
-export const CONDITION_LABEL: Record<Condition, string> = {
-  freehand: 'MecHand: dibuix a mà alçada (pots corregir amb les eines de Ketcher)',
-  ketcher: 'Només eines de Ketcher (sense dibuix a mà alçada)',
-};
