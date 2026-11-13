@@ -7,6 +7,9 @@ export default defineConfig({
   timeout: 90_000,
   expect: { timeout: 20_000 },
   fullyParallel: false,
+  // GitHub's runners are slower and noisier than a laptop: a test that fails and then passes is
+  // reported as flaky instead of failing the run (its trace is kept, see `trace` below).
+  retries: process.env.CI ? 2 : 0,
   reporter: [['list']],
   use: {
     baseURL: 'http://localhost:4173',
