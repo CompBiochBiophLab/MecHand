@@ -64,7 +64,7 @@ DEVICE_GROUP = {
 # ── Chemistry ────────────────────────────────────────────────────────────────
 
 def normalised(mol: Chem.Mol) -> str | None:
-    """As in manuscript/analysis/compare_decimer.py: no explicit H, no radicals, implicit H recomputed, no stereo."""
+    """As in analysis/compare_decimer.py: no explicit H, no radicals, implicit H recomputed, no stereo."""
     try:
         mol = Chem.RWMol(Chem.RemoveHs(mol, sanitize=False))
         for a in mol.GetAtoms():
