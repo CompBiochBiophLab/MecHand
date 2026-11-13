@@ -20,6 +20,7 @@ export const TOUR_STEPS: TourStep[] = [
   { id: 'recognize', target: 'mechand-recognize' },
   { id: 'undo', target: 'mechand-undo-ink' },
   { id: 'library', target: 'mechand-library-btn' },
+  { id: 'image', target: 'mechand-image-btn' },
   { id: 'export', target: 'mechand-export-btn' },
   { id: 'teach', target: 'mechand-teach-btn' },
   { id: 'level', target: 'mechand-level' },

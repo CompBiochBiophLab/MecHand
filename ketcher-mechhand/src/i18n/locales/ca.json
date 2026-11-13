@@ -34,7 +34,9 @@
     "teach": "Ensenya",
     "about": "Quant a",
     "help": "Ajuda",
-    "language": "Idioma"
+    "language": "Idioma",
+    "image": "Imatge",
+    "imageName": "Llegeix un mecanisme d'una imatge"
   },
   "helpToggle": {
     "title": "Mostra o amaga les etiquetes d'ajuda de cada botó",
@@ -126,6 +128,10 @@
     "btn-level": {
       "brief": "Nivell d'usuari: A estudiant, B estudiant avançat, C recerca.",
       "student": "El teu nivell canvia el que ofereix MecHand: A (ESO i batxillerat, primers cursos) té plantilles bàsiques i explicacions de química; B (final de grau, màster, inici de doctorat) tota la biblioteca; C (recerca) tot."
+    },
+    "btn-image": {
+      "brief": "Llegeix un mecanisme d'una imatge: una foto d'un dibuix en paper, un escaneig o una figura d'un article o un llibre.",
+      "student": "Tria, deixa anar o enganxa (Ctrl/⌘+V) una imatge. MecHand la llegeix en aquest navegador —enllaços, etiquetes, càrregues, falques, fletxes corbes i rectes—, mostra què ha llegit, i ho insereix a Ketcher o ho carrega com a tinta per corregir-ho amb el llapis i la goma."
     }
   },
   "pen": {
@@ -709,7 +715,8 @@
       "done": "Fet",
       "skip": "Salta la visita",
       "step": "{n} de {total}",
-      "level": "**Nivell**: A estudiant, B estudiant avançat, C recerca. Canvia les plantilles i l'ajuda que ofereix MecHand; el pots canviar quan vulguis."
+      "level": "**Nivell**: A estudiant, B estudiant avançat, C recerca. Canvia les plantilles i l'ajuda que ofereix MecHand; el pots canviar quan vulguis.",
+      "image": "**Imatge**: llegeix un mecanisme d'una foto, un escaneig o una figura d'un article, i continua editant-lo."
     },
     "tips": {
       "welcome": "Primera vegada a MecHand? Una visita d'un minut mostra els controls principals.",
@@ -721,6 +728,32 @@
       "trackpadAction": "Fes servir el mode Trackpad",
       "dismiss": "Tanca",
       "openHelp": "Ajuda"
+    }
+  },
+  "image": {
+    "title": "Llegeix un mecanisme d'una imatge",
+    "intro": "Una foto d'un dibuix en paper, un escaneig o una figura d'un article o un llibre. Funciona millor amb línies fosques sobre fons clar, un esquema per imatge i el dibuix ocupant gairebé tota la imatge.",
+    "choose": "Tria una imatge, deixa-la anar aquí o enganxa-la (Ctrl/⌘+V)",
+    "chooseHint": "PNG, JPEG, WebP… Les fotos grans es redueixen.",
+    "reading": "S'està llegint la imatge…",
+    "overlay": "Mostra el que s'ha llegit sobre la imatge",
+    "another": "Una altra imatge",
+    "asInk": "Edita com a tinta",
+    "editHint": "S'ha llegit malament alguna cosa? Edita com a tinta: els traços es posen al llenç, on els pots esborrar o tornar a dibuixar i prémer Reconeix.",
+    "privacy": "La imatge es llegeix en aquest navegador; no es puja enlloc.",
+    "notImage": "Aquest fitxer no és una imatge.",
+    "failed": "No s'ha pogut llegir la imatge ({error}).",
+    "found": {
+      "wedge_one": "{count} falca plena (enllaç estereoquímic cap a l'observador)",
+      "wedge_other": "{count} falques plenes (enllaços estereoquímics cap a l'observador)",
+      "hash_one": "{count} falca ratllada (enllaç estereoquímic cap enrere)",
+      "hash_other": "{count} falques ratllades (enllaços estereoquímics cap enrere)",
+      "wavy_one": "{count} enllaç ondulat (configuració desconeguda)",
+      "wavy_other": "{count} enllaços ondulats (configuració desconeguda)",
+      "dashed_one": "{count} enllaç de punts o discontinu (enllaç parcial o d'hidrogen)",
+      "dashed_other": "{count} enllaços de punts o discontinus (enllaços parcials o d'hidrogen)",
+      "filledHeads_one": "{count} punta de fletxa plena",
+      "filledHeads_other": "{count} puntes de fletxa plenes"
     }
   }
 }

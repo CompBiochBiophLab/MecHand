@@ -187,7 +187,7 @@ export function toTikz(scene: Scene, opts: TikzOptions = {}): string {
     }
     // Double or aromatic.
     const side = doubleBondSide(scene, adj, displays, bi);
-    const dash = b.order === 4 ? ', dash pattern=on 2pt off 1.5pt' : '';
+    const dash = b.partial ? ', dash pattern=on 0.6pt off 1.6pt' : b.order === 4 ? ', dash pattern=on 2pt off 1.5pt' : '';
     if (side === 'center' && b.order === 2) {
       body.push(shifted(sp / 2), shifted(-sp / 2));
       return;
@@ -201,7 +201,7 @@ export function toTikz(scene: Scene, opts: TikzOptions = {}): string {
     );
   });
 
-  function stereoBond(stereo: 'up' | 'down', from: number, to: number): string {
+  function stereoBond(stereo: 'up' | 'down' | 'either', from: number, to: number): string {
     // Work in cm; trim the ends that carry a label.
     const p = cm(scene.atoms[from]);
     const q = cm(scene.atoms[to]);
@@ -220,6 +220,18 @@ export function toTikz(scene: Scene, opts: TikzOptions = {}): string {
     const hw = 0.1 * lref * unit; // half width of the wide end
     const nx = -uy;
     const ny = ux;
+    if (stereo === 'either') {
+      // Wavy bond (IUPAC: configuration unknown): a smooth sine line, no extra TikZ library.
+      const usable = Math.hypot(bEnd.x - a.x, bEnd.y - a.y);
+      const waves = Math.max(2, Math.round(usable / 0.18));
+      const pts: string[] = [];
+      for (let s = 0; s <= waves * 8; s++) {
+        const t = s / (waves * 8);
+        const off = Math.sin(t * waves * 2 * Math.PI) * hw * 0.6;
+        pts.push(xy({ x: a.x + (bEnd.x - a.x) * t + nx * off, y: a.y + (bEnd.y - a.y) * t + ny * off }));
+      }
+      return `\\draw plot[smooth] coordinates {${pts.join(' ')}};`;
+    }
     if (stereo === 'up') {
       return `\\fill ${xy(a)} -- ${xy({ x: bEnd.x + nx * hw, y: bEnd.y + ny * hw })} -- ${xy({
         x: bEnd.x - nx * hw,

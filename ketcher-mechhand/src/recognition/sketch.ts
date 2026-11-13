@@ -62,6 +62,8 @@ export interface SketchResult {
   arrows: RecognizedArrow[];
   /** Drawn bond length in pixels (1 Ketcher unit). */
   bondLengthPx: number;
+  /** The pixel that maps to the scene origin (scene = (px − origin) / bondLengthPx, y flipped). */
+  originPx: Pt;
   /** Stroke scale used for classification (px), for diagnostics. */
   scalePx: number;
   /** 0..1 rough overall confidence. */
@@ -83,6 +85,18 @@ export interface SketchOptions {
   headMinScore?: number;
   /** Diagnostics callback (development only). */
   debug?: (what: string, data: unknown) => void;
+  /**
+   * Image input: the ink component of each stroke (0 = unknown). Each printed or
+   * written character is one component, which separates the characters of a label
+   * better than gaps do, also when they are stacked (an H written above its N).
+   */
+  glyphs?: number[];
+  /**
+   * Image input: strokes of components the size of a character. They are read as
+   * text and nothing else, and the other strokes are never text (in an image the
+   * labels stand apart from the lines; a short piece of a line is not a "−").
+   */
+  charLike?: boolean[];
 }
 
 // Element symbols the label decoder accepts (case-sensitive).
@@ -114,6 +128,7 @@ export function recognizeSketch(
   const minScore = opts.minSymbolScore ?? 0.6;
   const n = strokes.length;
   const roles: StrokeRole[] = new Array(n).fill('ignored');
+  opts.charLike?.forEach((c, i) => { if (c && i < n) roles[i] = 'text'; });
   const pts = strokes.map((s) => s.points.filter((p, i, a) => i === 0 || dist(p, a[i - 1]) > 0.01));
   const boxes = pts.map(bbox);
   const lengths = pts.map(pathLength);
@@ -210,7 +225,7 @@ export function recognizeSketch(
   // 2. Arrows ---------------------------------------------------------------
   // Detected twice: first with the rough scale, so that long reaction arrows can
   // be excluded from the bond-length estimate, then again with the refined scale.
-  type Found = { shaft: Pt[]; barbs: number; kindHint: 'curved' | 'straight' | 'equilibrium' };
+  type Found = { shaft: Pt[]; barbs: number; kindHint: 'curved' | 'straight' | 'equilibrium' | 'resonance' };
   const detectArrows = (scale: number): Found[] => {
     for (let i = 0; i < n; i++) if (roles[i] === 'arrow' || roles[i] === 'arrowhead') roles[i] = 'ignored';
     markLetterParts(scale);
@@ -257,9 +272,19 @@ export function recognizeSketch(
       if (head) {
         head.strokes.forEach((h) => { headUsed.add(h); roles[h] = 'arrowhead'; });
       }
+      // A straight arrow with a full "V" head at both ends is the resonance arrow ↔
+      // (IUPAC: not to be confused with the equilibrium arrows ⇌). Rules only, no model.
+      let resonance = false;
+      if (kindHint === 'straight' && head && barbs >= 2) {
+        const other = findSeparateHead(i, pts, boxes, roles, headUsed, small, scale, undefined, 1, opts.debug);
+        if (other && other.atStart !== head.atStart && other.barbs === 2) {
+          other.strokes.forEach((h) => { headUsed.add(h); roles[h] = 'arrowhead'; });
+          resonance = true;
+        }
+      }
       roles[i] = 'arrow';
       opts.debug?.('arrow', { stroke: i, barbs, kindHint, head: head?.strokes ?? 'in-stroke' });
-      found.push({ shaft, barbs, kindHint });
+      found.push({ shaft, barbs, kindHint: resonance ? 'resonance' : kindHint });
     }
     // Equilibrium (⇌): two antiparallel, side-by-side straight shafts with half heads.
     const paired = new Set<number>();
@@ -300,7 +325,7 @@ export function recognizeSketch(
   const isSmall = (i: number) => roles[i] !== 'dot' && !bondLike(i, L) && compact(i, L);
 
   // 3. Text clusters -----------------------------------------------------------
-  const textIdx = [...Array(n).keys()].filter((i) => roles[i] === 'ignored' && isSmall(i));
+  const textIdx = [...Array(n).keys()].filter((i) => (opts.charLike ? opts.charLike[i] && roles[i] === 'text' : roles[i] === 'ignored' && isSmall(i)));
   const dotIdx = [...Array(n).keys()].filter((i) => roles[i] === 'dot');
   const clusters = clusterBoxes(textIdx, boxes, 0.22 * L);
   const labelGuesses = clusters.map((cluster) => {
@@ -316,7 +341,9 @@ export function recognizeSketch(
       return b.w > 2.5 * b.h || stems.some((s) => c.x > s.x - 0.1 * L && c.x < s.x + s.w + 0.1 * L);
     });
     dots.forEach((d) => (roles[d] = 'text'));
-    return readLabel([...cluster, ...dots], pts, boxes, L, symbols, minScore);
+    const label = readLabel([...cluster, ...dots], pts, boxes, L, symbols, minScore, opts.glyphs);
+    opts.debug?.('label', { strokes: [...cluster, ...dots], text: label?.text ?? null, score: label?.score });
+    return label;
   });
 
   // 4. Bonds ----------------------------------------------------------------
@@ -425,6 +452,20 @@ export function recognizeSketch(
     bonds.splice(0, bonds.length, ...keptBonds);
   }
 
+  // Aromatic rings drawn with an inscribed circle (IUPAC 2008, GR-3.5/GR-6): a round
+  // closed stroke inside a ring of 5–7 atoms makes that ring's bonds aromatic.
+  for (let i = 0; i < n; i++) {
+    if (roles[i] !== 'ignored' || pts[i].length < 8) continue;
+    const b = boxes[i], diag = Math.max(b.w, b.h);
+    const closedLoop = dist(pts[i][0], pts[i][pts[i].length - 1]) < 0.3 * diag;
+    if (!closedLoop || b.w < 0.6 * b.h || b.h < 0.6 * b.w || diag < 0.5 * L || diag > 1.9 * L || straightness(pts[i]) > 0.3) continue;
+    const c = bboxCenter(b);
+    const ring = aromaticRing(c, pos, bonds, L);
+    if (!ring) continue;
+    ring.forEach((k) => { bonds[k].order = 4; });
+    roles[i] = 'bond';
+  }
+
   // Final scale: median distance between bonded atom centres (= 1 Ketcher unit).
   const centreDists = bonds.map((b) => dist(pos[b.begin], pos[b.end])).sort((p, q) => p - q);
   const unit = centreDists.length ? centreDists[Math.floor(centreDists.length / 2)] : L;
@@ -441,7 +482,9 @@ export function recognizeSketch(
     const start = toUnit(startPx), end = toUnit(endPx);
     let arrow: SceneArrow;
     if (kindHint === 'equilibrium') {
-      arrow = { kind: 'equilibrium', start, end, mode: 'equilibrium-open-half-angle' };
+      arrow = { kind: 'equilibrium', start, end, mode: 'equilibrium-open-angle' };
+    } else if (kindHint === 'resonance') {
+      arrow = { kind: 'reaction', start, end, mode: 'both-ends-filled-triangle' };
     } else if (kindHint === 'straight') {
       arrow = { kind: 'reaction', start, end, mode: 'open-angle' };
     } else {
@@ -465,7 +508,7 @@ export function recognizeSketch(
   const labelScore = labels.length ? labels.reduce((a, l) => a + l.score, 0) / labels.length : 1;
   const confidence = n === 0 ? 0 : (interpreted / n) * 0.6 + labelScore * 0.4;
 
-  return { scene, roles, labels, arrows, bondLengthPx: unit, scalePx: L, confidence };
+  return { scene, roles, labels, arrows, bondLengthPx: unit, originPx: origin, scalePx: L, confidence };
 }
 
 // ── Scale ────────────────────────────────────────────────────────────────────
@@ -777,8 +820,12 @@ function splitCharacters(
  * gap tolerances and the best valid reading wins (e.g. "H" vs "I-I", "Cl" vs "d").
  */
 function readLabel(
-  cluster: number[], pts: Pt[][], boxes: BBox[], L: number, symbols: PointCloudRecognizer, minScore: number,
+  cluster: number[], pts: Pt[][], boxes: BBox[], L: number, symbols: PointCloudRecognizer, minScore: number, glyphs?: number[],
 ): DecodedLabel | null {
+  if (glyphs) {
+    const r = readGlyphLabel(cluster, pts, boxes, symbols, minScore, glyphs);
+    if (r) return r;
+  }
   let best: DecodedLabel | null = null;
   const seen = new Set<string>();
   for (const tol of [0, 0.04, 0.09]) {
@@ -790,6 +837,66 @@ function readLabel(
     if (r && (!best || r.score > best.score)) best = r;
   }
   return best;
+}
+
+/**
+ * Image input: one character per ink component, in rows. A mark inside another
+ * character (⊕ drawn apart) or a small dot just above one (the dot of an i) joins it.
+ * Stacked rows are read separately: the row with the heavy atom gives the element, a
+ * row of hydrogens (H above or below N) is implicit, and a row with only a sign is
+ * the charge.
+ */
+function readGlyphLabel(
+  cluster: number[], pts: Pt[][], boxes: BBox[], symbols: PointCloudRecognizer, minScore: number, glyphs: number[],
+): DecodedLabel | null {
+  const byGlyph = new Map<number, number[]>();
+  for (const i of cluster) {
+    const g = glyphs[i] || -1 - i;
+    byGlyph.set(g, [...(byGlyph.get(g) ?? []), i]);
+  }
+  let units = [...byGlyph.values()].map((ids) => ({ ids, box: unionBox(ids.map((i) => boxes[i])) }));
+  const hs = units.map((u) => u.box.h).sort((a, b) => a - b);
+  const H = hs[Math.floor(hs.length / 2)] || 1;
+  const inside = (a: BBox, b: BBox) => a.x >= b.x - 1 && a.y >= b.y - 1 && a.x + a.w <= b.x + b.w + 1 && a.y + a.h <= b.y + b.h + 1;
+  for (let changed = true; changed;) {
+    changed = false;
+    for (const u of units) {
+      const host = units.find((v) => v !== u && (inside(u.box, v.box) || (
+        Math.max(u.box.w, u.box.h) < 0.35 * H && u.box.w < 2 * u.box.h && u.box.y + u.box.h <= v.box.y + 0.2 * v.box.h
+        && v.box.y - (u.box.y + u.box.h) < 0.5 * H && u.box.x + u.box.w > v.box.x && u.box.x < v.box.x + v.box.w
+        && v.box.w < 0.6 * v.box.h)));
+      if (!host) continue;
+      host.ids.push(...u.ids);
+      host.box = unionBox([host.box, u.box]);
+      units = units.filter((v) => v !== u);
+      changed = true;
+      break;
+    }
+  }
+  // Rows: characters that overlap vertically.
+  const rows: { units: typeof units; y0: number; y1: number }[] = [];
+  for (const u of units.slice().sort((a, b) => a.box.y + a.box.h / 2 - (b.box.y + b.box.h / 2))) {
+    const y0 = u.box.y, y1 = u.box.y + u.box.h;
+    const row = rows.find((r) => Math.min(r.y1, y1) - Math.max(r.y0, y0) > 0.25 * Math.min(r.y1 - r.y0, y1 - y0));
+    if (row) {
+      row.units.push(u);
+      row.y0 = Math.min(row.y0, y0);
+      row.y1 = Math.max(row.y1, y1);
+    } else rows.push({ units: [u], y0, y1 });
+  }
+  const read = rows.map((r) => decodeLabel(
+    r.units.sort((a, b) => a.box.x - b.box.x).map((u) => ({ strokes: u.ids.map((i) => pts[i]), box: u.box })), symbols, minScore,
+  ));
+  if (read.some((r) => !r)) return null;
+  const rs = read as DecodedLabel[];
+  if (rs.length === 1) return rs[0];
+  const heavy = rs.filter((r) => r.element && r.element !== 'H');
+  const main = heavy.length === 1 ? heavy[0] : heavy.length === 0 ? rs.find((r) => r.element) : undefined;
+  if (!main) return null;
+  // The other rows: hydrogens (implicit) or a sign.
+  if (rs.some((r) => r !== main && r.element && r.element !== 'H')) return null;
+  const charge = rs.reduce((q, r) => q + r.charge, 0);
+  return { text: rs.map((r) => r.text).join(''), element: main.element, charge, score: rs.reduce((q, r) => q + r.score, 0) / rs.length };
 }
 
 /** ⊕ / ⊖: if one closed stroke encloses all the others, classify the inside only. */
@@ -961,6 +1068,35 @@ function buildGraph(segs: (Segment & { order: 1 | 2 | 3 })[], L: number) {
     bonds.push({ begin: a, end: b, order: s.order });
   }
   return { atoms, bonds };
+}
+
+/**
+ * Bonds of the ring of 5–7 atoms around point c (an aromatic circle's centre): atoms at
+ * a ring-like distance from c, each bonded to exactly two others of the set, whose
+ * polygon encloses c. Null if there is no such ring.
+ */
+function aromaticRing(c: Pt, pos: Pt[], bonds: SceneBond[], L: number): number[] | null {
+  const cand = new Set(pos.map((p, k) => (dist(p, c) > 0.45 * L && dist(p, c) < 1.6 * L ? k : -1)).filter((k) => k >= 0));
+  const ringBonds = bonds.map((b, k) => (cand.has(b.begin) && cand.has(b.end) ? k : -1)).filter((k) => k >= 0);
+  const deg = new Map<number, number>();
+  for (const k of ringBonds) for (const a of [bonds[k].begin, bonds[k].end]) deg.set(a, (deg.get(a) ?? 0) + 1);
+  const members = [...deg.keys()].filter((a) => deg.get(a) === 2);
+  if (members.length < 5 || members.length > 7 || members.length !== deg.size) return null;
+  // Walk the cycle and check that its polygon contains c.
+  const order: number[] = [members[0]];
+  while (order.length < members.length) {
+    const last = order[order.length - 1];
+    const next = ringBonds.map((k) => bonds[k]).flatMap((b) => (b.begin === last ? [b.end] : b.end === last ? [b.begin] : []))
+      .find((a) => !order.includes(a));
+    if (next === undefined) return null;
+    order.push(next);
+  }
+  let inside = false;
+  for (let i = 0, j = order.length - 1; i < order.length; j = i++) {
+    const a = pos[order[i]], b = pos[order[j]];
+    if ((a.y > c.y) !== (b.y > c.y) && c.x < ((b.x - a.x) * (c.y - a.y)) / (b.y - a.y) + a.x) inside = !inside;
+  }
+  return inside ? ringBonds : null;
 }
 
 function nearestNode(p: Pt, nodes: Pt[]): { index: number; d: number } | null {

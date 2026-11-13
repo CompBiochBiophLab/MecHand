@@ -32,7 +32,9 @@
     "teach": "Enseñar",
     "about": "Acerca de",
     "help": "Ayuda",
-    "language": "Idioma"
+    "language": "Idioma",
+    "image": "Imagen",
+    "imageName": "Leer un mecanismo de una imagen"
   },
   "helpToggle": {
     "title": "Mostrar u ocultar las etiquetas de ayuda de cada botón",
@@ -124,6 +126,10 @@
     "btn-level": {
       "brief": "Nivel de usuario: A estudiante, B estudiante avanzado, C investigación.",
       "student": "Tu nivel cambia lo que ofrece MecHand: A (ESO y bachillerato, primeros cursos) tiene plantillas básicas y explicaciones de química; B (final de grado, máster, inicio de doctorado) toda la biblioteca; C (investigación) todo."
+    },
+    "btn-image": {
+      "brief": "Lee un mecanismo de una imagen: una foto de un dibujo en papel, un escaneo o una figura de un artículo o un libro.",
+      "student": "Elige, suelta o pega (Ctrl/⌘+V) una imagen. MecHand la lee en este navegador —enlaces, etiquetas, cargas, cuñas, flechas curvas y rectas—, muestra qué ha leído, y lo inserta en Ketcher o lo carga como tinta para corregirlo con el lápiz y la goma."
     }
   },
   "pen": {
@@ -707,7 +713,8 @@
       "done": "Hecho",
       "skip": "Saltar la visita",
       "step": "{n} de {total}",
-      "level": "**Nivel**: A estudiante, B estudiante avanzado, C investigación. Cambia las plantillas y la ayuda que ofrece MecHand; puedes cambiarlo cuando quieras."
+      "level": "**Nivel**: A estudiante, B estudiante avanzado, C investigación. Cambia las plantillas y la ayuda que ofrece MecHand; puedes cambiarlo cuando quieras.",
+      "image": "**Imagen**: lee un mecanismo de una foto, un escaneo o una figura de un artículo, y sigue editándolo."
     },
     "tips": {
       "welcome": "¿Primera vez en MecHand? Una visita de un minuto muestra los controles principales.",
@@ -719,6 +726,32 @@
       "trackpadAction": "Usar el modo Trackpad",
       "dismiss": "Cerrar",
       "openHelp": "Ayuda"
+    }
+  },
+  "image": {
+    "title": "Leer un mecanismo de una imagen",
+    "intro": "Una foto de un dibujo en papel, un escaneo o una figura de un artículo o un libro. Funciona mejor con líneas oscuras sobre fondo claro, un esquema por imagen y el dibujo ocupando casi toda la imagen.",
+    "choose": "Elige una imagen, suéltala aquí o pégala (Ctrl/⌘+V)",
+    "chooseHint": "PNG, JPEG, WebP… Las fotos grandes se reducen.",
+    "reading": "Leyendo la imagen…",
+    "overlay": "Mostrar lo leído sobre la imagen",
+    "another": "Otra imagen",
+    "asInk": "Editar como tinta",
+    "editHint": "¿Algo se ha leído mal? Editar como tinta: los trazos se ponen en el lienzo, donde puedes borrarlos o volver a dibujarlos y pulsar Reconocer.",
+    "privacy": "La imagen se lee en este navegador; no se sube a ningún sitio.",
+    "notImage": "Ese archivo no es una imagen.",
+    "failed": "No se ha podido leer la imagen ({error}).",
+    "found": {
+      "wedge_one": "{count} cuña llena (enlace estereoquímico hacia el observador)",
+      "wedge_other": "{count} cuñas llenas (enlaces estereoquímicos hacia el observador)",
+      "hash_one": "{count} cuña rayada (enlace estereoquímico hacia atrás)",
+      "hash_other": "{count} cuñas rayadas (enlaces estereoquímicos hacia atrás)",
+      "wavy_one": "{count} enlace ondulado (configuración desconocida)",
+      "wavy_other": "{count} enlaces ondulados (configuración desconocida)",
+      "dashed_one": "{count} enlace de puntos o discontinuo (enlace parcial o de hidrógeno)",
+      "dashed_other": "{count} enlaces de puntos o discontinuos (enlaces parciales o de hidrógeno)",
+      "filledHeads_one": "{count} punta de flecha llena",
+      "filledHeads_other": "{count} puntas de flecha llenas"
     }
   }
 }

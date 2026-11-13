@@ -9,6 +9,7 @@
       "onlineLookup": false,
       "teach": true,
       "recognitionServer": false,
+      "imageImport": false,
       "helpDetail": "student",
       "export": ["cdxml", "mol", "smiles"]
     },
@@ -19,6 +20,7 @@
       "onlineLookup": true,
       "teach": true,
       "recognitionServer": false,
+      "imageImport": false,
       "helpDetail": "student",
       "export": ["tikz", "chemfig", "cdxml", "mol", "ket", "smiles"]
     },
@@ -29,6 +31,7 @@
       "onlineLookup": true,
       "teach": true,
       "recognitionServer": true,
+      "imageImport": true,
       "helpDetail": "brief",
       "export": ["tikz", "chemfig", "cdxml", "mol", "ket", "smiles"]
     }

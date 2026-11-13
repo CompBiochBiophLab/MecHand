@@ -23,7 +23,9 @@
     "teach": "Teach",
     "about": "About",
     "help": "Help",
-    "language": "Language"
+    "language": "Language",
+    "image": "Image",
+    "imageName": "Read a mechanism from an image"
   },
   "helpToggle": {
     "title": "Show or hide help labels on every button",
@@ -115,6 +117,10 @@
     "btn-level": {
       "brief": "User level: A student, B advanced student, C researcher.",
       "student": "Your level changes what MecHand offers: A (secondary school, first years) has basic templates and chemistry explanations; B (end of degree, master's, start of PhD) the whole library; C (research) everything."
+    },
+    "btn-image": {
+      "brief": "Read a mechanism from an image: a photo of a drawing on paper, a scan, or a figure from an article or book.",
+      "student": "Choose, drop or paste (Ctrl/⌘+V) an image. MecHand reads it in this browser — bonds, labels, charges, wedges, curved and straight arrows — shows what it read, and inserts it into Ketcher or loads it as ink to correct with the pen and eraser."
     }
   },
   "pen": {
@@ -698,7 +704,8 @@
       "done": "Done",
       "skip": "Skip tour",
       "step": "{n} of {total}",
-      "level": "**Level**: A student, B advanced student, C researcher. It changes the templates and the help MecHand offers; change it whenever you want."
+      "level": "**Level**: A student, B advanced student, C researcher. It changes the templates and the help MecHand offers; change it whenever you want.",
+      "image": "**Image**: read a mechanism from a photo, a scan or a figure of an article, and keep editing it."
     },
     "tips": {
       "welcome": "New to MecHand? A one-minute tour shows the main controls.",
@@ -710,6 +717,32 @@
       "trackpadAction": "Use Trackpad mode",
       "dismiss": "Dismiss",
       "openHelp": "Help"
+    }
+  },
+  "image": {
+    "title": "Read a mechanism from an image",
+    "intro": "A photo of a drawing on paper, a scan, or a figure from an article or a book. Works best with dark lines on a light background, one scheme per image, and the drawing filling most of the picture.",
+    "choose": "Choose an image, drop it here, or paste it (Ctrl/⌘+V)",
+    "chooseHint": "PNG, JPEG, WebP… Large photos are scaled down.",
+    "reading": "Reading the image…",
+    "overlay": "Show what was read over the image",
+    "another": "Another image",
+    "asInk": "Edit as ink",
+    "editHint": "Something misread? Edit as ink: the strokes are put on the canvas, where you can erase or redraw them and press Recognize.",
+    "privacy": "The image is read in this browser; it is not uploaded anywhere.",
+    "notImage": "That file is not an image.",
+    "failed": "The image could not be read ({error}).",
+    "found": {
+      "wedge_one": "{count} solid wedge (stereo bond towards the viewer)",
+      "wedge_other": "{count} solid wedges (stereo bonds towards the viewer)",
+      "hash_one": "{count} hashed wedge (stereo bond away from the viewer)",
+      "hash_other": "{count} hashed wedges (stereo bonds away from the viewer)",
+      "wavy_one": "{count} wavy bond (unknown configuration)",
+      "wavy_other": "{count} wavy bonds (unknown configuration)",
+      "dashed_one": "{count} dotted or dashed bond (partial or hydrogen bond)",
+      "dashed_other": "{count} dotted or dashed bonds (partial or hydrogen bonds)",
+      "filledHeads_one": "{count} filled arrowhead",
+      "filledHeads_other": "{count} filled arrowheads"
     }
   }
 }

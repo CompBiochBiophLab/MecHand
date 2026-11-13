@@ -32,7 +32,7 @@
     "level": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["templates", "learnHelp", "periodicTable", "onlineLookup", "teach", "recognitionServer", "helpDetail", "export"],
+      "required": ["templates", "learnHelp", "periodicTable", "onlineLookup", "teach", "recognitionServer", "imageImport", "helpDetail", "export"],
       "properties": {
         "templates": {
           "description": "\"basic\": only the ids in basicTemplates. \"all\": the whole library.",
@@ -46,6 +46,7 @@
         "onlineLookup": { "description": "Look names and CAS numbers up on PubChem/OPSIN from the library.", "type": "boolean" },
         "teach": { "description": "The Teach dialog (train the recognizer on one's handwriting).", "type": "boolean" },
         "recognitionServer": { "description": "The optional DECIMER recognition server (About panel).", "type": "boolean" },
+        "imageImport": { "description": "The Image button: read a mechanism from a photo, a scan or a figure (experimental).", "type": "boolean" },
         "helpDetail": {
           "description": "Default detail of the button help labels: \"student\" (longer) or \"brief\".",
           "enum": ["student", "brief"]

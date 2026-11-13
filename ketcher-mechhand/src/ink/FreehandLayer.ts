@@ -34,9 +34,10 @@ interface InkItem {
   pen: PenSettings;
 }
 
-export type InkOpKind = 'add' | 'erase' | 'clear';
+export type InkOpKind = 'add' | 'erase' | 'clear' | 'import';
 type InkOp =
   | { kind: 'add'; item: InkItem; index: number }
+  | { kind: 'import'; items: InkItem[] }
   | { kind: 'erase'; removed: { item: InkItem; index: number }[] }
   | { kind: 'clear'; removed: InkItem[] };
 
@@ -260,6 +261,11 @@ export class FreehandLayer {
     if (op.kind === 'add') {
       this.items.splice(op.index, 0, op.item);
       this.place(op.item);
+    } else if (op.kind === 'import') {
+      for (const item of op.items) {
+        this.items.push(item);
+        this.place(item);
+      }
     } else if (op.kind === 'erase') {
       for (let i = op.removed.length - 1; i >= 0; i--) {
         const { item, index } = op.removed[i];
@@ -276,6 +282,9 @@ export class FreehandLayer {
     if (op.kind === 'add') {
       this.items.splice(op.index, 1);
       op.item.el.remove();
+    } else if (op.kind === 'import') {
+      this.items = this.items.filter((i) => !op.items.includes(i));
+      op.items.forEach((i) => i.el.remove());
     } else if (op.kind === 'erase') {
       for (const { item, index } of op.removed) {
         item.el.style.removeProperty('opacity');
@@ -309,6 +318,27 @@ export class FreehandLayer {
     if (!op) return null;
     this.apply(op, true);
     return op.kind;
+  }
+
+  /**
+   * Adds strokes made elsewhere (an image read by MecHand) as ink, in layer pixels,
+   * with the current pen; one undoable step. The user can then erase or redraw.
+   */
+  addStrokes(strokes: { x: number; y: number }[][]): void {
+    const now = performance.now();
+    const items: InkItem[] = strokes.filter((s) => s.length).map((s) => {
+      const pts = (s.length === 1 ? [s[0], { x: s[0].x + 0.5, y: s[0].y }] : s).map((p) => ({ x: p.x, y: p.y, t: now, pressure: 0.5 }));
+      const g = document.createElementNS(SVG_NS, 'g');
+      renderInk(g, pts, this.pen);
+      return { stroke: { points: pts.map(({ x, y }) => ({ x, y })) }, time: { start: now, end: now }, el: g, pen: { ...this.pen } };
+    });
+    if (items.length) this.apply({ kind: 'import', items });
+  }
+
+  /** Size of the drawing area (CSS px). */
+  get size(): { width: number; height: number } {
+    const r = this.svg.getBoundingClientRect();
+    return { width: r.width, height: r.height };
   }
 
   /** Remove all ink (can be undone). */

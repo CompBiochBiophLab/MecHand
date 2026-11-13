@@ -26,6 +26,7 @@ export interface LevelFeatures {
   onlineLookup: boolean;
   teach: boolean;
   recognitionServer: boolean;
+  imageImport: boolean;
   helpDetail: 'student' | 'brief';
   export: ExportFormat[];
 }

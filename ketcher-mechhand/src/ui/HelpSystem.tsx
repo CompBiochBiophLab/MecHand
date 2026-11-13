@@ -37,6 +37,7 @@ export const HELP_SHORTCUTS: Record<string, string | undefined> = {
   'pen-input': undefined,
   'pen-device': undefined,
   'btn-library': 'Ctrl/⌘+K',
+  'btn-image': 'Ctrl/⌘+V',
   'btn-export': undefined,
   'btn-teach': undefined,
   'btn-about': undefined,

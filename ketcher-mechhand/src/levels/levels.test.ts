@@ -28,7 +28,7 @@ describe('levels.json', () => {
   });
   it('lets the researcher use everything', () => {
     const c = LEVELS.levels.C;
-    expect([c.templates, c.periodicTable, c.onlineLookup, c.teach, c.recognitionServer]).toEqual(['all', true, true, true, true]);
+    expect([c.templates, c.periodicTable, c.onlineLookup, c.teach, c.recognitionServer, c.imageImport]).toEqual(['all', true, true, true, true, true]);
     expect(c.learnHelp).not.toBe('off');
     expect(c.export).toHaveLength(6);
   });
