@@ -10,6 +10,8 @@ export default defineConfig({
   reporter: [['list']],
   use: {
     baseURL: 'http://localhost:4173',
+    // In CI, keep a trace of every failed test (uploaded as an artifact by ci.yml).
+    trace: process.env.CI ? 'retain-on-failure' : 'off',
     viewport: { width: 1400, height: 900 },
     // A level already chosen (B: the whole library, as before levels existed), so the first-use
     // level dialog does not cover the page. e2e/levels.spec.ts starts from an empty storage.
