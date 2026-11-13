@@ -13,7 +13,10 @@
       "command": "cd ketcher-mechhand && npm run dev",
       "isBackground": true,
       "problemMatcher": [],
-      "presentation": { "reveal": "always", "panel": "dedicated" }
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
     },
     {
       "label": "MecHand: tests",
@@ -23,12 +26,71 @@
       "group": "test"
     },
     {
+      "label": "MecHand: check texts and levels",
+      "detail": "Translations (en/ca/es), template names, Ketcher tooltips and src/config/levels.json → Problems panel",
+      "type": "shell",
+      "command": "cd ketcher-mechhand && node scripts/check-content.mjs",
+      "problemMatcher": {
+        "owner": "mechand-content",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/ketcher-mechhand"
+        ],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+): (error|warning): (.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      },
+      "presentation": {
+        "reveal": "silent",
+        "clear": true
+      }
+    },
+    {
+      "label": "MecHand: watch texts and levels",
+      "detail": "Re-checks every time you save a translation, template name or levels.json",
+      "type": "shell",
+      "command": "cd ketcher-mechhand && node scripts/check-content.mjs --watch",
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "mechand-content",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/ketcher-mechhand"
+        ],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+): (error|warning): (.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        },
+        "background": {
+          "activeBegin": true,
+          "beginsPattern": "^check-content: start",
+          "endsPattern": "^check-content: done"
+        }
+      },
+      "presentation": {
+        "reveal": "silent",
+        "panel": "dedicated"
+      }
+    },
+    {
       "label": "Website: dev server",
       "type": "shell",
       "command": "cd docs && npm run dev",
       "isBackground": true,
       "problemMatcher": [],
-      "presentation": { "reveal": "always", "panel": "dedicated" }
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
     },
     {
       "label": "Recognition server (DECIMER)",
@@ -36,7 +98,10 @@
       "command": "cd backend && source .venv/bin/activate && uvicorn main:app --port 8000",
       "isBackground": true,
       "problemMatcher": [],
-      "presentation": { "reveal": "always", "panel": "dedicated" }
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
     },
     {
       "label": "Tutorial: build PDF",

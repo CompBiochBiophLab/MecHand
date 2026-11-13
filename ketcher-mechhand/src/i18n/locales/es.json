@@ -3,6 +3,15 @@
     "name": "Español",
     "authors": [
       "Jordi Villà-Freixa"
+    ],
+    "sameAsEnglish": [
+      "toolbar.label",
+      "pen.input.trackpad",
+      "about.version",
+      "library.groupName.bases",
+      "library.groupName.inchi",
+      "library.groupName.pubchem",
+      "library.cas"
     ]
   },
   "toolbar": {
@@ -107,6 +116,14 @@
     "btn-help-toggle": {
       "brief": "Mostrar u ocultar estas etiquetas de ayuda.",
       "student": "Activa o desactiva las etiquetas de ayuda. Elige Experto para una línea o Estudiante para explicaciones."
+    },
+    "btn-periodic": {
+      "brief": "Tabla periódica sencilla: electrones de valencia, enlaces habituales, pares solitarios y electronegatividad.",
+      "student": "Abre una tabla periódica sencilla junto al lienzo. Haz clic en un elemento para ver cuántos electrones de valencia, enlaces y pares solitarios tiene normalmente y lo electronegativo que es; también puedes elegirlo para dibujarlo en Ketcher."
+    },
+    "btn-level": {
+      "brief": "Nivel de usuario: A estudiante, B estudiante avanzado, C investigación.",
+      "student": "Tu nivel cambia lo que ofrece MecHand: A (ESO y bachillerato, primeros cursos) tiene plantillas básicas y explicaciones de química; B (final de grado, máster, inicio de doctorado) toda la biblioteca; C (investigación) todo."
     }
   },
   "pen": {
@@ -235,6 +252,7 @@
     "corners": "Detección de vértices",
     "engine": "Motor de estructuras",
     "engineLocked": "Solo en el navegador (modo estudio: nada sale de este navegador).",
+    "engineLevel": "Solo reconocimiento en el navegador. El servidor de reconocimiento opcional se ofrece en el nivel C (Investigación).",
     "engineBrowser": "En el navegador (por defecto, funciona sin conexión)",
     "engineServer": "Servidor DECIMER (opcional, a partir de una imagen, en tu ordenador; las flechas y las cargas siguen viniendo del reconocedor del navegador)",
     "checking": "comprobando…",
@@ -617,7 +635,7 @@
       "library": {
         "title": "Biblioteca de plantillas y estructuras desde texto",
         "body": [
-          "Ábrela con **Biblioteca** o Ctrl/⌘+K y escribe: nombres en inglés o catalán, abreviaturas (Trp, THF), fórmulas, números CAS. Los acentos y los pequeños errores no importan.",
+          "Ábrela con **Biblioteca** o Ctrl/⌘+K y escribe: nombres en castellano, catalán o inglés, abreviaturas (Trp, THF), fórmulas, números CAS. Los acentos y los pequeños errores no importan.",
           "Intro añade la estructura resaltada junto a tu dibujo; los mecanismos sustituyen el lienzo. Mayús+Intro hace lo contrario. Ctrl/⌘+D guarda una favorita.",
           "Escribe un **SMILES** o un **InChI** y se dibuja enseguida, sin conexión.",
           "Para otros **nombres o números CAS**, pulsa **Buscar en línea** (Alt+Intro): solo se envía el texto que has escrito a PubChem (y OPSIN)."
@@ -662,6 +680,16 @@
           "La interfaz de MecHand se traduce con un archivo JSON sencillo por idioma. Para añadir o mejorar un idioma, copia `en.json` de `src/i18n/locales/`, traduce sus textos y envíalo al proyecto (una *pull request* o un correo).",
           "Los textos que faltan aparecen en inglés, así que una traducción parcial ya funciona. Las barras propias de Ketcher no las traduce MecHand."
         ]
+      },
+      "levels": {
+        "title": "Niveles: estudiante, avanzado, investigación",
+        "body": [
+          "MecHand se adapta a quien lo usa. Elige tu nivel en el menú **Nivel** de la barra:",
+          "**A · Estudiante** (ESO y bachillerato, y primeros cursos de grado): plantillas básicas, la tabla periódica sencilla y la explicación de cada flecha que dibujas.",
+          "**B · Estudiante avanzado** (final de grado, máster, inicio de doctorado): toda la biblioteca de plantillas y la búsqueda en línea de nombres y números CAS.",
+          "**C · Investigación**: todo, incluido el servidor de reconocimiento opcional. En los niveles B y C puedes activar las explicaciones de química del nivel A en esta ayuda.",
+          "Un profesor puede compartir un enlace con `?level=A` (o B, C) al final de la dirección: MecHand se abre en ese nivel."
+        ]
       }
     },
     "tourSteps": {
@@ -678,7 +706,8 @@
       "back": "Atrás",
       "done": "Hecho",
       "skip": "Saltar la visita",
-      "step": "{n} de {total}"
+      "step": "{n} de {total}",
+      "level": "**Nivel**: A estudiante, B estudiante avanzado, C investigación. Cambia las plantillas y la ayuda que ofrece MecHand; puedes cambiarlo cuando quieras."
     },
     "tips": {
       "welcome": "¿Primera vez en MecHand? Una visita de un minuto muestra los controles principales.",

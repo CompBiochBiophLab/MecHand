@@ -13,9 +13,10 @@
  */
 
 import React, {
-  createContext, useContext, useRef, useState, type ReactNode,
+  createContext, useContext, useEffect, useRef, useState, type ReactNode,
 } from 'react';
 import { useT } from '../i18n/i18n';
+import { useLevel } from '../levels/levels';
 
 // ── Help content registry ─────────────────────────────────────────────────────
 
@@ -39,6 +40,8 @@ export const HELP_SHORTCUTS: Record<string, string | undefined> = {
   'btn-export': undefined,
   'btn-teach': undefined,
   'btn-about': undefined,
+  'btn-periodic': undefined,
+  'btn-level': undefined,
   'btn-help': 'F1',
   'btn-language': undefined,
   'btn-help-toggle': undefined,
@@ -66,7 +69,10 @@ export const useHelp = () => useContext(HelpContext);
 
 export const HelpProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [visible, setVisible] = useState(false);
-  const [level, setLevel] = useState<HelpLevel>('student');
+  // The detail of the button help follows the user level (helpDetail in src/config/levels.json).
+  const { features } = useLevel();
+  const [level, setLevel] = useState<HelpLevel>(features.helpDetail);
+  useEffect(() => setLevel(features.helpDetail), [features.helpDetail]);
 
 
   return (

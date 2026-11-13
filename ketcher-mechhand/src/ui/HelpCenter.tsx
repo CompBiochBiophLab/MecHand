@@ -8,15 +8,29 @@
 import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import { Rich, useT } from '../i18n/i18n';
 import { HelpIcon } from './icons';
+import { useLevel } from '../levels/levels';
 
 export const HELP_TOPICS = [
-  'start', 'drawing', 'penbar', 'recognize', 'library', 'teach', 'export', 'shortcuts', 'privacy', 'translate',
+  'start', 'levels', 'drawing', 'penbar', 'recognize', 'library', 'teach', 'export', 'shortcuts', 'privacy', 'translate',
 ] as const;
 export type HelpTopic = (typeof HELP_TOPICS)[number];
 
+/** Chemistry topics for beginners (texts: learn.topic.<id> in src/i18n/locales/learn/). */
+export const LEARN_TOPICS = [
+  'atoms', 'lonePairs', 'charges', 'octet', 'electronegativity', 'nucleophiles', 'curvedArrows', 'fishhook', 'otherArrows', 'acidsBases', 'mechanisms',
+] as const;
+export type LearnTopic = (typeof LEARN_TOPICS)[number];
+
+/** Learning tip (learn.context.*) for what the user is doing. */
+export function learnTip(c: HelpContext): string {
+  if (c.dialog === 'consolidate') return 'dialog';
+  if (c.dialog === 'library') return 'library';
+  return c.freehand ? 'drawing' : 'off';
+}
+
 /** Pages of the website that go deeper into each topic. */
 const WEB: Record<HelpTopic, string> = {
-  start: 'getting-started', drawing: 'drawing', penbar: 'drawing#the-pen-bar', recognize: 'drawing#is-this-what-you-meant',
+  start: 'getting-started', levels: 'getting-started', drawing: 'drawing', penbar: 'drawing#the-pen-bar', recognize: 'drawing#is-this-what-you-meant',
   library: 'templates', teach: 'drawing#teach-mechand-your-handwriting', export: 'export', shortcuts: 'drawing#keyboard',
   privacy: 'privacy', translate: 'translating',
 };
@@ -103,6 +117,43 @@ export function HelpCenter({ context, onClose, onTour }: { context: HelpContext;
     return HELP_TOPICS.filter((k) => fold(`${t(`helpCenter.topic.${k}.title`)} ${t(`helpCenter.topic.${k}.body`)}`).includes(q));
   }, [query, t]);
   const tips = contextTips(context);
+  const { learn, learnSwitchable, setLearn, features } = useLevel();
+  const learnTopics = !context.study && features.learnHelp !== 'off';
+  const [openLearn, setOpenLearn] = useState<LearnTopic | null>(null);
+  const learnBody = (k: LearnTopic) => t(`learn.topic.${k}.body`).split('\n');
+  const shownLearn = useMemo(() => {
+    if (!learnTopics) return [];
+    const q = fold(query.trim());
+    if (!q) return [...LEARN_TOPICS];
+    return LEARN_TOPICS.filter((k) => fold(`${t(`learn.topic.${k}.title`)} ${t(`learn.topic.${k}.body`)}`).includes(q));
+  }, [query, t, learnTopics]);
+
+  // The chemistry topics: first when the explanations are on (level A), after the help otherwise.
+  const learnBlock = learnTopics ? (
+
+          <div data-testid="mechand-learn" style={{ marginBottom: 14 }}>
+            <h3 style={{ fontSize: 14, margin: '4px 0 6px' }}>{t('learn.section')}</h3>
+            {learnSwitchable && (
+              <label style={{ display: 'flex', gap: 8, alignItems: 'flex-start', fontSize: 13, marginBottom: 8, cursor: 'pointer' }}>
+                <input type="checkbox" checked={learn} onChange={(e) => setLearn(e.target.checked)} data-testid="mechand-learn-switch" style={{ marginTop: 3 }} />
+                <span><b>{t('learn.switch')}</b><br /><span style={{ color: '#6b7280' }}>{t('learn.switchHint')}</span></span>
+              </label>
+            )}
+            {shownLearn.map((k) => {
+              const isOpen = openLearn === k || Boolean(query.trim());
+              return (
+                <section key={k} style={S.topic(isOpen)} data-learn-topic={k} data-open={isOpen}>
+                  <button type="button" style={S.topicHead} onClick={() => setOpenLearn(isOpen ? null : k)} aria-expanded={isOpen}>
+                    {t(`learn.topic.${k}.title`)}
+                    <span aria-hidden style={{ color: '#9ca3af' }}>{isOpen ? '−' : '+'}</span>
+                  </button>
+                  {isOpen && <div>{learnBody(k).map((p, i) => <p key={i} style={S.para}><Rich text={p} /></p>)}</div>}
+                </section>
+              );
+            })}
+            {learn && <h3 style={{ fontSize: 14, margin: '14px 0 6px' }}>{t('helpCenter.topics')}</h3>}
+          </div>
+  ) : null;
 
   return (
     <div ref={panelRef} style={S.panel} role="complementary" aria-label={t('helpCenter.title')} data-testid="mechand-help-center">
@@ -121,6 +172,9 @@ export function HelpCenter({ context, onClose, onTour }: { context: HelpContext;
                 <Rich text={t(`helpCenter.context.${tip.key}`, tip.count === undefined ? undefined : { count: tip.count })} />
               </li>
             ))}
+            {learn && !context.study && (
+              <li data-tip={`learn-${learnTip(context)}`}><Rich text={t(`learn.context.${learnTip(context)}`)} /></li>
+            )}
           </ul>
         </div>
         <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
@@ -134,7 +188,8 @@ export function HelpCenter({ context, onClose, onTour }: { context: HelpContext;
             </button>
           )}
         </div>
-        {topics.length === 0 && <p style={{ color: '#6b7280' }}>{t('helpCenter.noResults', { query: query.trim() })}</p>}
+        {learn && learnBlock}
+        {topics.length === 0 && shownLearn.length === 0 && <p style={{ color: '#6b7280' }}>{t('helpCenter.noResults', { query: query.trim() })}</p>}
         {topics.map((k) => {
           const isOpen = open === k || Boolean(query.trim());
           return (
@@ -154,6 +209,7 @@ export function HelpCenter({ context, onClose, onTour }: { context: HelpContext;
             </section>
           );
         })}
+        {!learn && learnBlock && <div style={{ marginTop: 16 }}>{learnBlock}</div>}
       </div>
     </div>
   );

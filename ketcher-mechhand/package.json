@@ -13,6 +13,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
+    "check:content": "node scripts/check-content.mjs",
     "test": "vitest run",
     "e2e": "playwright test",
     "test:latex": "MECHAND_LATEX=1 vitest run src/export/latex.compile.test.ts",

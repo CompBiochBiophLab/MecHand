@@ -39,17 +39,25 @@ export function flatten(tree: Tree, prefix = '', out: Record<string, string> = {
 }
 
 const files = import.meta.glob<Tree>('./locales/*.json', { eager: true, import: 'default' });
+/**
+ * Extra texts by subject, one folder per subject and one file per language
+ * (locales/learn/ca.json…): merged into the language of the same code.
+ */
+const extraFiles = import.meta.glob<Tree>('./locales/*/*.json', { eager: true, import: 'default' });
+const codeOf = (path: string) => path.replace(/^.*\/(.+)\.json$/, '$1');
 
 export const LOCALES: Locale[] = Object.entries(files)
   .map(([path, tree]) => {
     const meta = (tree._meta ?? {}) as Record<string, unknown>;
-    const code = path.replace(/^.*\/(.+)\.json$/, '$1');
+    const code = codeOf(path);
+    const messages = flatten(tree);
+    for (const [p, extra] of Object.entries(extraFiles)) if (codeOf(p) === code) Object.assign(messages, flatten(extra));
     return {
       code,
       name: typeof meta.name === 'string' ? meta.name : code,
       dir: meta.dir === 'rtl' ? 'rtl' : 'ltr',
       authors: Array.isArray(meta.authors) ? (meta.authors as string[]) : [],
-      messages: flatten(tree),
+      messages,
     } as Locale;
   })
   .sort((a, b) => (a.code === 'en' ? -1 : b.code === 'en' ? 1 : a.name.localeCompare(b.name)));

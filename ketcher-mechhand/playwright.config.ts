@@ -11,6 +11,12 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:4173',
     viewport: { width: 1400, height: 900 },
+    // A level already chosen (B: the whole library, as before levels existed), so the first-use
+    // level dialog does not cover the page. e2e/levels.spec.ts starts from an empty storage.
+    storageState: {
+      cookies: [],
+      origins: [{ origin: 'http://localhost:4173', localStorage: [{ name: 'mechand.level.v1', value: 'B' }] }],
+    },
   },
   webServer: {
     command: 'npm run build && npx vite preview --port 4173 --strictPort',

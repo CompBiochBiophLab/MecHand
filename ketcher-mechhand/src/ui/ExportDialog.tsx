@@ -11,7 +11,7 @@ import { TIKZ_PREAMBLE, toTikz } from '../export/tikz';
 import { ketToScene } from '../scene/ketToScene';
 import { Modal, btn } from './Modal';
 
-type Format = 'tikz' | 'chemfig' | 'cdxml' | 'mol' | 'ket' | 'smiles';
+export type Format = 'tikz' | 'chemfig' | 'cdxml' | 'mol' | 'ket' | 'smiles';
 
 /** Formats (the note of each is export.note.<id> in the locale files). */
 const FORMATS: { id: Format; label: string; file: string }[] = [
@@ -34,9 +34,15 @@ async function produce(ketcher: Ketcher, f: Format): Promise<string> {
   }
 }
 
-export function ExportDialog({ ketcher, onClose }: { ketcher: Ketcher; onClose: () => void }) {
+export function ExportDialog({ ketcher, onClose, formats }: {
+  ketcher: Ketcher;
+  onClose: () => void;
+  /** Formats offered (the user's level, src/config/levels.json); default all. */
+  formats?: Format[];
+}) {
   const { t } = useT();
-  const [format, setFormat] = useState<Format>('tikz');
+  const offered = formats?.length ? FORMATS.filter((f) => formats.includes(f.id)) : FORMATS;
+  const [format, setFormat] = useState<Format>(offered[0].id);
   const [text, setText] = useState('');
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
@@ -71,7 +77,7 @@ export function ExportDialog({ ketcher, onClose }: { ketcher: Ketcher; onClose: 
   return (
     <Modal title={t('export.title')} onClose={onClose} width={720} testId="mechand-export">
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
-        {FORMATS.map((f) => (
+        {offered.map((f) => (
           <button key={f.id} onClick={() => setFormat(f.id)}
             style={btn(f.id === format ? '#1d4ed8' : '#f3f4f6', f.id === format ? '#fff' : '#374151')}>
             {f.label}

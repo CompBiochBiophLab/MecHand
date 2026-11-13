@@ -22,6 +22,7 @@ export const TOUR_STEPS: TourStep[] = [
   { id: 'library', target: 'mechand-library-btn' },
   { id: 'export', target: 'mechand-export-btn' },
   { id: 'teach', target: 'mechand-teach-btn' },
+  { id: 'level', target: 'mechand-level' },
   { id: 'language', target: 'mechand-language' },
   { id: 'help', target: 'mechand-help-btn' },
 ];
@@ -51,9 +52,11 @@ const btn = (primary: boolean): CSSProperties => ({
 
 export function Tour({ onClose, onFreehand }: { onClose: () => void; onFreehand: (on: boolean) => void }) {
   const { t } = useT();
+  // Controls the user's level does not show (e.g. Teach, the level menu with ?level=) are skipped.
+  const [steps] = useState(() => TOUR_STEPS.filter((s) => s.freehand || document.querySelector(`[data-testid="${s.target}"]`)));
   const [i, setI] = useState(0);
   const [rect, setRect] = useState<DOMRect | null>(null);
-  const step = TOUR_STEPS[i];
+  const step = steps[i];
 
   const finish = useCallback(() => {
     markTourSeen();
@@ -80,7 +83,7 @@ export function Tour({ onClose, onFreehand }: { onClose: () => void; onFreehand:
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') finish();
-      else if (e.key === 'ArrowRight' || e.key === 'Enter') setI((x) => (x + 1 < TOUR_STEPS.length ? x + 1 : x));
+      else if (e.key === 'ArrowRight' || e.key === 'Enter') setI((x) => (x + 1 < steps.length ? x + 1 : x));
       else if (e.key === 'ArrowLeft') setI((x) => Math.max(0, x - 1));
       else return;
       e.preventDefault();
@@ -91,7 +94,7 @@ export function Tour({ onClose, onFreehand }: { onClose: () => void; onFreehand:
   }, [finish]);
 
   const pad = 6;
-  const last = i === TOUR_STEPS.length - 1;
+  const last = i === steps.length - 1;
   const top = rect ? rect.bottom + 12 : 120;
   const left = rect ? Math.max(12, Math.min(window.innerWidth - 332, rect.left + rect.width / 2 - 160)) : 40;
 
@@ -109,7 +112,7 @@ export function Tour({ onClose, onFreehand }: { onClose: () => void; onFreehand:
         position: 'fixed', top, left, width: 320, background: '#fff', borderRadius: 12, padding: '12px 14px',
         boxShadow: '0 12px 40px rgba(0,0,0,0.25)', fontFamily: 'system-ui, sans-serif', fontSize: 13.5, lineHeight: 1.5, color: '#111827',
       }}>
-        <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 4 }}>{t('helpCenter.tourSteps.step', { n: i + 1, total: TOUR_STEPS.length })}</div>
+        <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 4 }}>{t('helpCenter.tourSteps.step', { n: i + 1, total: steps.length })}</div>
         <div data-testid="mechand-tour-text"><Rich text={t(`helpCenter.tourSteps.${step.id}`)} /></div>
         <div style={{ display: 'flex', gap: 6, marginTop: 10, justifyContent: 'flex-end' }}>
           <button type="button" style={{ ...btn(false), marginRight: 'auto', border: 'none' }} onClick={finish}>{t('helpCenter.tourSteps.skip')}</button>

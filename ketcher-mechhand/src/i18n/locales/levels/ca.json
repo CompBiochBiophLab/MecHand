@@ -1,0 +1,29 @@
+{
+  "level": {
+    "menu": "Nivell",
+    "menuName": "Nivell d'usuari: canvia les plantilles i l'ajuda que s'ofereix",
+    "A": {
+      "name": "Estudiant",
+      "short": "A · Estudiant",
+      "who": "ESO i batxillerat i primers cursos de grau",
+      "what": "Plantilles bàsiques, la taula periòdica simple i explicacions químiques de cada fletxa."
+    },
+    "B": {
+      "name": "Estudiant avançat",
+      "short": "B · Avançat",
+      "who": "Final de grau, màster i inici del doctorat",
+      "what": "Tota la biblioteca de plantilles i la cerca en línia; explicacions químiques si les vols."
+    },
+    "C": {
+      "name": "Investigador/a",
+      "short": "C · Recerca",
+      "who": "Doctorat i més enllà",
+      "what": "Tot, inclòs el servidor de reconeixement opcional i, si les vols, les explicacions del nivell A."
+    },
+    "chooserTitle": "Et donem la benvinguda a MecHand: quin és el teu nivell?",
+    "chooserIntro": "MecHand adapta les plantilles i l'ajuda a tu. Pots canviar-lo en qualsevol moment amb el menú **Nivell** de la barra.",
+    "choose": "Tria",
+    "basicTemplates": "Nivell {level}: les {count} plantilles bàsiques. Tria el nivell B o C a la barra per tenir tota la biblioteca.",
+    "notInLevel": "No disponible al nivell {level}."
+  }
+}

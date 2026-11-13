@@ -1,0 +1,29 @@
+{
+  "level": {
+    "menu": "Level",
+    "menuName": "User level: changes the templates and the help offered",
+    "A": {
+      "name": "Student",
+      "short": "A · Student",
+      "who": "Secondary school and first years of a degree",
+      "what": "Basic templates, the simple periodic table and chemistry explanations of every arrow."
+    },
+    "B": {
+      "name": "Advanced student",
+      "short": "B · Advanced",
+      "who": "End of a degree, master's and start of a PhD",
+      "what": "The whole template library and online look-up; chemistry explanations if you want them."
+    },
+    "C": {
+      "name": "Researcher",
+      "short": "C · Research",
+      "who": "PhD and beyond",
+      "what": "Everything, including the optional recognition server and, if you want them, the explanations of level A."
+    },
+    "chooserTitle": "Welcome to MecHand: what is your level?",
+    "chooserIntro": "MecHand adapts the templates and the help to you. You can change it at any time with the **Level** menu in the bar.",
+    "choose": "Choose",
+    "basicTemplates": "Level {level}: the {count} basic templates. Choose level B or C in the bar for the whole library.",
+    "notInLevel": "Not available at level {level}."
+  }
+}

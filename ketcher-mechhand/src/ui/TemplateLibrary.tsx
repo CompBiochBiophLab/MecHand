@@ -21,6 +21,7 @@ import {
   type Converter, type TextStructure, entryFromHit, lookupOnline, lookupWorthy, queryKind, structureFromNotation,
 } from '../templates/textToStructure';
 import { type T, useT } from '../i18n/i18n';
+import { templateDescription, templateName } from '../i18n/templateNames';
 import { Modal } from './Modal';
 import { MoleculeThumb, thumbData } from './MoleculeThumb';
 
@@ -47,6 +48,8 @@ export interface TemplateLibraryProps {
   convert?: Converter;
   /** Offer to look names and CAS numbers up on PubChem/OPSIN (never in study mode). */
   online?: boolean;
+  /** A line above the grid (e.g. that the user's level offers the basic templates only). */
+  note?: string;
 }
 
 const FILTERS: LibraryFilter[] = ['all', 'recent', 'favourites', ...LIBRARY_CATEGORIES.map((c) => c.id as LibraryFilter)];
@@ -128,9 +131,10 @@ const S = {
 
 /** The library panel without a modal frame. */
 export function TemplateLibraryPanel({
-  onInsert, onClose, entries = LIBRARY, initialFilter = 'all', closeOnInsert = true, testId, convert, online = false,
+  onInsert, onClose, entries = LIBRARY, initialFilter = 'all', closeOnInsert = true, testId, convert, online = false, note,
 }: TemplateLibraryProps & { testId?: string }) {
-  const { t } = useT();
+  const { t, lang } = useT();
+  const nameOf = (e: LibraryEntry) => templateName(e, lang);
   const [query, setQuery] = useState('');
   /** The search text read as SMILES or InChI (offline). */
   const [notation, setNotation] = useState<TextStructure | null>(null);
@@ -369,6 +373,7 @@ export function TemplateLibraryPanel({
           style={S.search}
         />
       </div>
+      {note && <div style={{ fontSize: 12.5, color: '#4b5563' }} data-testid="mechand-library-note">{note}</div>}
       <div style={S.chips} role="tablist" aria-label={t('library.categoriesLabel')}>
         {FILTERS.map((f) => (
           <button key={f} type="button" role="tab" aria-selected={filter === f} style={S.chip(filter === f)}
@@ -413,7 +418,7 @@ export function TemplateLibraryPanel({
               aria-selected={isActive}
               data-testid="mechand-library-item"
               data-id={entry.id}
-              title={t('library.tileTitle', { name: entry.name, mode: modeVerb(entry.defaultMode, t).toLowerCase(), other: modeVerb(alt, t).toLowerCase() })}
+              title={t('library.tileTitle', { name: nameOf(entry), mode: modeVerb(entry.defaultMode, t).toLowerCase(), other: modeVerb(alt, t).toLowerCase() })}
               style={S.tile(isActive, wide)}
               onPointerMove={onTilePointerMove(index)}
               onClick={(e) => insert(entry, e.shiftKey ? alt : entry.defaultMode)}
@@ -421,7 +426,7 @@ export function TemplateLibraryPanel({
               <button
                 type="button"
                 tabIndex={-1}
-                aria-label={`${modeVerb(alt, t)}: ${entry.name}`}
+                aria-label={`${modeVerb(alt, t)}: ${nameOf(entry)}`}
                 title={modeVerb(alt, t)}
                 data-testid="mechand-library-alt"
                 style={S.corner('left', isActive || touch)}
@@ -430,7 +435,7 @@ export function TemplateLibraryPanel({
               <button
                 type="button"
                 tabIndex={-1}
-                aria-label={t(fav ? 'library.favRemove' : 'library.favAdd', { name: entry.name })}
+                aria-label={t(fav ? 'library.favRemove' : 'library.favAdd', { name: nameOf(entry) })}
                 aria-pressed={fav}
                 title={t(fav ? 'library.favRemoveShort' : 'library.favAddShort')}
                 data-testid="mechand-library-star"
@@ -438,7 +443,7 @@ export function TemplateLibraryPanel({
                 onClick={(e) => { e.stopPropagation(); toggleFavourite(entry.id); }}
               >{fav ? '★' : '☆'}</button>
               <MoleculeThumb data={thumbData(entry)} width={wide ? 2 * THUMB_W + 20 : THUMB_W} height={THUMB_H} maxScale={wide ? 16 : 22} />
-              <div style={S.label}>{entry.name}</div>
+              <div style={S.label}>{nameOf(entry)}</div>
             </div>
           );
         })}
@@ -448,12 +453,12 @@ export function TemplateLibraryPanel({
         <div style={{ minWidth: 0, flex: '1 1 260px' }} data-testid="mechand-library-details">
           {current ? (
             <>
-              <b>{current.name}</b>
+              <b>{nameOf(current)}</b>
               {current.displayFormula && <> · <Formula text={current.displayFormula} /></>}
               <span style={{ color: '#6b7280' }}> · {groupLabel(current.group, t)}</span>
               {current.cas?.length ? <span style={{ color: '#6b7280' }}> · {t('library.cas', { cas: current.cas[0] })}</span> : null}
               <div style={{ color: '#6b7280', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {current.description ?? current.keywords.slice(0, 6).join(' · ')}
+                {templateDescription(current, lang) ?? current.keywords.slice(0, 6).join(' · ')}
               </div>
             </>
           ) : <span style={{ color: '#6b7280' }}>{t('library.count', { count: items.length })}</span>}

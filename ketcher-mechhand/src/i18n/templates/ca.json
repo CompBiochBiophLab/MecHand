@@ -1,0 +1,606 @@
+{
+  "_meta": {
+    "note": "Names of the template library (English in src/templates/library.json and index.json). One entry per template id; mechanisms are \"mech-<id>\"."
+  },
+  "cyclopropane": {
+    "name": "Ciclopropà"
+  },
+  "cyclobutane": {
+    "name": "Ciclobutà"
+  },
+  "cyclopentane": {
+    "name": "Ciclopentà"
+  },
+  "cyclohexane": {
+    "name": "Ciclohexà"
+  },
+  "cyclohexane-chair": {
+    "name": "Ciclohexà (cadira)"
+  },
+  "cycloheptane": {
+    "name": "Cicloheptà"
+  },
+  "cyclooctane": {
+    "name": "Ciclooctà"
+  },
+  "cyclohexene": {
+    "name": "Ciclohexè"
+  },
+  "cyclopentadiene": {
+    "name": "Ciclopentadiè"
+  },
+  "gonane": {
+    "name": "Nucli esteroide (gonà)"
+  },
+  "benzene": {
+    "name": "Benzè"
+  },
+  "naphthalene": {
+    "name": "Naftalè"
+  },
+  "anthracene": {
+    "name": "Antracè"
+  },
+  "phenanthrene": {
+    "name": "Fenantrè"
+  },
+  "pyridine": {
+    "name": "Piridina"
+  },
+  "pyrrole": {
+    "name": "Pirrole"
+  },
+  "furan": {
+    "name": "Furan"
+  },
+  "thiophene": {
+    "name": "Tiofè"
+  },
+  "imidazole": {
+    "name": "Imidazole"
+  },
+  "pyrimidine": {
+    "name": "Pirimidina"
+  },
+  "purine": {
+    "name": "Purina"
+  },
+  "indole": {
+    "name": "Indole"
+  },
+  "benzimidazole": {
+    "name": "Benzimidazole"
+  },
+  "quinoline": {
+    "name": "Quinolina"
+  },
+  "isoquinoline": {
+    "name": "Isoquinolina"
+  },
+  "oxirane": {
+    "name": "Oxirà (epòxid)"
+  },
+  "pyrrolidine": {
+    "name": "Pirrolidina"
+  },
+  "tetrahydrofuran": {
+    "name": "Tetrahidrofuran"
+  },
+  "piperidine": {
+    "name": "Piperidina"
+  },
+  "morpholine": {
+    "name": "Morfolina"
+  },
+  "tetrahydropyran": {
+    "name": "Tetrahidropiran"
+  },
+  "dioxane": {
+    "name": "1,4-Dioxà"
+  },
+  "butyrolactone": {
+    "name": "γ-Butirolactona"
+  },
+  "beta-lactam": {
+    "name": "β-Lactama (azetidin-2-ona)"
+  },
+  "alkene": {
+    "name": "Alquè (vinil)"
+  },
+  "alkyne": {
+    "name": "Alquí (terminal)"
+  },
+  "alkyl-halide": {
+    "name": "Halur d'alquil"
+  },
+  "alcohol": {
+    "name": "Alcohol"
+  },
+  "alkoxide": {
+    "name": "Alcòxid"
+  },
+  "phenol": {
+    "name": "Fenol"
+  },
+  "ether": {
+    "name": "Èter"
+  },
+  "enol": {
+    "name": "Enol"
+  },
+  "enolate": {
+    "name": "Enolat"
+  },
+  "hemiacetal": {
+    "name": "Hemiacetal"
+  },
+  "acetal": {
+    "name": "Acetal"
+  },
+  "aldehyde": {
+    "name": "Aldehid"
+  },
+  "ketone": {
+    "name": "Cetona"
+  },
+  "carboxylic-acid": {
+    "name": "Àcid carboxílic"
+  },
+  "carboxylate": {
+    "name": "Carboxilat"
+  },
+  "ester": {
+    "name": "Èster"
+  },
+  "thioester": {
+    "name": "Tioèster"
+  },
+  "amide": {
+    "name": "Amida (primària)"
+  },
+  "amide-n": {
+    "name": "Amida (N-substituïda)"
+  },
+  "acyl-chloride": {
+    "name": "Clorur d'acil"
+  },
+  "anhydride": {
+    "name": "Anhídrid"
+  },
+  "protonated-carbonyl": {
+    "name": "Carbonil protonat"
+  },
+  "acylium": {
+    "name": "Ió acili"
+  },
+  "amine-primary": {
+    "name": "Amina (primària)"
+  },
+  "amine-secondary": {
+    "name": "Amina (secundària)"
+  },
+  "amine-tertiary": {
+    "name": "Amina (terciària)"
+  },
+  "ammonium-ion": {
+    "name": "Amoni (amina protonada)"
+  },
+  "imine": {
+    "name": "Imina"
+  },
+  "iminium": {
+    "name": "Ió imini"
+  },
+  "enamine": {
+    "name": "Enamina"
+  },
+  "nitrile": {
+    "name": "Nitril"
+  },
+  "nitro": {
+    "name": "Grup nitro"
+  },
+  "diazonium": {
+    "name": "Ió diazoni"
+  },
+  "thiol": {
+    "name": "Tiol"
+  },
+  "sulfide": {
+    "name": "Sulfur (tioèter)"
+  },
+  "disulfide": {
+    "name": "Disulfur"
+  },
+  "sulfonic-acid": {
+    "name": "Àcid sulfònic"
+  },
+  "tosylate": {
+    "name": "Tosilat (OTs)"
+  },
+  "phosphate-ester": {
+    "name": "Monoèster de fosfat"
+  },
+  "phosphodiester": {
+    "name": "Fosfodièster"
+  },
+  "tert-butyl-cation": {
+    "name": "Catió terc-butil"
+  },
+  "benzyl-cation": {
+    "name": "Catió benzil"
+  },
+  "methyl-anion": {
+    "name": "Anió metil"
+  },
+  "acetylide": {
+    "name": "Acetilur"
+  },
+  "tert-butyl-radical": {
+    "name": "Radical terc-butil"
+  },
+  "phenyl": {
+    "name": "Fenil (Ph)"
+  },
+  "benzyl": {
+    "name": "Benzil (Bn)"
+  },
+  "tert-butyl": {
+    "name": "terc-Butil (tBu)"
+  },
+  "acetyl": {
+    "name": "Acetil (Ac)"
+  },
+  "boc": {
+    "name": "Boc"
+  },
+  "glycine": {
+    "name": "Glicina"
+  },
+  "alanine": {
+    "name": "Alanina"
+  },
+  "valine": {
+    "name": "Valina"
+  },
+  "leucine": {
+    "name": "Leucina"
+  },
+  "isoleucine": {
+    "name": "Isoleucina"
+  },
+  "proline": {
+    "name": "Prolina"
+  },
+  "phenylalanine": {
+    "name": "Fenilalanina"
+  },
+  "tryptophan": {
+    "name": "Triptòfan"
+  },
+  "methionine": {
+    "name": "Metionina"
+  },
+  "serine": {
+    "name": "Serina"
+  },
+  "threonine": {
+    "name": "Treonina"
+  },
+  "cysteine": {
+    "name": "Cisteïna"
+  },
+  "tyrosine": {
+    "name": "Tirosina"
+  },
+  "asparagine": {
+    "name": "Asparagina"
+  },
+  "glutamine": {
+    "name": "Glutamina"
+  },
+  "aspartic-acid": {
+    "name": "Àcid aspàrtic"
+  },
+  "glutamic-acid": {
+    "name": "Àcid glutàmic"
+  },
+  "lysine": {
+    "name": "Lisina"
+  },
+  "arginine": {
+    "name": "Arginina"
+  },
+  "histidine": {
+    "name": "Histidina"
+  },
+  "adenine": {
+    "name": "Adenina"
+  },
+  "guanine": {
+    "name": "Guanina"
+  },
+  "cytosine": {
+    "name": "Citosina"
+  },
+  "thymine": {
+    "name": "Timina"
+  },
+  "uracil": {
+    "name": "Uracil"
+  },
+  "adenosine": {
+    "name": "Adenosina"
+  },
+  "atp": {
+    "name": "ATP"
+  },
+  "beta-d-glucose": {
+    "name": "β-D-Glucopiranosa"
+  },
+  "alpha-d-glucose": {
+    "name": "α-D-Glucopiranosa"
+  },
+  "d-glucose-open": {
+    "name": "D-Glucosa (cadena oberta)"
+  },
+  "beta-d-fructose": {
+    "name": "β-D-Fructofuranosa"
+  },
+  "beta-d-ribose": {
+    "name": "β-D-Ribofuranosa"
+  },
+  "deoxyribose": {
+    "name": "2-Desoxi-β-D-ribofuranosa"
+  },
+  "d-glyceraldehyde": {
+    "name": "D-Gliceraldehid"
+  },
+  "nad-model": {
+    "name": "NAD⁺ (anell de nicotinamida)"
+  },
+  "nadh-model": {
+    "name": "NADH (anell de dihidronicotinamida)"
+  },
+  "plp": {
+    "name": "Fosfat de piridoxal (PLP)"
+  },
+  "pyruvic-acid": {
+    "name": "Àcid pirúvic"
+  },
+  "l-lactic-acid": {
+    "name": "Àcid L-làctic"
+  },
+  "pep": {
+    "name": "Àcid fosfoenolpirúvic (PEP)"
+  },
+  "acetylcholine": {
+    "name": "Acetilcolina"
+  },
+  "glycerol": {
+    "name": "Glicerol"
+  },
+  "palmitic-acid": {
+    "name": "Àcid palmític"
+  },
+  "oleic-acid": {
+    "name": "Àcid oleic"
+  },
+  "cholesterol": {
+    "name": "Colesterol"
+  },
+  "water": {
+    "name": "Aigua"
+  },
+  "hydroxide": {
+    "name": "Hidròxid"
+  },
+  "hydronium": {
+    "name": "Hidroni"
+  },
+  "proton": {
+    "name": "Protó"
+  },
+  "hydride": {
+    "name": "Hidrur"
+  },
+  "ammonia": {
+    "name": "Amoníac"
+  },
+  "ammonium": {
+    "name": "Amoni"
+  },
+  "chloride": {
+    "name": "Clorur"
+  },
+  "bromide": {
+    "name": "Bromur"
+  },
+  "cyanide": {
+    "name": "Cianur"
+  },
+  "hcl": {
+    "name": "Clorur d'hidrogen"
+  },
+  "sulfuric-acid": {
+    "name": "Àcid sulfúric"
+  },
+  "nitric-acid": {
+    "name": "Àcid nítric"
+  },
+  "acetic-acid": {
+    "name": "Àcid acètic"
+  },
+  "tfa": {
+    "name": "Àcid trifluoroacètic (TFA)"
+  },
+  "naoh": {
+    "name": "Hidròxid de sodi"
+  },
+  "lda": {
+    "name": "Diisopropilamida de liti (LDA)"
+  },
+  "kotbu": {
+    "name": "terc-Butòxid de potassi"
+  },
+  "naoet": {
+    "name": "Etòxid de sodi"
+  },
+  "triethylamine": {
+    "name": "Trietilamina"
+  },
+  "n-buli": {
+    "name": "n-Butil-liti"
+  },
+  "nabh4": {
+    "name": "Borohidrur de sodi"
+  },
+  "lialh4": {
+    "name": "Hidrur de liti i alumini"
+  },
+  "dibal": {
+    "name": "DIBAL-H"
+  },
+  "hydrogen": {
+    "name": "Hidrogen"
+  },
+  "mcpba": {
+    "name": "mCPBA"
+  },
+  "kmno4": {
+    "name": "Permanganat de potassi"
+  },
+  "pcc": {
+    "name": "Clorocromat de piridini (PCC)"
+  },
+  "ozone": {
+    "name": "Ozó"
+  },
+  "bromine": {
+    "name": "Brom"
+  },
+  "nbs": {
+    "name": "N-Bromosuccinimida (NBS)"
+  },
+  "socl2": {
+    "name": "Clorur de tionil"
+  },
+  "pbr3": {
+    "name": "Tribromur de fòsfor"
+  },
+  "alcl3": {
+    "name": "Clorur d'alumini"
+  },
+  "bf3": {
+    "name": "Trifluorur de bor"
+  },
+  "oxalyl-chloride": {
+    "name": "Clorur d'oxalil"
+  },
+  "mgbr-methyl": {
+    "name": "Bromur de metilmagnesi"
+  },
+  "wittig-ylide": {
+    "name": "Ilur de fosfoni (Wittig)"
+  },
+  "diethyl-malonate": {
+    "name": "Malonat de dietil"
+  },
+  "dmso": {
+    "name": "Dimetilsulfòxid (DMSO)"
+  },
+  "dmf": {
+    "name": "Dimetilformamida (DMF)"
+  },
+  "acetone": {
+    "name": "Acetona"
+  },
+  "acetonitrile": {
+    "name": "Acetonitril"
+  },
+  "methanol": {
+    "name": "Metanol"
+  },
+  "ethanol": {
+    "name": "Etanol"
+  },
+  "dichloromethane": {
+    "name": "Diclorometà (DCM)"
+  },
+  "diethyl-ether": {
+    "name": "Èter dietílic"
+  },
+  "ethyl-acetate": {
+    "name": "Acetat d'etil"
+  },
+  "toluene": {
+    "name": "Toluè"
+  },
+  "co2": {
+    "name": "Diòxid de carboni"
+  },
+  "ethene": {
+    "name": "Etè"
+  },
+  "formaldehyde": {
+    "name": "Formaldehid"
+  },
+  "acetaldehyde": {
+    "name": "Acetaldehid"
+  },
+  "nitronium": {
+    "name": "Ió nitroni"
+  },
+  "mech-sn2": {
+    "name": "SN2: hidròxid + bromometà",
+    "description": "Atac concertat de l'hidròxid pel costat posterior del bromometà amb pèrdua de bromur; el «paraigua» dels C–H s'inverteix (inversió de Walden)."
+  },
+  "mech-e2": {
+    "name": "E2: etòxid + 2-bromopropà",
+    "description": "L'etòxid arrenca l'hidrogen β antiperiplanar al brom mentre es forma l'enllaç π C=C i surt el bromur, tot en una sola etapa concertada."
+  },
+  "mech-carbonyl_addition": {
+    "name": "Addició nucleòfila: cianur + acetaldehid",
+    "description": "El cianur ataca el carboni carbonílic electròfil de l'acetaldehid; els electrons π del C=O es desplacen cap a l'oxigen i es forma un alcòxid tetraèdric (anió de la cianohidrina)."
+  },
+  "mech-eas_nitration": {
+    "name": "Substitució electròfila aromàtica: nitració, etapa 1",
+    "description": "Un enllaç π del benzè ataca l'ió nitroni i es forma l'intermedi d'areni (de Wheland) estabilitzat per ressonància; la pèrdua d'H⁺ en l'etapa següent restableix l'aromaticitat."
+  },
+  "mech-diels_alder": {
+    "name": "Diels–Alder: buta-1,3-diè + etè",
+    "description": "Cicloaddició [4+2] concertada: tres enllaços π es converteixen en dos enllaços σ nous i un enllaç π nou en un únic estat de transició cíclic de sis electrons."
+  },
+  "mech-radical_homolysis": {
+    "name": "Homòlisi radicalària: Cl₂ amb llum",
+    "description": "La llum (hν) trenca homolíticament l'enllaç Cl–Cl; cada àtom de clor es queda un electró de l'enllaç (dues fletxes de mitja punta) i es formen dos radicals clor."
+  },
+  "mech-lewis_adduct": {
+    "name": "Adducte àcid–base de Lewis: NH₃ + BF₃",
+    "description": "El parell solitari del nitrogen de l'amoníac (base de Lewis) se cedeix a l'orbital 2p buit del trifluorur de bor (àcid de Lewis) i es forma l'adducte H₃N⁺–B⁻F₃."
+  },
+  "mech-pt_substitution": {
+    "name": "Substitució associativa de lligands: [PtCl₄]²⁻ + NH₃",
+    "description": "L'NH₃ s'addiciona al Pt(II) quadrat pla i es forma un intermedi pentacoordinat (bipiràmide trigonal), que després perd Cl⁻ i dona [PtCl₃(NH₃)]⁻. Els enllaços M–L es dibuixen com a enllaços simples amb càrregues formals (Pt 2−/3−, N⁺ coordinat)."
+  },
+  "mech-sicl4_hydrolysis": {
+    "name": "Hidròlisi del SiCl₄: atac de l'aigua al silici",
+    "description": "Un parell solitari de l'aigua ataca el silici i desplaça el clorur (dibuixat com una sola etapa concertada, de tipus SN2; no es mostra l'espècie de silici pentacoordinat). Després, la pèrdua d'H⁺ dona Cl₃SiOH, i la repetició del procés dona Si(OH)₄/SiO₂."
+  },
+  "mech-aqua_acidity": {
+    "name": "Acidesa de Brønsted d'un aquaió metàl·lic: [Fe(OH₂)₆]³⁺ + H₂O",
+    "description": "La polarització que exerceix el Fe(III) fa àcida una molècula d'aigua coordinada: una molècula d'aigua del dissolvent n'arrenca un protó i es formen [Fe(OH₂)₅(OH)]²⁺ i H₃O⁺. Els enllaços M–L són enllaços simples amb càrregues formals (Fe 3−, O⁺ del lligand aqua)."
+  },
+  "mech-serine_protease": {
+    "name": "Acilació d'una serina-proteasa: atac de la tríada catalítica a un enllaç peptídic",
+    "description": "La His57, fixada per l'Asp102, actua com a base general i capta el protó de l'hidroxil de la Ser195 mentre l'oxigen de la serina ataca el carbonil de l'amida, i es forma l'intermedi tetraèdric amb oxianió. Les cadenes laterals estan truncades (acetat, 4-metilimidazole, etanol, N-metilacetamida)."
+  },
+  "mech-adh_hydride": {
+    "name": "Alcohol-deshidrogenasa: transferència d'hidrur a l'NAD⁺",
+    "description": "L'alcòxid de l'etanol unit al zinc col·lapsa a acetaldehid mentre l'hidrogen del seu enllaç C–H es transfereix com a hidrur al C4 de l'anell de nicotinamida (NAD⁺ modelitzat com a 1-metilnicotinamida), i es forma la 1,4-dihidropiridina (NADH). S'omet el Zn²⁺."
+  },
+  "mech-kinase": {
+    "name": "Cinasa: transferència de fosforil en línia des de l'ATP",
+    "description": "Un Asp del centre actiu actua com a base general mentre l'hidroxil del substrat ataca el fòsfor γ en línia amb l'oxigen pont β,γ, que surt com a ADP. L'ATP es modelitza com a trifosfat de metil i el substrat com a etanol; s'omet el Mg²⁺."
+  }
+}

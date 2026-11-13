@@ -5,7 +5,9 @@
  * keep editing the ink, or discard it.
  */
 
-import { useT } from '../i18n/i18n';
+import { Rich, useT } from '../i18n/i18n';
+import { useLevel } from '../levels/levels';
+import { explainArrows } from '../learn/explain';
 import type { MechanismIssue } from '../recognition/mechanismCheck';
 import type { SketchResult } from '../recognition/sketch';
 import { ScenePreview } from './ScenePreview';
@@ -39,6 +41,8 @@ export function ConsolidateDialog({ result, issues, engineNote, onConfirm, onEdi
   const colour = pct >= 80 ? '#16a34a' : pct >= 55 ? '#d97706' : '#dc2626';
   const { atoms, bonds, arrows } = result.scene;
   const tips = recognitionTips(result);
+  const { learn } = useLevel();
+  const explanations = learn ? explainArrows(result.scene, result.arrows) : [];
   return (
     <Modal title={t('consolidate.title')} onClose={onEdit} testId="mechand-consolidate">
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
@@ -59,8 +63,25 @@ export function ConsolidateDialog({ result, issues, engineNote, onConfirm, onEdi
       </p>
       {issues.length > 0 && (
         <ul data-testid="mechand-issues" style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8, padding: '8px 12px 8px 28px', fontSize: 13, margin: '0 0 10px' }}>
-          {issues.map((i, k) => <li key={k}>{t(`check.${i.code}`, i.params as Record<string, string | number>)}</li>)}
+          {issues.map((i, k) => (
+            <li key={k}>
+              {t(`check.${i.code}`, i.params as Record<string, string | number>)}
+              {learn && (
+                <div style={{ color: '#78350f', fontSize: 12.5, marginTop: 2 }} data-testid="mechand-issue-why">
+                  <b>{t('learn.explain.why')}</b> {t(`learn.explain.whyCode.${i.code}`)}
+                </div>
+              )}
+            </li>
+          ))}
         </ul>
+      )}
+      {explanations.length > 0 && (
+        <div data-testid="mechand-explain" style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '8px 12px', fontSize: 12.5, margin: '0 0 10px' }}>
+          <b>{t('learn.explain.title')}</b>
+          <ul style={{ margin: '4px 0 0', paddingLeft: 18, lineHeight: 1.45 }}>
+            {explanations.map((e) => <li key={e.arrow} data-key={e.key}><Rich text={t(e.key, e.params)} /></li>)}
+          </ul>
+        </div>
       )}
       {tips.length > 0 && (
         <div data-testid="mechand-recognition-tips" style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '8px 12px', fontSize: 12.5, margin: '0 0 10px' }}>

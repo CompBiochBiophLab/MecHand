@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MecHand user levels",
+  "description": "What each user level (A student, B advanced student, C researcher) can use. Edit levels.json; VS Code checks it against this schema as you type.",
+  "type": "object",
+  "required": ["default", "levels", "basicTemplates"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "default": {
+      "description": "Level used until the user chooses one (also when ?level= is not given).",
+      "enum": ["A", "B", "C"]
+    },
+    "levels": {
+      "type": "object",
+      "required": ["A", "B", "C"],
+      "additionalProperties": false,
+      "properties": {
+        "A": { "$ref": "#/definitions/level", "description": "Student: secondary school and first years of a degree." },
+        "B": { "$ref": "#/definitions/level", "description": "Advanced student: end of the degree, master's, start of a PhD." },
+        "C": { "$ref": "#/definitions/level", "description": "Researcher: PhD and beyond." }
+      }
+    },
+    "basicTemplates": {
+      "description": "Template ids offered when a level has \"templates\": \"basic\". Structure ids are those of src/templates/library.json; mechanisms are \"mech-<id>\" (src/templates/index.json). `npm run check:content` reports unknown ids.",
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    }
+  },
+  "definitions": {
+    "level": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["templates", "learnHelp", "periodicTable", "onlineLookup", "teach", "recognitionServer", "helpDetail", "export"],
+      "properties": {
+        "templates": {
+          "description": "\"basic\": only the ids in basicTemplates. \"all\": the whole library.",
+          "enum": ["basic", "all"]
+        },
+        "learnHelp": {
+          "description": "Chemistry explanations (why each arrow, lone pairs, octet, nucleophiles…). \"on\": shown from the start. \"available\": the user can turn them on in Help. \"off\": hidden.",
+          "enum": ["on", "available", "off"]
+        },
+        "periodicTable": { "description": "The simple periodic table button in the MecHand bar.", "type": "boolean" },
+        "onlineLookup": { "description": "Look names and CAS numbers up on PubChem/OPSIN from the library.", "type": "boolean" },
+        "teach": { "description": "The Teach dialog (train the recognizer on one's handwriting).", "type": "boolean" },
+        "recognitionServer": { "description": "The optional DECIMER recognition server (About panel).", "type": "boolean" },
+        "helpDetail": {
+          "description": "Default detail of the button help labels: \"student\" (longer) or \"brief\".",
+          "enum": ["student", "brief"]
+        },
+        "export": {
+          "description": "Export formats offered, in this order.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["tikz", "chemfig", "cdxml", "mol", "ket", "smiles"] }
+        }
+      }
+    }
+  }
+}

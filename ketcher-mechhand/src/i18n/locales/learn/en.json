@@ -1,0 +1,213 @@
+{
+  "learn": {
+    "switch": "Chemistry explanations",
+    "switchHint": "Explains what each arrow means, lone pairs, charges and the octet while you draw.",
+    "section": "Learn chemistry",
+    "context": {
+      "off": "New to mechanisms? Open **Learn chemistry** below: atoms, lone pairs, charges and the arrows, one at a time.",
+      "drawing": "A curved arrow always goes **from electrons** (a lone pair or a bond) **to where they go** (an atom or a bond).",
+      "dialog": "Under the drawing, **What your arrows mean** explains each arrow in words. Read it: does it say what you meant?",
+      "library": "Insert a mechanism and read its description: then try to draw it yourself with Freehand."
+    },
+    "topic": {
+      "atoms": {
+        "title": "Atoms and valence electrons",
+        "body": [
+          "Chemistry happens with the **valence electrons**: the electrons of the outer shell. For the main groups, their number is the last digit of the group: C 4, N 5, O 6, F and Cl 7.",
+          "Each atom tends to make the bonds it needs to reach 8 electrons around it: C makes 4 bonds, N 3, O 2, halogens 1, hydrogen 1 (H only needs 2 electrons).",
+          "The **simple periodic table** (button in the bar) shows the valence electrons, the usual number of bonds and the lone pairs of each element."
+        ]
+      },
+      "lonePairs": {
+        "title": "Bonds and lone pairs",
+        "body": [
+          "A **bond** is a pair of electrons shared by two atoms. A double bond shares two pairs, a triple bond three.",
+          "A **lone pair** is a pair of valence electrons that is not in a bond. Neutral N has one, O two, F, Cl, Br and I three. Carbon in a neutral molecule has none.",
+          "Lone pairs are often not drawn, but they are there: they are the electrons that attack in most mechanisms."
+        ]
+      },
+      "charges": {
+        "title": "Formal charge",
+        "body": [
+          "**Formal charge** = valence electrons − electrons in lone pairs − number of bonds.",
+          "O with 3 bonds and one lone pair (H₃O⁺): 6 − 2 − 3 = **+1**. O with 1 bond and three lone pairs (HO⁻): 6 − 6 − 1 = **−1**.",
+          "When an arrow takes a lone pair away from an atom to make a bond, that atom becomes more positive; the atom that receives a pair as a lone pair becomes more negative. Charge is always conserved over the whole step."
+        ]
+      },
+      "octet": {
+        "title": "The octet rule",
+        "body": [
+          "C, N, O and F (the second period) can never have more than **8 electrons** around them (bonds count 2 each, lone pairs 2 each).",
+          "So an arrow cannot simply add a new bond to a carbon that already has four: in the same step another bond to it must break. That is why in SN2 the C–Br bond breaks while OH⁻ attacks.",
+          "Elements of the third period and below (P, S, Si, Cl…) can sometimes go beyond 8; transition metals follow other rules."
+        ]
+      },
+      "electronegativity": {
+        "title": "Electronegativity and polar bonds",
+        "body": [
+          "**Electronegativity** measures how strongly an atom pulls the electrons of a bond. It grows to the right and up in the periodic table: F 4.0, O 3.4, N 3.0, C 2.6, H 2.2.",
+          "In a polar bond the more electronegative atom gets a partial negative charge (δ−) and the other a partial positive charge (δ+): in C=O, oxygen is δ− and carbon δ+.",
+          "The δ+ atom is where electron-rich species attack; when a polar bond breaks, the electrons go to the more electronegative atom."
+        ]
+      },
+      "nucleophiles": {
+        "title": "Nucleophiles and electrophiles",
+        "body": [
+          "A **nucleophile** (\"nucleus-loving\") is rich in electrons: it has a lone pair or a π bond to give, often a negative charge. Examples: HO⁻, NH₃, CN⁻, H₂O.",
+          "An **electrophile** (\"electron-loving\") is poor in electrons: a positive charge, a δ+ atom, or an empty orbital. Examples: H⁺, the C of C=O, BF₃, a carbocation.",
+          "Almost every polar mechanism step is a nucleophile giving a pair of electrons to an electrophile, and the curved arrow goes **from the nucleophile to the electrophile**."
+        ]
+      },
+      "curvedArrows": {
+        "title": "Curved arrows: moving electron pairs",
+        "body": [
+          "A curved arrow with a full head (→) moves **two electrons**. It is a bookkeeping tool: it shows where electrons come from and where they go, not where atoms move.",
+          "**Tail**: always on electrons, a lone pair or a bond. Never on an H⁺ or on a positive charge: they have no electrons to give.",
+          "**Head**: on the atom that receives the electrons (a new bond forms to it) or between two atoms (a new bond forms there). If it points at an atom of the bond it came from, the bond breaks and that atom keeps both electrons as a lone pair.",
+          "Typical patterns: lone pair → atom (a new bond), bond → atom (the bond breaks: leaving group), π bond → atom (attack by a double bond)."
+        ]
+      },
+      "fishhook": {
+        "title": "Fishhook arrows: one electron",
+        "body": [
+          "A curved arrow with a **half head** (a single barb, like a fishhook) moves **one electron**. It is used in radical reactions.",
+          "When a bond breaks evenly (**homolysis**), two fishhooks start at the bond and go one to each atom: each atom keeps one electron and becomes a radical (Cl–Cl → 2 Cl·), for example with light or heat.",
+          "A radical (an atom with an unpaired electron, drawn as a dot) is very reactive: it attacks to pair its electron."
+        ]
+      },
+      "otherArrows": {
+        "title": "Straight arrows: reaction, equilibrium, resonance",
+        "body": [
+          "**Reaction arrow** (→): from reactants to products. It says what turns into what, not how electrons move.",
+          "**Equilibrium arrows** (⇌, two half-headed arrows): the reaction goes both ways; for example an acid that only partly gives up its H⁺.",
+          "**Resonance arrow** (↔, one head at each end): the two structures are not different molecules but two ways of drawing the same one; the real molecule is a mixture of both. Never use it for an equilibrium.",
+          "Curved arrows explain *how* each step happens; straight arrows connect the steps."
+        ]
+      },
+      "acidsBases": {
+        "title": "Acids and bases",
+        "body": [
+          "A **Brønsted acid** gives H⁺; a **Brønsted base** takes it with a lone pair. In arrows: the base's lone pair → the H, and the H–A bond → A (A keeps the pair).",
+          "A **Lewis acid** accepts a pair of electrons (BF₃, AlCl₃, H⁺, metal ions); a **Lewis base** gives one (NH₃, H₂O, R–O⁻). Every nucleophile is a Lewis base and every electrophile a Lewis acid.",
+          "The weaker the bond to H and the more stable the anion left behind, the stronger the acid."
+        ]
+      },
+      "mechanisms": {
+        "title": "Kinds of mechanism",
+        "body": [
+          "**Substitution**: one group replaces another (SN2: the nucleophile enters as the leaving group leaves, in one step).",
+          "**Elimination**: a small molecule (H–X) is removed and a double bond forms (E2: a base takes the H while the C=C forms and X leaves).",
+          "**Addition**: two molecules join; for example a nucleophile adds to C=O and the π electrons move onto the oxygen.",
+          "**Radical reactions**: one electron at a time, with fishhook arrows. The **Library** has an example of each one to start from."
+        ]
+      }
+    },
+    "explain": {
+      "title": "What your arrows mean",
+      "pairAtomAtom": "Arrow {n}: the lone pair of {from} forms a new bond to {to}. {from} gives two electrons, so it becomes more positive.",
+      "pairAtomBond": "Arrow {n}: the lone pair of {from} moves into the {to} bond, which gains a bond (single → double).",
+      "pairBondAtomOwn": "Arrow {n}: the {from} bond breaks and both electrons go to {to}, which keeps them as a lone pair and becomes more negative.",
+      "pairBondAtom": "Arrow {n}: the electrons of the {from} bond form a new bond to {to}; the {from} bond loses one bond.",
+      "pairBondBond": "Arrow {n}: the electrons of the {from} bond move to {to}: the first bond loses one bond, the second gains one.",
+      "pairLoose": "Arrow {n}: a curved arrow with a full head moves two electrons. Its tail must be on electrons (a lone pair or a bond) and its head on an atom or a bond.",
+      "single": "Arrow {n}: a fishhook (half head) moves one electron, from {from} to {to}. Radicals form or pair up one electron at a time.",
+      "singleLoose": "Arrow {n}: a fishhook (half head) moves only one electron: it is used for radicals. Start it at a bond or an unpaired electron.",
+      "reaction": "Arrow {n}: a reaction arrow. Reactants on the left turn into products on the right; it does not show how electrons move.",
+      "equilibrium": "Arrow {n}: equilibrium arrows. The reaction goes both ways and stops at a mixture of reactants and products.",
+      "why": "Why?",
+      "whyCode": {
+        "start-nothing": "Electrons are always in a lone pair or a bond, so a curved arrow must start on one of them. Move the tail onto the atom whose lone pair attacks, or onto the middle of the bond that breaks.",
+        "start-no-lone-pair": "This atom has no lone pair to give: all its valence electrons are already in bonds (like C in CH₄, or H). If you meant a bond to it, start the arrow at the middle of that bond.",
+        "end-nothing": "The head shows where the electrons end up: on an atom (a new bond to it, or a lone pair) or between two atoms (a new bond). Pointing at empty space says nothing.",
+        "octet": "Second-period atoms (C, N, O, F) cannot hold more than 8 electrons. If this atom gains a bond, one of its bonds must break in the same step: draw that arrow too (as the C–Br bond in SN2)."
+      }
+    },
+    "periodic": {
+      "title": "Periodic table",
+      "button": "Periodic table",
+      "buttonName": "Simple periodic table",
+      "intro": "Click an element to see what you need to draw it. The first five periods; Ketcher's own table has all of them.",
+      "group": "Group {group}",
+      "period": "Period {period}",
+      "z": "Atomic number",
+      "valence": "Valence electrons",
+      "bonds": "Usual bonds (neutral)",
+      "lonePairs": "Lone pairs (neutral)",
+      "en": "Electronegativity (Pauling)",
+      "none": "—",
+      "use": "Draw it in Ketcher",
+      "useHint": "Selects this atom in Ketcher: click on the canvas (or on an atom to change it). Freehand is turned off.",
+      "transitionNote": "Transition metals use d electrons too and do not follow the octet rule: the number of bonds (ligands) depends on the compound.",
+      "nobleNote": "Noble gases already have a full shell: they hardly ever form bonds.",
+      "enNote": "Electronegativity grows to the right and up: the more electronegative atom of a bond takes δ− and keeps the electrons when the bond breaks.",
+      "legend": "Families",
+      "close": "Close the periodic table"
+    },
+    "family": {
+      "alkali": "Alkali metals",
+      "alkaline-earth": "Alkaline earth metals",
+      "transition": "Transition metals",
+      "post-transition": "Other metals",
+      "metalloid": "Metalloids",
+      "nonmetal": "Non-metals",
+      "halogen": "Halogens",
+      "noble": "Noble gases"
+    },
+    "element": {
+      "H": "Hydrogen",
+      "He": "Helium",
+      "Li": "Lithium",
+      "Be": "Beryllium",
+      "B": "Boron",
+      "C": "Carbon",
+      "N": "Nitrogen",
+      "O": "Oxygen",
+      "F": "Fluorine",
+      "Ne": "Neon",
+      "Na": "Sodium",
+      "Mg": "Magnesium",
+      "Al": "Aluminium",
+      "Si": "Silicon",
+      "P": "Phosphorus",
+      "S": "Sulfur",
+      "Cl": "Chlorine",
+      "Ar": "Argon",
+      "K": "Potassium",
+      "Ca": "Calcium",
+      "Sc": "Scandium",
+      "Ti": "Titanium",
+      "V": "Vanadium",
+      "Cr": "Chromium",
+      "Mn": "Manganese",
+      "Fe": "Iron",
+      "Co": "Cobalt",
+      "Ni": "Nickel",
+      "Cu": "Copper",
+      "Zn": "Zinc",
+      "Ga": "Gallium",
+      "Ge": "Germanium",
+      "As": "Arsenic",
+      "Se": "Selenium",
+      "Br": "Bromine",
+      "Kr": "Krypton",
+      "Rb": "Rubidium",
+      "Sr": "Strontium",
+      "Y": "Yttrium",
+      "Zr": "Zirconium",
+      "Nb": "Niobium",
+      "Mo": "Molybdenum",
+      "Tc": "Technetium",
+      "Ru": "Ruthenium",
+      "Rh": "Rhodium",
+      "Pd": "Palladium",
+      "Ag": "Silver",
+      "Cd": "Cadmium",
+      "In": "Indium",
+      "Sn": "Tin",
+      "Sb": "Antimony",
+      "Te": "Tellurium",
+      "I": "Iodine",
+      "Xe": "Xenon"
+    }
+  }
+}

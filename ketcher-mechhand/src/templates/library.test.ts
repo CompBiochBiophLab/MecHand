@@ -163,7 +163,17 @@ describe('search', () => {
   it('searches the sub-categories too', () => {
     const aa = searchLibrary('acid amino').slice(0, 20);
     expect(aa.every((e) => e.group === 'Amino acids')).toBe(true);
-    expect(searchLibrary('anells').length).toBe(LIBRARY.filter((e) => e.category === 'ring').length);
+    // Every ring, then the few templates whose translated name has "anell" (NAD⁺, "anell de nicotinamida").
+    const rings = LIBRARY.filter((e) => e.category === 'ring');
+    const found = searchLibrary('anells');
+    expect(found.slice(0, rings.length).every((e) => e.category === 'ring')).toBe(true);
+    expect(found.filter((e) => e.category !== 'ring').every((e) => /anell/.test(e.keywords.join(' ')))).toBe(true);
+  });
+
+  it('finds templates by their Catalan and Spanish names', () => {
+    expect(searchLibrary('benceno')[0].id).toBe('benzene');
+    expect(searchLibrary('ciclohexà')[0].id).toBe('cyclohexane');
+    expect(searchLibrary('hidróxido de sodio')[0].id).toBe('naoh');
   });
 
   it('requires every word to match and ranks exact names first', () => {

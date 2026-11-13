@@ -100,6 +100,28 @@ export const LibraryIcon = (p: IconProps) => (
   </Icon>
 );
 
+/** A small grid of element squares: the simple periodic table. */
+export const PeriodicIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <rect x="3" y="4" width="4.5" height="4.5" rx="0.8" />
+    <rect x="16.5" y="4" width="4.5" height="4.5" rx="0.8" />
+    <rect x="3" y="10" width="4.5" height="4.5" rx="0.8" />
+    <rect x="9.75" y="10" width="4.5" height="4.5" rx="0.8" />
+    <rect x="16.5" y="10" width="4.5" height="4.5" rx="0.8" />
+    <rect x="3" y="16" width="18" height="4.5" rx="0.8" />
+  </Icon>
+);
+
+/** Three steps: the user level. */
+export const LevelIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M3 20h18" />
+    <path d="M5 20v-5h4v5" />
+    <path d="M10 20v-9h4v9" />
+    <path d="M15 20V6h4v14" />
+  </Icon>
+);
+
 export const InfoIcon = (p: IconProps) => (
   <Icon {...p}>
     <circle cx="12" cy="12" r="8.5" />

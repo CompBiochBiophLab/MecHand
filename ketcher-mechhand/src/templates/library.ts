@@ -12,6 +12,7 @@ import type { Point, Scene } from '../scene/types';
 import { CATEGORY_LABEL, TEMPLATES } from './catalog';
 import rawLibrary from './library.json';
 import libraryCas from './library-cas.json';
+import { allTemplateNames } from '../i18n/templateNames';
 
 export type LibraryCategory = 'ring' | 'group' | 'bio' | 'reagent' | 'mechanism';
 export type InsertMode = 'add' | 'replace';
@@ -103,7 +104,7 @@ const STRUCTURES: LibraryEntry[] = (rawLibrary as unknown as StructureRecord[]).
   name: r.name,
   category: r.cat,
   group: r.group,
-  keywords: r.kw,
+  keywords: [...r.kw, ...allTemplateNames(r.id)],
   formula: r.formula,
   displayFormula: r.fd ?? r.formula,
   smiles: r.smiles,
@@ -118,7 +119,7 @@ const MECHANISMS: LibraryEntry[] = TEMPLATES.map((t) => ({
   category: 'mechanism',
   group: CATEGORY_LABEL[t.category],
   keywords: [t.id, 'mechanism', 'mecanisme', t.electrons, ...(t.electrons === '1e' ? ['single electron', 'radical'] : ['electron pair']),
-    ...(MECHANISM_KEYWORDS[t.id] ?? [])],
+    ...(MECHANISM_KEYWORDS[t.id] ?? []), ...allTemplateNames(`mech-${t.id}`)],
   description: t.description,
   defaultMode: 'replace',
   ket: t.ket,

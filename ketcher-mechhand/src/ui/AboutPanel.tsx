@@ -6,12 +6,14 @@ import { Modal } from './Modal';
 
 export type Engine = 'browser' | 'server';
 
-export function AboutPanel({ model, engine, backendUrl, backendOk, backendEngine, onEngine, onBackendUrl, onClose, serverAllowed = true, version }: {
+export function AboutPanel({ model, engine, backendUrl, backendOk, backendEngine, onEngine, onBackendUrl, onClose, serverAllowed = true, lockedKey = 'about.engineLocked', version }: {
   model: SymbolModel;
   /** App version and commit. */
   version?: string;
   /** False in study mode: the in-browser engine only, so that nothing leaves the browser. */
   serverAllowed?: boolean;
+  /** Why the server is not offered (text key): the study, or the user's level. */
+  lockedKey?: string;
   engine: Engine;
   backendUrl: string;
   backendOk: boolean | null;
@@ -44,7 +46,7 @@ export function AboutPanel({ model, engine, backendUrl, backendOk, backendEngine
         </table>
         <h3 style={{ fontSize: 14, marginBottom: 4 }}>{t('about.engine')}</h3>
         {!serverAllowed ? (
-          <p style={{ margin: 0 }} data-testid="mechand-engine-locked">{t('about.engineLocked')}</p>
+          <p style={{ margin: 0 }} data-testid="mechand-engine-locked">{t(lockedKey)}</p>
         ) : (<>
           <label style={{ display: 'block' }}>
             <input type="radio" checked={engine === 'browser'} onChange={() => onEngine('browser')} /> {t('about.engineBrowser')}

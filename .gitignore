@@ -74,3 +74,6 @@ kk.txt
 # Study documents built with make -C estudi
 estudi/pdf/
 ketcher-mechhand/templates/.cas-cache.json
+
+# Instruccions locals per a Claude Code
+CLAUDE.md

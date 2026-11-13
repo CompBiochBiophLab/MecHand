@@ -12,11 +12,15 @@ import type { SymbolSample } from './recognition/dollarP';
 import { type ElementSample, loadElementSamples, saveElementSamples } from './recognition/elements';
 import { type SketchResult, recognizeSketch } from './recognition/sketch';
 import { sceneToKet } from './scene/sceneToKet';
-import { type InsertMode, type LibraryEntry, insertTemplate } from './templates/library';
+import { LIBRARY, type InsertMode, type LibraryEntry, insertTemplate } from './templates/library';
 import { AboutPanel, type Engine } from './ui/AboutPanel';
 import { ConsolidateDialog } from './ui/ConsolidateDialog';
 import { ExportDialog } from './ui/ExportDialog';
-import { t } from './i18n/i18n';
+import { t, useT } from './i18n/i18n';
+import { translateKetcher } from './i18n/ketcherTitles';
+import { levelUnchosen, templateAllowed, useLevel } from './levels/levels';
+import { LevelChooser } from './ui/LevelChooser';
+import { PeriodicTable } from './ui/PeriodicTable';
 import { HelpProvider } from './ui/HelpSystem';
 import { HelpCenter } from './ui/HelpCenter';
 import { type TipId, TipToast, markTip, tipShown } from './ui/TipToast';
@@ -67,7 +71,14 @@ async function waitForCanvasHost(): Promise<HTMLElement> {
 }
 
 export default function App() {
+  const { lang } = useT();
+  const { level, features } = useLevel();
   const [ketcher, setKetcher] = useState<Ketcher | null>(null);
+  /** First use: ask the user's level before anything else (never in the study, nor with ?level=). */
+  const [chooseLevel, setChooseLevel] = useState(() => !STUDY && levelUnchosen());
+  const [periodicOpen, setPeriodicOpen] = useState(false);
+  /** Templates of the user's level (src/config/levels.json). */
+  const libraryEntries = useMemo(() => LIBRARY.filter((e) => templateAllowed(level, e.id)), [level]);
   const layerRef = useRef<FreehandLayer | null>(null);
   const [freehand, setFreehand] = useState(false);
   const [ink, setInk] = useState({ count: 0, canUndo: false, canRedo: false });
@@ -96,8 +107,13 @@ export default function App() {
   const [userSamples, setUserSamples] = useState<SymbolSample[]>(loadUserSamples);
   const [userElements, setUserElements] = useState<ElementSample[]>(loadElementSamples);
   const model = useMemo(() => buildModel({ userSamples, userElements }), [userSamples, userElements]);
-  // Study mode never uses the optional recognition server: nothing may leave the browser.
-  const [engine, setEngine] = useState<Engine>(!STUDY && params.get('engine') === 'server' ? 'server' : 'browser');
+  // Study mode never uses the optional recognition server: nothing may leave the browser. The
+  // server is also only offered at the levels that include it.
+  const serverAllowed = !STUDY && features.recognitionServer;
+  const [engine, setEngine] = useState<Engine>(serverAllowed && params.get('engine') === 'server' ? 'server' : 'browser');
+  useEffect(() => {
+    if (!serverAllowed) setEngine('browser');
+  }, [serverAllowed]);
   const [backendUrl, setBackendUrl] = useState(params.get('server') ?? 'http://localhost:8000');
   const [backendOk, setBackendOk] = useState<boolean | null>(null);
   const [backendEngine, setBackendEngine] = useState<string | undefined>();
@@ -118,10 +134,34 @@ export default function App() {
   useEffect(() => {
     if (freehand && !tourOpen) offerTip('firstFreehand');
   }, [freehand, tourOpen, offerTip]);
-  // First visit: offer the guided tour once Ketcher is ready.
+  // First visit: offer the guided tour once Ketcher is ready (and the level is chosen).
   useEffect(() => {
-    if (ketcher && !tourSeen()) offerTip('welcome');
-  }, [ketcher, offerTip]);
+    if (ketcher && !chooseLevel && !tourSeen()) offerTip('welcome');
+  }, [ketcher, chooseLevel, offerTip]);
+  // Ketcher's own tooltips in the interface language (src/i18n/ketcher/).
+  const ketcherTitles = useRef<ReturnType<typeof translateKetcher> | null>(null);
+  useEffect(() => {
+    if (!ketcher) return;
+    const root = document.querySelector('.Ketcher-root') ?? document.body;
+    const tr = translateKetcher(root, lang);
+    ketcherTitles.current = tr;
+    return () => {
+      tr.stop();
+      ketcherTitles.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- the language is updated below
+  }, [ketcher]);
+  useEffect(() => ketcherTitles.current?.setLang(lang), [lang]);
+  /** Periodic table → Ketcher's atom tool with that element (freehand off, so the click reaches Ketcher). */
+  const pickElement = useCallback((symbol: string) => {
+    if (!ketcher) return;
+    setFreehand(false);
+    try {
+      (ketcher.editor as unknown as { tool: (name: string, opts: unknown) => void }).tool('atom', { label: symbol });
+    } catch (e) {
+      console.error('[MecHand] could not select the atom tool', e);
+    }
+  }, [ketcher]);
   // Pen settings: kept in this browser, applied to the ink layer, and logged in study tasks.
   const penRef = useRef(pen);
   const toolRef = useRef(tool);
@@ -180,7 +220,8 @@ export default function App() {
       layer.setPen(penRef.current);
       layer.setTool(toolRef.current);
       layerRef.current = layer;
-      (window as unknown as { mechand: unknown }).mechand = { layer };
+      const w = window as unknown as { mechand?: Record<string, unknown> };
+      w.mechand = Object.assign(w.mechand ?? {}, { layer });
     });
     return () => layer?.destroy();
   }, [ketcherReady]);
@@ -336,11 +377,14 @@ export default function App() {
           onRedo={redoInk}
           onClear={clearInk}
           disabled={STUDY ? { freehand: !freehandAllowed, templates: true, teach: !study.teachAllowed } : undefined}
+          hidden={{ teach: !STUDY && !features.teach }}
+          onPeriodic={!STUDY && features.periodicTable ? () => { setPeriodicOpen((o) => !o); setHelpOpen(false); } : undefined}
+          periodicOpen={periodicOpen}
           onLibrary={() => setDialog({ kind: 'library' })}
           onExport={() => setDialog({ kind: 'export' })}
           onTeach={() => setDialog({ kind: 'teach' })}
           onAbout={() => setDialog({ kind: 'about' })}
-          onHelp={() => setHelpOpen((o) => !o)}
+          onHelp={() => { setHelpOpen((o) => !o); setPeriodicOpen(false); }}
           compact={compact}
         />
         {freehand && (
@@ -366,6 +410,7 @@ export default function App() {
           onTour={() => { setHelpOpen(false); setTourOpen(true); }}
         />
       )}
+      {periodicOpen && !helpOpen && <PeriodicTable onClose={() => setPeriodicOpen(false)} onUse={pickElement} />}
       {STUDY && (
         <StudyPanel
           ketcher={ketcher}
@@ -398,13 +443,15 @@ export default function App() {
           }}
         />
       )}
-      {dialog.kind === 'export' && ketcher && <ExportDialog ketcher={ketcher} onClose={() => setDialog({ kind: 'none' })} />}
+      {dialog.kind === 'export' && ketcher && <ExportDialog ketcher={ketcher} formats={STUDY ? undefined : features.export} onClose={() => setDialog({ kind: 'none' })} />}
       {dialog.kind === 'library' && ketcher && (
         <TemplateLibrary
           onInsert={(entry: LibraryEntry, mode: InsertMode) => insertTemplate(ketcher, entry, mode)}
           onClose={() => setDialog({ kind: 'none' })}
           convert={async (notation) => (await ketcher.indigo.convert(notation, { outputFormat: 'chemical/x-indigo-ket' as never })).struct}
-          online={!STUDY}
+          online={!STUDY && features.onlineLookup}
+          entries={libraryEntries}
+          note={libraryEntries.length < LIBRARY.length ? t('level.basicTemplates', { level, count: libraryEntries.length }) : undefined}
         />
       )}
       {dialog.kind === 'teach' && (
@@ -426,11 +473,13 @@ export default function App() {
           backendEngine={backendEngine}
           onEngine={setEngine}
           onBackendUrl={setBackendUrl}
-          serverAllowed={!STUDY}
+          serverAllowed={serverAllowed}
+          lockedKey={STUDY ? 'about.engineLocked' : 'about.engineLevel'}
           version={`${pkg.version} (commit ${__MECHAND_COMMIT__})`}
           onClose={() => setDialog({ kind: 'none' })}
         />
       )}
+      {chooseLevel && <LevelChooser onClose={() => setChooseLevel(false)} />}
       {tourOpen && <Tour onClose={closeTour} onFreehand={tourFreehand} />}
       {tip && !tourOpen && (
         <TipToast

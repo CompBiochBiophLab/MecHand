@@ -8,7 +8,7 @@ test.skip(!SERVER, 'MECHAND_SERVER_URL not set (optional DECIMER server test)');
 
 test('sends the ink to the DECIMER server and inserts its structure', async ({ page }) => {
   test.setTimeout(120_000);
-  await page.goto(`/?engine=server&server=${encodeURIComponent(SERVER!)}`);
+  await page.goto(`/?level=C&engine=server&server=${encodeURIComponent(SERVER!)}`);
   await page.waitForFunction(() => Boolean((window as any).mechand), null, { timeout: 60_000 });
   await page.click('[data-testid="mechand-freehand"]');
   const ink = page.locator('[data-testid="mechand-ink"]');

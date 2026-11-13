@@ -107,6 +107,14 @@
     "btn-help-toggle": {
       "brief": "Show or hide these help labels.",
       "student": "Toggle the help labels. Choose Expert for one-liners or Student for explanations."
+    },
+    "btn-periodic": {
+      "brief": "Simple periodic table: valence electrons, usual bonds, lone pairs and electronegativity.",
+      "student": "Opens a simple periodic table beside the canvas. Click an element to see how many valence electrons, bonds and lone pairs it usually has, and how electronegative it is; you can also pick it to draw it in Ketcher."
+    },
+    "btn-level": {
+      "brief": "User level: A student, B advanced student, C researcher.",
+      "student": "Your level changes what MecHand offers: A (secondary school, first years) has basic templates and chemistry explanations; B (end of degree, master's, start of PhD) the whole library; C (research) everything."
     }
   },
   "pen": {
@@ -235,6 +243,7 @@
     "corners": "Corner finding",
     "engine": "Structure engine",
     "engineLocked": "In-browser only (study mode: nothing leaves this browser).",
+    "engineLevel": "In-browser recognition only. The optional recognition server is offered at level C (Researcher).",
     "engineBrowser": "In-browser (default, works offline)",
     "engineServer": "DECIMER server (optional, image-based, runs on your computer; arrows and charges still come from the in-browser recognizer)",
     "checking": "checking…",
@@ -617,7 +626,7 @@
       "library": {
         "title": "Template library and structures from text",
         "body": [
-          "Open it with **Library** or Ctrl/⌘+K and type: names in English or Catalan, abbreviations (Trp, THF), formulas, CAS numbers. Accents and small typos do not matter.",
+          "Open it with **Library** or Ctrl/⌘+K and type: names in English, Catalan or Spanish, abbreviations (Trp, THF), formulas, CAS numbers. Accents and small typos do not matter.",
           "Enter adds the highlighted structure next to your drawing; mechanisms replace the canvas. Shift+Enter does the opposite. Ctrl/⌘+D keeps a favourite.",
           "Type a **SMILES** or an **InChI** and it is drawn at once, offline.",
           "For other **names or CAS numbers**, press **Look up online** (Alt+Enter): only the text you typed is sent to PubChem (and OPSIN)."
@@ -662,6 +671,16 @@
           "MecHand's interface is translated with one plain JSON file per language. To add or improve a language, copy `en.json` from `src/i18n/locales/`, translate the texts and send it to the project (a pull request or an e-mail).",
           "Missing texts appear in English, so a partial translation already works. Ketcher's own toolbars are not translated by MecHand."
         ]
+      },
+      "levels": {
+        "title": "Levels: student, advanced, researcher",
+        "body": [
+          "MecHand adapts to who uses it. Choose your level in the **Level** menu of the bar:",
+          "**A · Student** (secondary school and first years of a degree): basic templates, the simple periodic table and an explanation of every arrow you draw.",
+          "**B · Advanced student** (end of a degree, master's, start of a PhD): the whole template library and online look-up of names and CAS numbers.",
+          "**C · Researcher**: everything, including the optional recognition server. Levels B and C can turn the chemistry explanations of level A on in this help.",
+          "A teacher can share a link with `?level=A` (or B, C) at the end of the address: MecHand then opens at that level."
+        ]
       }
     },
     "tourSteps": {
@@ -678,7 +697,8 @@
       "back": "Back",
       "done": "Done",
       "skip": "Skip tour",
-      "step": "{n} of {total}"
+      "step": "{n} of {total}",
+      "level": "**Level**: A student, B advanced student, C researcher. It changes the templates and the help MecHand offers; change it whenever you want."
     },
     "tips": {
       "welcome": "New to MecHand? A one-minute tour shows the main controls.",

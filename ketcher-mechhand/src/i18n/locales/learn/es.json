@@ -1,0 +1,213 @@
+{
+  "learn": {
+    "switch": "Explicaciones de química",
+    "switchHint": "Explica qué significa cada flecha, los pares solitarios, las cargas y el octeto mientras dibujas.",
+    "section": "Aprende química",
+    "context": {
+      "off": "¿Empiezas con los mecanismos? Abre **Aprende química** aquí abajo: átomos, pares solitarios, cargas y flechas, de uno en uno.",
+      "drawing": "Una flecha curva siempre va **desde los electrones** (un par solitario o un enlace) **hasta donde van** (un átomo o un enlace).",
+      "dialog": "Bajo el dibujo, **Qué significan tus flechas** explica cada flecha con palabras. Léelo: ¿dice lo que querías decir?",
+      "library": "Inserta un mecanismo y lee su descripción: después intenta dibujarlo tú con la mano alzada."
+    },
+    "topic": {
+      "atoms": {
+        "title": "Átomos y electrones de valencia",
+        "body": [
+          "La química ocurre con los **electrones de valencia**: los electrones de la capa más externa. Para los grupos principales, su número es la última cifra del grupo: C 4, N 5, O 6, F y Cl 7.",
+          "Cada átomo tiende a formar los enlaces que necesita para llegar a 8 electrones a su alrededor: el C forma 4 enlaces, el N 3, el O 2, los halógenos 1 y el hidrógeno 1 (el H solo necesita 2 electrones).",
+          "La **tabla periódica simple** (botón de la barra) muestra los electrones de valencia, el número habitual de enlaces y los pares solitarios de cada elemento."
+        ]
+      },
+      "lonePairs": {
+        "title": "Enlaces y pares solitarios",
+        "body": [
+          "Un **enlace** es un par de electrones compartido por dos átomos. Un enlace doble comparte dos pares, y uno triple, tres.",
+          "Un **par solitario** es un par de electrones de valencia que no forma parte de ningún enlace. El N neutro tiene uno, el O dos, y el F, el Cl, el Br y el I tres. El carbono en una molécula neutra no tiene ninguno.",
+          "A menudo los pares solitarios no se dibujan, pero están ahí: son los electrones que atacan en la mayoría de los mecanismos."
+        ]
+      },
+      "charges": {
+        "title": "Carga formal",
+        "body": [
+          "**Carga formal** = electrones de valencia − electrones en pares solitarios − número de enlaces.",
+          "O con 3 enlaces y un par solitario (H₃O⁺): 6 − 2 − 3 = **+1**. O con 1 enlace y tres pares solitarios (HO⁻): 6 − 6 − 1 = **−1**.",
+          "Cuando una flecha quita un par solitario a un átomo para formar un enlace, ese átomo se vuelve más positivo; el átomo que recibe un par como par solitario se vuelve más negativo. La carga total siempre se conserva en cada paso."
+        ]
+      },
+      "octet": {
+        "title": "La regla del octeto",
+        "body": [
+          "El C, el N, el O y el F (el segundo periodo) nunca pueden tener más de **8 electrones** a su alrededor (cada enlace cuenta 2, cada par solitario 2).",
+          "Por tanto, una flecha no puede añadir simplemente un enlace nuevo a un carbono que ya tiene cuatro: en el mismo paso se tiene que romper otro. Por eso en la SN2 el enlace C–Br se rompe mientras el OH⁻ ataca.",
+          "Los elementos del tercer periodo y siguientes (P, S, Si, Cl…) a veces pueden superar los 8; los metales de transición siguen otras reglas."
+        ]
+      },
+      "electronegativity": {
+        "title": "Electronegatividad y enlaces polares",
+        "body": [
+          "La **electronegatividad** mide con qué fuerza un átomo atrae los electrones de un enlace. Aumenta hacia la derecha y hacia arriba en la tabla periódica: F 4,0, O 3,4, N 3,0, C 2,6, H 2,2.",
+          "En un enlace polar, el átomo más electronegativo adquiere una carga parcial negativa (δ−) y el otro una carga parcial positiva (δ+): en el C=O, el oxígeno es δ− y el carbono δ+.",
+          "El átomo δ+ es donde atacan las especies ricas en electrones; cuando se rompe un enlace polar, los electrones van al átomo más electronegativo."
+        ]
+      },
+      "nucleophiles": {
+        "title": "Nucleófilos y electrófilos",
+        "body": [
+          "Un **nucleófilo** («que ama los núcleos») es rico en electrones: tiene un par solitario o un enlace π que ceder, a menudo con carga negativa. Ejemplos: HO⁻, NH₃, CN⁻, H₂O.",
+          "Un **electrófilo** («que ama los electrones») es pobre en electrones: una carga positiva, un átomo δ+ o un orbital vacío. Ejemplos: H⁺, el C del C=O, BF₃, un carbocatión.",
+          "Casi todos los pasos de un mecanismo polar consisten en un nucleófilo que cede un par de electrones a un electrófilo, y la flecha curva va **del nucleófilo al electrófilo**."
+        ]
+      },
+      "curvedArrows": {
+        "title": "Flechas curvas: mover pares de electrones",
+        "body": [
+          "Una flecha curva con punta entera (→) mueve **dos electrones**. Es una herramienta de contabilidad: muestra de dónde vienen los electrones y adónde van, no dónde se mueven los átomos.",
+          "**Cola**: siempre sobre electrones, un par solitario o un enlace. Nunca sobre un H⁺ ni sobre una carga positiva: no tienen electrones que ceder.",
+          "**Punta**: sobre el átomo que recibe los electrones (se forma un enlace nuevo con él) o entre dos átomos (se forma ahí un enlace nuevo). Si apunta a un átomo del enlace del que sale, el enlace se rompe y ese átomo se queda los dos electrones como par solitario.",
+          "Patrones típicos: par solitario → átomo (un enlace nuevo), enlace → átomo (el enlace se rompe: grupo saliente), enlace π → átomo (ataque de un enlace doble)."
+        ]
+      },
+      "fishhook": {
+        "title": "Flechas de media punta (anzuelo): un electrón",
+        "body": [
+          "Una flecha curva con **media punta** (una sola barba, como un anzuelo) mueve **un electrón**. Se usa en las reacciones radicalarias.",
+          "Cuando un enlace se rompe de forma simétrica (**homólisis**), dos flechas de media punta salen del enlace y van una a cada átomo: cada átomo se queda un electrón y se convierte en un radical (Cl–Cl → 2 Cl·), por ejemplo con luz o calor.",
+          "Un radical (un átomo con un electrón desapareado, dibujado como un punto) es muy reactivo: ataca para aparear su electrón."
+        ]
+      },
+      "otherArrows": {
+        "title": "Flechas rectas: reacción, equilibrio, resonancia",
+        "body": [
+          "**Flecha de reacción** (→): de los reactivos a los productos. Dice qué se transforma en qué, no cómo se mueven los electrones.",
+          "**Flechas de equilibrio** (⇌, dos flechas con media punta): la reacción va en los dos sentidos; por ejemplo, un ácido que solo cede en parte su H⁺.",
+          "**Flecha de resonancia** (↔, una punta en cada extremo): las dos estructuras no son moléculas distintas, sino dos formas de dibujar la misma; la molécula real es una mezcla de ambas. No la uses nunca para un equilibrio.",
+          "Las flechas curvas explican *cómo* ocurre cada paso; las flechas rectas conectan los pasos."
+        ]
+      },
+      "acidsBases": {
+        "title": "Ácidos y bases",
+        "body": [
+          "Un **ácido de Brønsted** cede H⁺; una **base de Brønsted** lo capta con un par solitario. En flechas: par solitario de la base → H, y enlace H–A → A (A se queda el par).",
+          "Un **ácido de Lewis** acepta un par de electrones (BF₃, AlCl₃, H⁺, iones metálicos); una **base de Lewis** cede uno (NH₃, H₂O, R–O⁻). Todo nucleófilo es una base de Lewis y todo electrófilo, un ácido de Lewis.",
+          "Cuanto más débil es el enlace con el H y más estable es el anión que queda, más fuerte es el ácido."
+        ]
+      },
+      "mechanisms": {
+        "title": "Tipos de mecanismo",
+        "body": [
+          "**Sustitución**: un grupo sustituye a otro (SN2: el nucleófilo entra mientras el grupo saliente sale, en un solo paso).",
+          "**Eliminación**: se elimina una molécula pequeña (H–X) y se forma un enlace doble (E2: una base capta el H mientras se forma el C=C y sale el X).",
+          "**Adición**: dos moléculas se unen; por ejemplo, un nucleófilo se adiciona al C=O y los electrones π se desplazan hacia el oxígeno.",
+          "**Reacciones radicalarias**: un electrón cada vez, con flechas de media punta. La **Biblioteca** tiene un ejemplo de cada una para empezar."
+        ]
+      }
+    },
+    "explain": {
+      "title": "Qué significan tus flechas",
+      "pairAtomAtom": "Flecha {n}: el par solitario de {from} forma un enlace nuevo con {to}. {from} cede dos electrones, así que se vuelve más positivo.",
+      "pairAtomBond": "Flecha {n}: el par solitario de {from} se desplaza al enlace {to}, que gana un enlace (sencillo → doble).",
+      "pairBondAtomOwn": "Flecha {n}: el enlace {from} se rompe y los dos electrones van a {to}, que se los queda como par solitario y se vuelve más negativo.",
+      "pairBondAtom": "Flecha {n}: los electrones del enlace {from} forman un enlace nuevo con {to}; el enlace {from} pierde un enlace.",
+      "pairBondBond": "Flecha {n}: los electrones del enlace {from} se desplazan a {to}: el primer enlace pierde un enlace y el segundo gana uno.",
+      "pairLoose": "Flecha {n}: una flecha curva con punta entera mueve dos electrones. Su cola debe estar sobre electrones (un par solitario o un enlace) y su punta sobre un átomo o un enlace.",
+      "single": "Flecha {n}: una flecha de media punta mueve un electrón, de {from} a {to}. Los radicales se forman o se aparean electrón a electrón.",
+      "singleLoose": "Flecha {n}: una flecha de media punta solo mueve un electrón: se usa para los radicales. Hazla empezar en un enlace o en un electrón desapareado.",
+      "reaction": "Flecha {n}: una flecha de reacción. Los reactivos de la izquierda se transforman en los productos de la derecha; no muestra cómo se mueven los electrones.",
+      "equilibrium": "Flecha {n}: flechas de equilibrio. La reacción va en los dos sentidos y se detiene en una mezcla de reactivos y productos.",
+      "why": "¿Por qué?",
+      "whyCode": {
+        "start-nothing": "Los electrones siempre están en un par solitario o en un enlace, así que una flecha curva debe empezar en uno de ellos. Mueve la cola al átomo cuyo par solitario ataca, o al centro del enlace que se rompe.",
+        "start-no-lone-pair": "Este átomo no tiene ningún par solitario que ceder: todos sus electrones de valencia ya están en enlaces (como el C del CH₄, o el H). Si te referías a un enlace con él, haz empezar la flecha en el centro de ese enlace.",
+        "end-nothing": "La punta indica dónde acaban los electrones: en un átomo (un enlace nuevo con él, o un par solitario) o entre dos átomos (un enlace nuevo). Apuntar a un espacio vacío no dice nada.",
+        "octet": "Los átomos del segundo periodo (C, N, O, F) no pueden tener más de 8 electrones. Si este átomo gana un enlace, se tiene que romper otro en el mismo paso: dibuja también esa flecha (como el enlace C–Br en la SN2)."
+      }
+    },
+    "periodic": {
+      "title": "Tabla periódica",
+      "button": "Tabla periódica",
+      "buttonName": "Tabla periódica simple",
+      "intro": "Haz clic en un elemento para ver qué necesitas para dibujarlo. Los cinco primeros periodos; la tabla propia de Ketcher los tiene todos.",
+      "group": "Grupo {group}",
+      "period": "Periodo {period}",
+      "z": "Número atómico",
+      "valence": "Electrones de valencia",
+      "bonds": "Enlaces habituales (neutro)",
+      "lonePairs": "Pares solitarios (neutro)",
+      "en": "Electronegatividad (Pauling)",
+      "none": "—",
+      "use": "Dibujarlo en Ketcher",
+      "useHint": "Selecciona este átomo en Ketcher: haz clic en el lienzo (o sobre un átomo para cambiarlo). La mano alzada se desactiva.",
+      "transitionNote": "Los metales de transición también usan electrones d y no siguen la regla del octeto: el número de enlaces (ligandos) depende del compuesto.",
+      "nobleNote": "Los gases nobles ya tienen la capa completa: casi nunca forman enlaces.",
+      "enNote": "La electronegatividad aumenta hacia la derecha y hacia arriba: el átomo más electronegativo de un enlace adquiere δ− y se queda los electrones cuando el enlace se rompe.",
+      "legend": "Familias",
+      "close": "Cerrar la tabla periódica"
+    },
+    "family": {
+      "alkali": "Metales alcalinos",
+      "alkaline-earth": "Metales alcalinotérreos",
+      "transition": "Metales de transición",
+      "post-transition": "Otros metales",
+      "metalloid": "Metaloides",
+      "nonmetal": "No metales",
+      "halogen": "Halógenos",
+      "noble": "Gases nobles"
+    },
+    "element": {
+      "H": "Hidrógeno",
+      "He": "Helio",
+      "Li": "Litio",
+      "Be": "Berilio",
+      "B": "Boro",
+      "C": "Carbono",
+      "N": "Nitrógeno",
+      "O": "Oxígeno",
+      "F": "Flúor",
+      "Ne": "Neón",
+      "Na": "Sodio",
+      "Mg": "Magnesio",
+      "Al": "Aluminio",
+      "Si": "Silicio",
+      "P": "Fósforo",
+      "S": "Azufre",
+      "Cl": "Cloro",
+      "Ar": "Argón",
+      "K": "Potasio",
+      "Ca": "Calcio",
+      "Sc": "Escandio",
+      "Ti": "Titanio",
+      "V": "Vanadio",
+      "Cr": "Cromo",
+      "Mn": "Manganeso",
+      "Fe": "Hierro",
+      "Co": "Cobalto",
+      "Ni": "Níquel",
+      "Cu": "Cobre",
+      "Zn": "Zinc",
+      "Ga": "Galio",
+      "Ge": "Germanio",
+      "As": "Arsénico",
+      "Se": "Selenio",
+      "Br": "Bromo",
+      "Kr": "Kriptón",
+      "Rb": "Rubidio",
+      "Sr": "Estroncio",
+      "Y": "Itrio",
+      "Zr": "Circonio",
+      "Nb": "Niobio",
+      "Mo": "Molibdeno",
+      "Tc": "Tecnecio",
+      "Ru": "Rutenio",
+      "Rh": "Rodio",
+      "Pd": "Paladio",
+      "Ag": "Plata",
+      "Cd": "Cadmio",
+      "In": "Indio",
+      "Sn": "Estaño",
+      "Sb": "Antimonio",
+      "Te": "Telurio",
+      "I": "Yodo",
+      "Xe": "Xenón"
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "$schema": "./levels.schema.json",
+  "default": "B",
+  "levels": {
+    "A": {
+      "templates": "basic",
+      "learnHelp": "on",
+      "periodicTable": true,
+      "onlineLookup": false,
+      "teach": true,
+      "recognitionServer": false,
+      "helpDetail": "student",
+      "export": ["cdxml", "mol", "smiles"]
+    },
+    "B": {
+      "templates": "all",
+      "learnHelp": "available",
+      "periodicTable": true,
+      "onlineLookup": true,
+      "teach": true,
+      "recognitionServer": false,
+      "helpDetail": "student",
+      "export": ["tikz", "chemfig", "cdxml", "mol", "ket", "smiles"]
+    },
+    "C": {
+      "templates": "all",
+      "learnHelp": "available",
+      "periodicTable": true,
+      "onlineLookup": true,
+      "teach": true,
+      "recognitionServer": true,
+      "helpDetail": "brief",
+      "export": ["tikz", "chemfig", "cdxml", "mol", "ket", "smiles"]
+    }
+  },
+  "basicTemplates": [
+    "cyclopropane", "cyclobutane", "cyclopentane", "cyclohexane", "cyclohexene", "benzene", "naphthalene",
+    "pyridine", "pyrrole", "furan",
+    "alkene", "alkyne", "alkyl-halide", "alcohol", "alkoxide", "phenol", "ether",
+    "aldehyde", "ketone", "carboxylic-acid", "carboxylate", "ester", "amide", "acyl-chloride",
+    "amine-primary", "amine-secondary", "amine-tertiary", "ammonium-ion", "nitrile", "thiol",
+    "tert-butyl-cation", "tert-butyl-radical", "phenyl",
+    "glycine", "alanine", "serine", "cysteine", "beta-d-glucose", "d-glucose-open", "glycerol", "palmitic-acid",
+    "water", "hydroxide", "hydronium", "proton", "hydride", "ammonia", "ammonium", "chloride", "bromide", "cyanide",
+    "hcl", "sulfuric-acid", "nitric-acid", "acetic-acid", "naoh",
+    "methanol", "ethanol", "acetone", "co2", "ethene", "formaldehyde", "acetaldehyde", "bromine", "hydrogen",
+    "mech-sn2", "mech-e2", "mech-carbonyl_addition", "mech-radical_homolysis", "mech-lewis_adduct", "mech-aqua_acidity"
+  ]
+}

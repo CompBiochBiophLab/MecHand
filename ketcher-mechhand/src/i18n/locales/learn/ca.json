@@ -1,0 +1,219 @@
+{
+  "_meta": {
+    "sameAsEnglish": [
+      "learn.element.N",
+      "learn.element.Co"
+    ]
+  },
+  "learn": {
+    "switch": "Explicacions de química",
+    "switchHint": "Explica què vol dir cada fletxa, els parells solitaris, les càrregues i l'octet mentre dibuixes.",
+    "section": "Aprèn química",
+    "context": {
+      "off": "Comences amb els mecanismes? Obre **Aprèn química** aquí sota: àtoms, parells solitaris, càrregues i fletxes, d'un en un.",
+      "drawing": "Una fletxa corba sempre va **des dels electrons** (un parell solitari o un enllaç) **fins on van** (un àtom o un enllaç).",
+      "dialog": "Sota el dibuix, **Què volen dir les teves fletxes** explica cada fletxa amb paraules. Llegeix-ho: diu el que volies dir?",
+      "library": "Insereix un mecanisme i llegeix-ne la descripció: després prova de dibuixar-lo tu amb la mà alçada."
+    },
+    "topic": {
+      "atoms": {
+        "title": "Àtoms i electrons de valència",
+        "body": [
+          "La química passa amb els **electrons de valència**: els electrons de la capa més externa. Per als grups principals, el seu nombre és l'última xifra del grup: C 4, N 5, O 6, F i Cl 7.",
+          "Cada àtom tendeix a formar els enllaços que necessita per arribar a 8 electrons al seu voltant: el C forma 4 enllaços, el N 3, l'O 2, els halògens 1 i l'hidrogen 1 (l'H només necessita 2 electrons).",
+          "La **taula periòdica simple** (botó de la barra) mostra els electrons de valència, el nombre habitual d'enllaços i els parells solitaris de cada element."
+        ]
+      },
+      "lonePairs": {
+        "title": "Enllaços i parells solitaris",
+        "body": [
+          "Un **enllaç** és un parell d'electrons compartit per dos àtoms. Un enllaç doble comparteix dos parells, i un de triple, tres.",
+          "Un **parell solitari** és un parell d'electrons de valència que no forma part de cap enllaç. El N neutre en té un, l'O dos, i el F, el Cl, el Br i l'I tres. El carboni en una molècula neutra no en té cap.",
+          "Sovint els parells solitaris no es dibuixen, però hi són: són els electrons que ataquen en la majoria de mecanismes."
+        ]
+      },
+      "charges": {
+        "title": "Càrrega formal",
+        "body": [
+          "**Càrrega formal** = electrons de valència − electrons en parells solitaris − nombre d'enllaços.",
+          "O amb 3 enllaços i un parell solitari (H₃O⁺): 6 − 2 − 3 = **+1**. O amb 1 enllaç i tres parells solitaris (HO⁻): 6 − 6 − 1 = **−1**.",
+          "Quan una fletxa treu un parell solitari d'un àtom per formar un enllaç, aquest àtom es torna més positiu; l'àtom que rep un parell com a parell solitari es torna més negatiu. La càrrega total sempre es conserva en cada pas."
+        ]
+      },
+      "octet": {
+        "title": "La regla de l'octet",
+        "body": [
+          "El C, el N, l'O i el F (el segon període) no poden tenir mai més de **8 electrons** al seu voltant (cada enllaç compta 2, cada parell solitari 2).",
+          "Per tant, una fletxa no pot afegir simplement un enllaç nou a un carboni que ja en té quatre: en el mateix pas se n'ha de trencar un altre. Per això en la SN2 l'enllaç C–Br es trenca mentre l'OH⁻ ataca.",
+          "Els elements del tercer període i següents (P, S, Si, Cl…) de vegades poden superar els 8; els metalls de transició segueixen altres regles."
+        ]
+      },
+      "electronegativity": {
+        "title": "Electronegativitat i enllaços polars",
+        "body": [
+          "L'**electronegativitat** mesura amb quina força un àtom atreu els electrons d'un enllaç. Augmenta cap a la dreta i cap amunt a la taula periòdica: F 4,0, O 3,4, N 3,0, C 2,6, H 2,2.",
+          "En un enllaç polar, l'àtom més electronegatiu adquireix una càrrega parcial negativa (δ−) i l'altre una càrrega parcial positiva (δ+): en el C=O, l'oxigen és δ− i el carboni δ+.",
+          "L'àtom δ+ és on ataquen les espècies riques en electrons; quan es trenca un enllaç polar, els electrons van a l'àtom més electronegatiu."
+        ]
+      },
+      "nucleophiles": {
+        "title": "Nucleòfils i electròfils",
+        "body": [
+          "Un **nucleòfil** («que estima els nuclis») és ric en electrons: té un parell solitari o un enllaç π per cedir, sovint amb càrrega negativa. Exemples: HO⁻, NH₃, CN⁻, H₂O.",
+          "Un **electròfil** («que estima els electrons») és pobre en electrons: una càrrega positiva, un àtom δ+ o un orbital buit. Exemples: H⁺, el C del C=O, BF₃, un carbocatió.",
+          "Gairebé tots els passos d'un mecanisme polar consisteixen en un nucleòfil que cedeix un parell d'electrons a un electròfil, i la fletxa corba va **del nucleòfil a l'electròfil**."
+        ]
+      },
+      "curvedArrows": {
+        "title": "Fletxes corbes: moure parells d'electrons",
+        "body": [
+          "Una fletxa corba amb punta sencera (→) mou **dos electrons**. És una eina de comptabilitat: mostra d'on venen els electrons i on van, no on es mouen els àtoms.",
+          "**Cua**: sempre sobre electrons, un parell solitari o un enllaç. Mai sobre un H⁺ ni sobre una càrrega positiva: no tenen electrons per cedir.",
+          "**Punta**: sobre l'àtom que rep els electrons (s'hi forma un enllaç nou) o entre dos àtoms (s'hi forma un enllaç nou). Si apunta a un àtom de l'enllaç d'on surt, l'enllaç es trenca i aquest àtom es queda tots dos electrons com a parell solitari.",
+          "Patrons típics: parell solitari → àtom (un enllaç nou), enllaç → àtom (l'enllaç es trenca: grup sortint), enllaç π → àtom (atac d'un enllaç doble)."
+        ]
+      },
+      "fishhook": {
+        "title": "Fletxes de mitja punta: un electró",
+        "body": [
+          "Una fletxa corba amb **mitja punta** (una sola barba, com un ham) mou **un electró**. Es fa servir en les reaccions radicalàries.",
+          "Quan un enllaç es trenca de manera simètrica (**homòlisi**), dues fletxes de mitja punta surten de l'enllaç i en van una a cada àtom: cada àtom es queda un electró i es converteix en un radical (Cl–Cl → 2 Cl·), per exemple amb llum o calor.",
+          "Un radical (un àtom amb un electró desaparellat, dibuixat com un punt) és molt reactiu: ataca per aparellar el seu electró."
+        ]
+      },
+      "otherArrows": {
+        "title": "Fletxes rectes: reacció, equilibri, ressonància",
+        "body": [
+          "**Fletxa de reacció** (→): dels reactius als productes. Diu què es transforma en què, no com es mouen els electrons.",
+          "**Fletxes d'equilibri** (⇌, dues fletxes amb mitja punta): la reacció va en els dos sentits; per exemple, un àcid que només cedeix en part el seu H⁺.",
+          "**Fletxa de ressonància** (↔, una punta a cada extrem): les dues estructures no són molècules diferents, sinó dues maneres de dibuixar la mateixa; la molècula real és una mescla de totes dues. No la facis servir mai per a un equilibri.",
+          "Les fletxes corbes expliquen *com* passa cada pas; les fletxes rectes connecten els passos."
+        ]
+      },
+      "acidsBases": {
+        "title": "Àcids i bases",
+        "body": [
+          "Un **àcid de Brønsted** cedeix H⁺; una **base de Brønsted** el capta amb un parell solitari. En fletxes: parell solitari de la base → H, i enllaç H–A → A (A es queda el parell).",
+          "Un **àcid de Lewis** accepta un parell d'electrons (BF₃, AlCl₃, H⁺, ions metàl·lics); una **base de Lewis** en cedeix un (NH₃, H₂O, R–O⁻). Tot nucleòfil és una base de Lewis i tot electròfil, un àcid de Lewis.",
+          "Com més feble és l'enllaç amb l'H i més estable és l'anió que queda, més fort és l'àcid."
+        ]
+      },
+      "mechanisms": {
+        "title": "Tipus de mecanisme",
+        "body": [
+          "**Substitució**: un grup en substitueix un altre (SN2: el nucleòfil entra mentre el grup sortint surt, en un sol pas).",
+          "**Eliminació**: s'elimina una molècula petita (H–X) i es forma un enllaç doble (E2: una base capta l'H mentre es forma el C=C i surt l'X).",
+          "**Addició**: dues molècules s'uneixen; per exemple, un nucleòfil s'addiciona al C=O i els electrons π es desplacen cap a l'oxigen.",
+          "**Reaccions radicalàries**: un electró cada vegada, amb fletxes de mitja punta. La **Biblioteca** té un exemple de cadascun per començar."
+        ]
+      }
+    },
+    "explain": {
+      "title": "Què volen dir les teves fletxes",
+      "pairAtomAtom": "Fletxa {n}: el parell solitari de {from} forma un enllaç nou amb {to}. {from} cedeix dos electrons, de manera que es torna més positiu.",
+      "pairAtomBond": "Fletxa {n}: el parell solitari de {from} es desplaça a l'enllaç {to}, que guanya un enllaç (senzill → doble).",
+      "pairBondAtomOwn": "Fletxa {n}: l'enllaç {from} es trenca i tots dos electrons van a {to}, que se'ls queda com a parell solitari i es torna més negatiu.",
+      "pairBondAtom": "Fletxa {n}: els electrons de l'enllaç {from} formen un enllaç nou amb {to}; l'enllaç {from} perd un enllaç.",
+      "pairBondBond": "Fletxa {n}: els electrons de l'enllaç {from} es desplacen a {to}: el primer enllaç perd un enllaç i el segon en guanya un.",
+      "pairLoose": "Fletxa {n}: una fletxa corba amb punta sencera mou dos electrons. La cua ha de ser sobre electrons (un parell solitari o un enllaç) i la punta sobre un àtom o un enllaç.",
+      "single": "Fletxa {n}: una fletxa de mitja punta mou un electró, de {from} a {to}. Els radicals es formen o s'aparellen electró a electró.",
+      "singleLoose": "Fletxa {n}: una fletxa de mitja punta només mou un electró: es fa servir per als radicals. Fes-la començar en un enllaç o en un electró desaparellat.",
+      "reaction": "Fletxa {n}: una fletxa de reacció. Els reactius de l'esquerra es transformen en els productes de la dreta; no mostra com es mouen els electrons.",
+      "equilibrium": "Fletxa {n}: fletxes d'equilibri. La reacció va en els dos sentits i s'atura en una mescla de reactius i productes.",
+      "why": "Per què?",
+      "whyCode": {
+        "start-nothing": "Els electrons sempre són en un parell solitari o en un enllaç, de manera que una fletxa corba ha de començar en un d'ells. Mou la cua a l'àtom el parell solitari del qual ataca, o al mig de l'enllaç que es trenca.",
+        "start-no-lone-pair": "Aquest àtom no té cap parell solitari per cedir: tots els seus electrons de valència ja són en enllaços (com el C del CH₄, o l'H). Si volies dir un enllaç amb ell, fes començar la fletxa al mig d'aquest enllaç.",
+        "end-nothing": "La punta indica on acaben els electrons: en un àtom (un enllaç nou amb ell, o un parell solitari) o entre dos àtoms (un enllaç nou). Apuntar a un espai buit no diu res.",
+        "octet": "Els àtoms del segon període (C, N, O, F) no poden tenir més de 8 electrons. Si aquest àtom guanya un enllaç, se n'ha de trencar un altre en el mateix pas: dibuixa també aquesta fletxa (com l'enllaç C–Br en la SN2)."
+      }
+    },
+    "periodic": {
+      "title": "Taula periòdica",
+      "button": "Taula periòdica",
+      "buttonName": "Taula periòdica simple",
+      "intro": "Fes clic en un element per veure què necessites per dibuixar-lo. Els cinc primers períodes; la taula pròpia de Ketcher els té tots.",
+      "group": "Grup {group}",
+      "period": "Període {period}",
+      "z": "Nombre atòmic",
+      "valence": "Electrons de valència",
+      "bonds": "Enllaços habituals (neutre)",
+      "lonePairs": "Parells solitaris (neutre)",
+      "en": "Electronegativitat (Pauling)",
+      "none": "—",
+      "use": "Dibuixa'l a Ketcher",
+      "useHint": "Selecciona aquest àtom a Ketcher: fes clic al llenç (o sobre un àtom per canviar-lo). La mà alçada es desactiva.",
+      "transitionNote": "Els metalls de transició també fan servir electrons d i no segueixen la regla de l'octet: el nombre d'enllaços (lligands) depèn del compost.",
+      "nobleNote": "Els gasos nobles ja tenen la capa completa: gairebé mai no formen enllaços.",
+      "enNote": "L'electronegativitat augmenta cap a la dreta i cap amunt: l'àtom més electronegatiu d'un enllaç adquireix δ− i es queda els electrons quan l'enllaç es trenca.",
+      "legend": "Famílies",
+      "close": "Tanca la taula periòdica"
+    },
+    "family": {
+      "alkali": "Metalls alcalins",
+      "alkaline-earth": "Metalls alcalinoterris",
+      "transition": "Metalls de transició",
+      "post-transition": "Altres metalls",
+      "metalloid": "Metal·loides",
+      "nonmetal": "No-metalls",
+      "halogen": "Halògens",
+      "noble": "Gasos nobles"
+    },
+    "element": {
+      "H": "Hidrogen",
+      "He": "Heli",
+      "Li": "Liti",
+      "Be": "Beril·li",
+      "B": "Bor",
+      "C": "Carboni",
+      "N": "Nitrogen",
+      "O": "Oxigen",
+      "F": "Fluor",
+      "Ne": "Neó",
+      "Na": "Sodi",
+      "Mg": "Magnesi",
+      "Al": "Alumini",
+      "Si": "Silici",
+      "P": "Fòsfor",
+      "S": "Sofre",
+      "Cl": "Clor",
+      "Ar": "Argó",
+      "K": "Potassi",
+      "Ca": "Calci",
+      "Sc": "Escandi",
+      "Ti": "Titani",
+      "V": "Vanadi",
+      "Cr": "Crom",
+      "Mn": "Manganès",
+      "Fe": "Ferro",
+      "Co": "Cobalt",
+      "Ni": "Níquel",
+      "Cu": "Coure",
+      "Zn": "Zinc",
+      "Ga": "Gal·li",
+      "Ge": "Germani",
+      "As": "Arsènic",
+      "Se": "Seleni",
+      "Br": "Brom",
+      "Kr": "Criptó",
+      "Rb": "Rubidi",
+      "Sr": "Estronci",
+      "Y": "Itri",
+      "Zr": "Zirconi",
+      "Nb": "Niobi",
+      "Mo": "Molibdè",
+      "Tc": "Tecneci",
+      "Ru": "Ruteni",
+      "Rh": "Rodi",
+      "Pd": "Pal·ladi",
+      "Ag": "Plata",
+      "Cd": "Cadmi",
+      "In": "Indi",
+      "Sn": "Estany",
+      "Sb": "Antimoni",
+      "Te": "Tel·luri",
+      "I": "Iode",
+      "Xe": "Xenó"
+    }
+  }
+}

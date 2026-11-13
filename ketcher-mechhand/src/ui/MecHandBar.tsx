@@ -3,8 +3,9 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { LOCALES, useT } from '../i18n/i18n';
 import { HelpTip, HelpToggleButton } from './HelpSystem';
+import { LevelMenu } from './LevelChooser';
 import {
-  ExportIcon, GlobeIcon, HelpIcon, InfoIcon, LibraryIcon, MecHandLogo, PenIcon, RecognizeIcon, RedoIcon, TeachIcon, TrashIcon, UndoIcon,
+  ExportIcon, GlobeIcon, HelpIcon, InfoIcon, LibraryIcon, MecHandLogo, PenIcon, PeriodicIcon, RecognizeIcon, RedoIcon, TeachIcon, TrashIcon, UndoIcon,
 } from './icons';
 
 export const barStyle: CSSProperties = {
@@ -81,6 +82,11 @@ export function MecHandBar(props: {
   onTeach: () => void;
   onAbout: () => void;
   onHelp: () => void;
+  /** The simple periodic table (absent: no button, the level does not include it). */
+  onPeriodic?: () => void;
+  periodicOpen?: boolean;
+  /** Features the user's level does not include (src/config/levels.json): not shown. */
+  hidden?: { teach?: boolean };
   /** Icons without text (narrow space; see useCompact). */
   compact: boolean;
   /** Study mode: features switched off for the current task or phase. */
@@ -126,10 +132,23 @@ export function MecHandBar(props: {
       <HelpTip id="btn-export">
         <ToolButton icon={<ExportIcon />} label={t('toolbar.export')} name={t('toolbar.export')} showLabel={!compact} onClick={props.onExport} testId="mechand-export-btn" />
       </HelpTip>
-      <HelpTip id="btn-teach">
-        <ToolButton icon={<TeachIcon />} label={t('toolbar.teach')} name={t('toolbar.teach')} showLabel={!compact} disabled={off.teach} onClick={props.onTeach} testId="mechand-teach-btn" />
-      </HelpTip>
+      {!props.hidden?.teach && (
+        <HelpTip id="btn-teach">
+          <ToolButton icon={<TeachIcon />} label={t('toolbar.teach')} name={t('toolbar.teach')} showLabel={!compact} disabled={off.teach} onClick={props.onTeach} testId="mechand-teach-btn" />
+        </HelpTip>
+      )}
+      {props.onPeriodic && (
+        <HelpTip id="btn-periodic">
+          <ToolButton
+            icon={<PeriodicIcon />} label={t('learn.periodic.button')} name={t('learn.periodic.buttonName')} showLabel={!compact}
+            active={props.periodicOpen} pressed={props.periodicOpen} onClick={props.onPeriodic} testId="mechand-periodic-btn"
+          />
+        </HelpTip>
+      )}
       <span style={{ flex: 1 }} />
+      <HelpTip id="btn-level" placement="left">
+        <LevelMenu compact={compact} />
+      </HelpTip>
       <HelpTip id="btn-language" placement="left">
         <LanguageMenu />
       </HelpTip>

@@ -46,7 +46,8 @@ export function lonePairs(scene: Scene, atom: number): number {
   return Math.max(0, Math.floor(nonBonding / 2));
 }
 
-function describe(anchor: ArrowAnchor, scene: Scene): string {
+/** "O3", "C1–Br2" or "nothing" (atoms numbered from 1, as in the check messages). */
+export function describe(anchor: ArrowAnchor, scene: Scene): string {
   if (anchor.type === 'atom') return `${scene.atoms[anchor.atom].symbol}${anchor.atom + 1}`;
   if (anchor.type === 'bond') {
     const b = scene.bonds[anchor.bond];

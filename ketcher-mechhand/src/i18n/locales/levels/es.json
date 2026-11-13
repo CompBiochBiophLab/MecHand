@@ -1,0 +1,29 @@
+{
+  "level": {
+    "menu": "Nivel",
+    "menuName": "Nivel de usuario: cambia las plantillas y la ayuda que se ofrece",
+    "A": {
+      "name": "Estudiante",
+      "short": "A · Estudiante",
+      "who": "ESO y bachillerato y primeros cursos de grado",
+      "what": "Plantillas básicas, la tabla periódica simple y explicaciones químicas de cada flecha."
+    },
+    "B": {
+      "name": "Estudiante avanzado",
+      "short": "B · Avanzado",
+      "who": "Final de grado, máster e inicio del doctorado",
+      "what": "Toda la biblioteca de plantillas y la búsqueda en línea; explicaciones químicas si las quieres."
+    },
+    "C": {
+      "name": "Investigador/a",
+      "short": "C · Investigación",
+      "who": "Doctorado y más allá",
+      "what": "Todo, incluido el servidor de reconocimiento opcional y, si las quieres, las explicaciones del nivel A."
+    },
+    "chooserTitle": "Te damos la bienvenida a MecHand: ¿cuál es tu nivel?",
+    "chooserIntro": "MecHand adapta las plantillas y la ayuda a ti. Puedes cambiarlo en cualquier momento con el menú **Nivel** de la barra.",
+    "choose": "Elegir",
+    "basicTemplates": "Nivel {level}: las {count} plantillas básicas. Elige el nivel B o C en la barra para tener toda la biblioteca.",
+    "notInLevel": "No disponible en el nivel {level}."
+  }
+}
