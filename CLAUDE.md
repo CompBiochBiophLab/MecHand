@@ -22,8 +22,9 @@ Abast:
 - **Missatges del backend** que arribin a l'usuari: traduïbles o mostrats via les claus i18n de l'app.
 - **Captures de pantalla** de la documentació: idealment amb la interfície en l'idioma de la pàgina.
 
-Fora d'abast (no cal triplicar): el manuscrit (`manuscript/`, en anglès per a la revista), els
-comentaris de codi i la documentació interna de l'equip o del comitè d'ètica a `estudi/`.
+Fora d'abast (no cal triplicar): els scripts i resultats de l'article (`analysis/`, en anglès; el
+manuscrit és en un repositori privat a part), els comentaris de codi i la documentació interna de
+l'equip o del comitè d'ètica a `estudi/`.
 
 Terminologia: fes servir els mateixos noms d'elements de la interfície que hi ha als fitxers de
 locales (p. ex. a la documentació catalana, els noms catalans dels botons). Català normatiu (IEC),

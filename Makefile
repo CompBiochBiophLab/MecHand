@@ -7,14 +7,14 @@
 #   make test        type check, unit tests, recognition benchmark, LaTeX export check
 #   make e2e         browser tests in Chromium, Firefox and WebKit
 #   make server      optional DECIMER recognition server at http://localhost:8000 (Python 3.10–3.13)
-#   make tutorial    tutorial PDF          make manuscript   manuscript PDF
+#   make tutorial    tutorial PDF
 
 APP    := ketcher-mechhand
 SITE   := .site
 PORT   ?= 8080
 PYTHON ?= python3.13
 
-.PHONY: install dev site test e2e server tutorial manuscript
+.PHONY: install dev site test e2e server tutorial
 
 install:
 	cd $(APP) && npm ci
@@ -45,6 +45,3 @@ server:
 
 tutorial:
 	$(MAKE) -C tutorial
-
-manuscript:
-	$(MAKE) -C manuscript
