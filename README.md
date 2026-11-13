@@ -41,7 +41,7 @@ electron-flow arrows into Ketcher.
 - [Ideas taken from ChemDraw and Marvin](#ideas-taken-from-chemdraw-and-marvin)
 - [Repository layout](#repository-layout)
 - [Development](#development)
-- [Tutorial and manuscript](#tutorial-and-manuscript)
+- [Tutorial and analyses](#tutorial-and-analyses)
 - [Citation](#citation)
 
 ---
@@ -391,7 +391,7 @@ MecHand/
 ├── backend/                 optional DECIMER server (FastAPI, Python 3.10–3.13)
 ├── docs/                    website (VitePress) — screenshots, tutorial PDF
 ├── tutorial/                user tutorial (LaTeX + Makefile)
-├── manuscript/              Journal of Cheminformatics manuscript (LaTeX + Makefile)
+├── analysis/                scripts and results behind the tables and figures of the article
 ├── estudi/                  user study: design, consent, ethics application, stimuli, analysis
 └── .github/workflows/       CI (tests in three browsers) and GitHub Pages deployment
 ```
@@ -426,15 +426,18 @@ with `caffeinate -u -t 600 &` when running the browser tests locally.
 
 ---
 
-## Tutorial and manuscript
+## Tutorial and analyses
 
 ```sh
-cd tutorial   && make          # mechand-tutorial.pdf   (make publish → docs/public/tutorial.pdf)
-cd manuscript && make          # main.pdf (downloads the Springer Nature template on first run)
+cd tutorial && make            # mechand-tutorial.pdf   (make publish → docs/public/tutorial.pdf)
 ```
 
-Both use `latexmk`; `make view`, `make clean` and `make distclean` are also available. The tutorial's
+The tutorial uses `latexmk`; `make view`, `make clean` and `make distclean` are also available. Its
 figures are MecHand's own TikZ/chemfig exports (`make figures` regenerates them).
+
+[`analysis/`](analysis/) holds the scripts and results behind every table and figure of the article
+(recognition benchmark, comparison with DECIMER); its README explains how to reproduce them. The
+manuscript itself is kept outside this repository until publication.
 
 ---
 

@@ -19,7 +19,7 @@ MecHand/
 ├── backend/                 optional DECIMER recognition server (FastAPI)
 ├── docs/                    this website (VitePress)
 ├── tutorial/                user tutorial (LaTeX → PDF, with a Makefile)
-└── manuscript/              Journal of Cheminformatics manuscript (LaTeX, with a Makefile)
+└── analysis/                scripts and results behind the tables and figures of the article
 ```
 
 ## Ketcher as a dependency

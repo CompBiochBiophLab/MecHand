@@ -1,5 +1,22 @@
 # Analyses for the manuscript
 
+The scripts and results behind every table and figure of the MecHand article. The article itself
+is not in this repository.
+
+## Recognition benchmark and figure
+
+`make_figures.py` (needs matplotlib) turns `results/benchmark.json` into `results/benchmark.tex`
+(per-template recognition table) and `results/figure_e2.json` into `figures/recognition-e2.pdf`
+(synthetic handwriting of the E2 template, coloured by how MecHand read each stroke).
+
+```sh
+cd ketcher-mechhand
+MECHAND_BENCH_OUT=../analysis/results/benchmark.json npm test
+MECHAND_FIGURE_OUT=../analysis/results/figure_e2.json npx vitest run src/recognition/compare.export.test.ts
+cd ../analysis
+python make_figures.py
+```
+
 ## MecHand vs DECIMER on the same synthetic handwriting
 
 `compare_decimer.py` compares MecHand's stroke-based recognizer with DECIMER's hand-drawn image
@@ -13,9 +30,9 @@ Reproduce (Node.js for step 1, Python 3.10–3.13 with `decimer` and `rdkit` for
 
 ```sh
 cd ketcher-mechhand
-MECHAND_COMPARE_OUT=../manuscript/analysis/results/comparison_dataset.json \
+MECHAND_COMPARE_OUT=../analysis/results/comparison_dataset.json \
   npx vitest run src/recognition/compare.export.test.ts
-cd ../manuscript/analysis
+cd ../analysis
 python compare_decimer.py results/comparison_dataset.json --out results/decimer_comparison --scale 8 --width 18
 ```
 
