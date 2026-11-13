@@ -9,7 +9,8 @@ const INK = JSON.parse(readFileSync(join(import.meta.dirname, 'fixtures', 'sn2-i
 
 async function ready(page: import('@playwright/test').Page) {
   await expect(page.getByTestId('mechand-bar')).toBeVisible();
-  await page.locator('[data-testid="ketcher-canvas"]').first().waitFor();
+  // Ketcher also renders a hidden polymer-editor canvas with the same test id; wait for the visible one.
+  await page.locator('[data-testid="ketcher-canvas"]').filter({ visible: true }).first().waitFor();
 }
 
 test.describe('first use', () => {
