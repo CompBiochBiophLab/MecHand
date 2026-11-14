@@ -111,7 +111,7 @@ test('runs a study session locally and produces a minimal session file', async (
   expect(download.suggestedFilename()).toMatch(/^mechand-estudi-MH-[A-Z2-9]{5}\.json$/);
   const text = readFileSync((await download.path())!, 'utf8');
   const s = JSON.parse(text);
-  // MECHAND_STUDY_SAVE=<folder>: keep the file (to try estudi/analisi/analitza_sessions.py on it).
+  // MECHAND_STUDY_SAVE=<folder>: keep the file (to try the study's analysis script, analyse_sessions.py, on it).
   const save = process.env.MECHAND_STUDY_SAVE;
   if (save) {
     mkdirSync(save, { recursive: true });

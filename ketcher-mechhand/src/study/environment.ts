@@ -1,6 +1,6 @@
 /**
  * Technical context of a study session, kept coarse on purpose (see
- * estudi/05-consentiment-informat.md): browser family and major version,
+ * information sheet of the study): browser family and major version,
  * operating system, processor architecture, screen size, touch support and the
  * kinds of pointer used. The raw user-agent string is read to derive these
  * fields but never stored; nothing here is sent anywhere.

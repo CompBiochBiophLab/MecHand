@@ -1,6 +1,6 @@
 /**
  * Study mode (?study=1): a side panel that takes a participant through a session
- * of the user study (estudi/ in the repository) — consent check and a short
+ * of the user study (the study protocol, published with the article) — consent check and a short
  * questionnaire, Teach training, the drawing tasks in two counterbalanced blocks,
  * the System Usability Scale after each block, open questions, and the download
  * of the session file. Everything stays in the browser (see recorder.ts).
@@ -26,7 +26,7 @@ const DEVICES: Device[] = ['tauleta-llapis', 'tauleta-dit', 'ordinador-llapis', 
 
 /**
  * System Usability Scale (Brooke, 1996): the ten items, in the interface language (study.sus.item1…10;
- * English: Brooke's wording; Catalan: the study's translation; see estudi/08-questionaris.md).
+ * English: Brooke's wording; Catalan: the study's translation; see the study's questionnaires).
  */
 export const susItems = (t: T) => Array.from({ length: 10 }, (_, i) => t(`study.sus.item${i + 1}`));
 

@@ -1,6 +1,6 @@
 /**
  * Leave-one-participant-out evaluation of the shared model with the study data
- * (estudi/04-entrenament-model.md, §3.5). Skipped unless MECHAND_CV_DIR is set:
+ * (study protocol, model training, §3.5). Skipped unless MECHAND_CV_DIR is set:
  *
  *   MECHAND_CV_DIR=<folder with mechand-estudi-*.json> MECHAND_CV_OUT=cv.json \
  *     npx vitest run src/study/crossval.export.test.ts

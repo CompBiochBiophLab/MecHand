@@ -3,10 +3,10 @@
 MecHand is being evaluated in a user study with Biotechnology students and chemistry teachers at the
 Universitat de Vic – Universitat Central de Catalunya. The study materials — design, participant
 instructions, researcher guide, information sheet and consent form, ethics-committee application,
-data-protection analysis, questionnaires, stimuli and analysis scripts — are public, in Catalan, in
-the [`estudi/`](https://github.com/CompBiochBiophLab/MecHand/tree/main/estudi) folder of the
-repository. This page summarises what the app does in study mode, so that participants and reviewers
-can check it.
+data-protection analysis, questionnaires and analysis scripts — will be published as supplementary
+material of the article; until then they are available from the author on request. The code of study
+mode and its automated privacy tests are public in this repository. This page summarises what the app
+does in study mode, so that participants and reviewers can check it.
 
 ## What a session looks like
 

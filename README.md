@@ -312,11 +312,13 @@ Español so far; copy `en.json`, translate the values and send it to add a langu
 
 ## User study
 
-[`estudi/`](estudi/) holds the materials (in Catalan) of a user study with Biotechnology students and
-chemistry teachers at UVic-UCC: experimental design (crossover, freehand vs Ketcher tools), participant
-instructions, researcher guide, model-training protocol, information sheet and informed consent,
-application to the UVic-UCC Research Ethics Committee, data-protection analysis, questionnaires,
-openly licensed image stimuli and an analysis script. `make -C estudi` builds the PDFs.
+MecHand is being evaluated in a user study with Biotechnology students and chemistry teachers at
+UVic-UCC (crossover design, freehand vs Ketcher tools), approved by the UVic-UCC Research Ethics
+Committee. The study materials (design, participant instructions, researcher guide, information sheet
+and consent form, ethics application, data-protection analysis, questionnaires and analysis script)
+will be published as supplementary material of the article; until then they are available from the
+author on request. The image stimuli and their licences are in
+[`ketcher-mechhand/public/study/`](ketcher-mechhand/public/study/).
 
 The app has a **study mode** (`…/app/?study=1&group=A1`): a side panel with the questionnaire, Teach
 training, the tasks in two counterbalanced blocks, the SUS, and the download of a session file. Like
@@ -392,7 +394,6 @@ MecHand/
 ├── docs/                    website (VitePress) — screenshots, tutorial PDF
 ├── tutorial/                user tutorial (LaTeX + Makefile)
 ├── analysis/                scripts and results behind the tables and figures of the article
-├── estudi/                  user study: design, consent, ethics application, stimuli, analysis
 └── .github/workflows/       CI (tests in three browsers) and GitHub Pages deployment
 ```
 

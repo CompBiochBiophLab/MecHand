@@ -1,10 +1,12 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { type Page, expect, test } from '@playwright/test';
 
 /**
  * Regenerates the screenshots of the website and tutorial (docs/public/img) and of the
- * user-study instructions (estudi/img) from the current app. Skipped unless asked for:
+ * user-study instructions from the current app, in English (study/img) and Catalan (study/ca/img)
+ * of the article repository (MECHAND_STUDY_DIR, default ../Article_MecHand/study next to this
+ * repository; skipped if it is not there). Skipped unless asked for:
  *
  *   MECHAND_SCREENSHOTS=1 npx playwright test e2e/screenshots.spec.ts --project=chromium
  *
@@ -13,7 +15,11 @@ import { type Page, expect, test } from '@playwright/test';
  */
 
 const DOCS = join(import.meta.dirname, '..', '..', 'docs', 'public', 'img');
-const STUDY = join(import.meta.dirname, '..', '..', 'estudi', 'img');
+const STUDY = process.env.MECHAND_STUDY_DIR ?? join(import.meta.dirname, '..', '..', '..', 'Article_MecHand', 'study');
+const STUDY_SHOTS = [
+  { lang: 'en', dir: join(STUDY, 'img'), start: 'study-start.png', task: 'study-task.png' },
+  { lang: 'ca', dir: join(STUDY, 'ca', 'img'), start: 'estudi-inici.png', task: 'estudi-tasca.png' },
+];
 const INK = JSON.parse(readFileSync(join(import.meta.dirname, 'fixtures', 'sn2-ink.json'), 'utf8')) as { strokes: number[][][] };
 
 test.skip(!process.env.MECHAND_SCREENSHOTS, 'set MECHAND_SCREENSHOTS=1 to regenerate the screenshots');
@@ -109,9 +115,11 @@ test('website and tutorial screenshots', async ({ page }) => {
   }
 });
 
-test('user-study screenshots', async ({ page }) => {
+for (const shot of STUDY_SHOTS) test(`user-study screenshots (${shot.lang})`, async ({ page }) => {
+  test.skip(!existsSync(STUDY), `no article repository at ${STUDY} (set MECHAND_STUDY_DIR)`);
+  mkdirSync(shot.dir, { recursive: true });
   page.on('dialog', (d) => d.accept());
-  await ready(page, '/?study=1&group=A1');
+  await ready(page, `/?study=1&group=A1&lang=${shot.lang}`);
   const panel = page.locator('[data-testid="mechand-study"]');
   await panel.waitFor();
   await page.selectOption('[data-testid="study-role"]', 'estudiant');
@@ -120,11 +128,11 @@ test('user-study screenshots', async ({ page }) => {
   await page.selectOption('[data-testid="study-country"]', 'ES');
   await page.selectOption('[data-testid="study-experience"]', 'poca');
   await page.check('[data-testid="study-consent"]');
-  await panel.screenshot({ path: join(STUDY, 'estudi-inici.png') });
+  await panel.screenshot({ path: join(shot.dir, shot.start) });
   await page.click('[data-testid="study-begin"]');
   await page.click('[data-testid="study-teach-done"]');
   await page.click('[data-testid="study-start-task"]');
   await page.click('[data-testid="mechand-freehand"]');
   await drawFixture(page);
-  await page.screenshot({ path: join(STUDY, 'estudi-tasca.png') });
+  await page.screenshot({ path: join(shot.dir, shot.task) });
 });

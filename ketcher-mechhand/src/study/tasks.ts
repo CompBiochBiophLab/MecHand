@@ -1,8 +1,8 @@
 /**
- * Tasks of the user study (see estudi/ in the repository).
+ * Tasks of the user study (the study protocol, published with the article).
  *
  * The stimuli are openly licensed images (Wikimedia Commons, see stimuli.json and
- * estudi/estimuls/ATRIBUCIONS.md) that participants reproduce in MecHand. Two
+ * public/study/ATTRIBUTIONS.md) that participants reproduce in MecHand. Two
  * matched sets (A, B), each with two molecules (one simple, one with fused rings)
  * and two mechanisms (an SN2 step with two curved arrows and the first line of an
  * aldol mechanism), are drawn once with MecHand's freehand mode and once with

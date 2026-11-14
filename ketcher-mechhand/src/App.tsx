@@ -37,7 +37,7 @@ import pkg from '../package.json';
 
 const structServiceProvider = new StandaloneStructServiceProvider();
 const params = new URLSearchParams(location.search);
-/** User-study mode (estudi/ in the repository): ?study=1[&group=A1]. */
+/** User-study mode (the study protocol, published with the article): ?study=1[&group=A1]. */
 const STUDY = params.get('study') === '1';
 
 type Dialog =

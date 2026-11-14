@@ -24,7 +24,7 @@ Abast:
 
 Fora d'abast (no cal triplicar): els scripts i resultats de l'article (`analysis/`, en anglès; el
 manuscrit és en un repositori privat a part), els comentaris de codi i la documentació interna de
-l'equip o del comitè d'ètica a `estudi/`.
+l'equip o del comitè d'ètica (l'estudi d'usuaris és al repositori privat de l'article).
 
 Terminologia: fes servir els mateixos noms d'elements de la interfície que hi ha als fitxers de
 locales (p. ex. a la documentació catalana, els noms catalans dels botons). Català normatiu (IEC),

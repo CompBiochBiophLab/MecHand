@@ -24,6 +24,6 @@ SOFTWARE.
 Third-party material with its own licence:
 
 - Ketcher (EPAM Systems), used as an npm dependency: Apache License 2.0.
-- Study stimuli (estudi/estimuls/ and ketcher-mechhand/public/study/): images
+- Study stimuli (ketcher-mechhand/public/study/): images
   from Wikimedia Commons in the public domain or under CC BY 4.0; authors,
-  licences and sources are listed in estudi/estimuls/ATRIBUCIONS.md.
+  licences and sources are listed in ketcher-mechhand/public/study/ATTRIBUTIONS.md.

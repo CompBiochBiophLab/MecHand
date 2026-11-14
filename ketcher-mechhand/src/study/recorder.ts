@@ -1,7 +1,7 @@
 /**
  * Session recorder of the user study.
  *
- * Privacy by design (see estudi/07-proteccio-dades-i-seguretat.md):
+ * Privacy by design (see the study's data-protection document):
  *  - Everything stays in this browser: memory, plus a backup in localStorage so that
  *    a reload does not lose the session. Nothing is ever sent over the network.
  *  - The participant downloads the session file and hands it over in person.
